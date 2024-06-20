@@ -34,7 +34,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                   ),
-                  CustomOutliinedButton(
+                  CustomOutlinedButton(
                       function: () {
                         bloc.add(const SentOTPEvent());
                       },

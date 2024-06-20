@@ -89,9 +89,6 @@ class AuthService {
       GoogleAuthProvider.credential(accessToken: auth.accessToken),
     );
 
-    await _googleSignIn.signOut();
-    // log("Step 4 : SignOut Success");
-
     return Result(data: credential.user);
   }
 
@@ -105,7 +102,9 @@ class AuthService {
   Future<Result> signOut() {
     return _try(() async {
       await _auth.signOut();
+      await _googleSignIn.signOut();
 
+      // await _streamSubscription?.cancel();
       return const Result();
     });
   }

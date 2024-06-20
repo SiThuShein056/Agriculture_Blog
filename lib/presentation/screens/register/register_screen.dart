@@ -126,7 +126,7 @@ class RegisterScreen extends StatelessWidget {
                       TextButton(
                           onPressed: () {},
                           child: const Text("Suggest Password")),
-                      CustomOutliinedButton(
+                      CustomOutlinedButton(
                           function: register, lable: "Register"),
                     ],
                   ),

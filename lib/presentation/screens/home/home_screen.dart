@@ -7,6 +7,8 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
     final bottomNav = context.read<NavigationBloc>();
+    final postCreateBloc = context.read<PostCreateCubit>();
+
     return BlocListener<HomeBloc, HomeBaseState>(
       listener: (context, state) {
         if (state is HomeUserSignOutState) {
@@ -26,10 +28,11 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 bloc.drawerKey.currentState?.openDrawer();
               },
+              bloc: bloc,
             ),
             const ChatScreen(),
             const SearchScreen(),
-            const CreatePost(),
+            CreatePost(bloc: postCreateBloc),
           ][state.i];
         }),
       ),

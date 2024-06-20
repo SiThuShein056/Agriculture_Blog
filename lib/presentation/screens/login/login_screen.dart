@@ -92,7 +92,7 @@ class LoginScreen extends StatelessWidget {
                                       RouteNames.forgetPassword);
                                 },
                                 child: const Text("Forget Password")),
-                            CustomOutliinedButton(
+                            CustomOutlinedButton(
                                 function: login, lable: "Login"),
                           ],
                         ),
@@ -100,7 +100,7 @@ class LoginScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(
                             vertical: 10,
                           ),
-                          child: CustomOutliinedButton(
+                          child: CustomOutlinedButton(
                               icon: Icons.login_outlined,
                               function: () {
                                 loginBloc.add(const LoginWithGoogleEvent());
@@ -134,6 +134,7 @@ class LoginScreen extends StatelessWidget {
             )),
         BlocConsumer<LoginBloc, LoginBaseState>(builder: (context, state) {
           if (state is LoginLoadingState) {
+            log("UI login loading State");
             return Container(
               width: context.width,
               height: context.height,
@@ -149,10 +150,14 @@ class LoginScreen extends StatelessWidget {
           return const SizedBox();
         }, listener: (context, state) {
           if (state is LoginFailedState) {
+            log("UI login fail State");
+
             StarlightUtils.dialog(
                 DialogWidget(message: state.error, title: "Fail to Login"));
           }
           if (state is LoginSuccessState) {
+            log("UI login success State");
+
             StarlightUtils.pushReplacementNamed(RouteNames.home);
           }
         }),

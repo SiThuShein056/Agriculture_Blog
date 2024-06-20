@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +26,8 @@ Future<void> setup() async {
   Injection.registerLazySingleton(() => prefs);
   Injection.registerLazySingleton<FirebaseStorage>(
       () => FirebaseStorage.instance);
+  Injection.registerLazySingleton<FirebaseFirestore>(
+      () => FirebaseFirestore.instance);
   Injection.registerLazySingleton<ImagePicker>(() => ImagePicker());
   Injection.registerLazySingleton<EmailOTP>(() => EmailOTP());
 }

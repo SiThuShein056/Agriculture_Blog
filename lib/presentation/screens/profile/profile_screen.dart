@@ -162,12 +162,12 @@ class ProfileScreen extends StatelessWidget {
                         arguments: bloc);
                   },
                 ),
-                ReuseListTileWidget(
-                    icon: const Icon(Icons.logout_outlined),
-                    title: "logout",
-                    onpress: () {
-                      bloc.add(const HomeUserSignOutEvent());
-                    }),
+                // ReuseListTileWidget(
+                //     icon: const Icon(Icons.logout_outlined),
+                //     title: "logout",
+                //     onpress: () {
+                //       bloc.add(const HomeUserSignOutEvent());
+                //     }),
               ],
             )),
           ],

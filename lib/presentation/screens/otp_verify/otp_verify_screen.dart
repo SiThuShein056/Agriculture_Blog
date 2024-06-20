@@ -24,7 +24,7 @@ class OtpVerifyScreen extends StatelessWidget {
                   bloc.value = v;
                 },
               ),
-              CustomOutliinedButton(
+              CustomOutlinedButton(
                   function: () {
                     bloc.userDataController.text = email;
                     log("Tapped button${bloc.userDataController.text}");

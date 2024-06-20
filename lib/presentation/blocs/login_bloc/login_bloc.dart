@@ -8,14 +8,19 @@ class LoginBloc extends Bloc<LoginBaseEvent, LoginBaseState> {
           formKey?.currentState?.validate() != true) return;
 
       emit(const LoginLoadingState());
+      log("Reach  Login Fail State");
+
       final result = await _authService.login(
           emailController.text, passwordController.text);
 
       if (result.hasError) {
+        log("Reach  Login Fail State");
+
         return emit(LoginFailedState(result.error!.message));
       }
 
       emit(const LoginSuccessState());
+      log("Reach Login Success State");
     });
     on<LoginWithGoogleEvent>((event, emit) async {
       if (state is LoginLoadingState) return;

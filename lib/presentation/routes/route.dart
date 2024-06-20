@@ -6,6 +6,7 @@ List<String> protectedRoutes = ["/home"];
 class RouteNames {
   static const String splash = "/",
       home = "/home",
+      // auth = "/auth",
       loginScreen = "/loin-screen",
       registerScreen = "/register-screen",
       nameChangeScreen = "/name-change-Screen",
@@ -45,7 +46,13 @@ Route? router(RouteSettings settings) {
               ),
             ),
             BlocProvider(
-                create: (_) => NavigationBloc(const NavigationState(0)))
+              create: (_) => NavigationBloc(
+                const NavigationState(0),
+              ),
+            ),
+            BlocProvider(
+              create: (_) => PostCreateCubit(),
+            ),
           ], child: const HomeScreen()),
           settings);
     case RouteNames.loginScreen:
