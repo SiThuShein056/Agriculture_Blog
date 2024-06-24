@@ -7,7 +7,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
     final bottomNav = context.read<NavigationBloc>();
-    final postCreateBloc = context.read<PostCreateCubit>();
+    final postCreateBloc = context.read<CreateCubit>();
 
     return BlocListener<HomeBloc, HomeBaseState>(
       listener: (context, state) {
@@ -30,9 +30,9 @@ class HomeScreen extends StatelessWidget {
               },
               bloc: bloc,
             ),
-            const ChatScreen(),
-            const SearchScreen(),
-            CreatePost(bloc: postCreateBloc),
+            const CreatePost(),
+            const ChatHome(),
+            const ProfileScreen(),
           ][state.i];
         }),
       ),

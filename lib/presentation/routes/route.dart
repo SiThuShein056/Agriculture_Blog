@@ -14,9 +14,18 @@ class RouteNames {
       forgetPassword = "/forget-password-screen",
       verifyOtpScreen = "/verifyOtpScreen",
       mailChangeScreen = "/mail-change-screen",
-      profileScreen = "/profile-screen",
+      settingScreen = "/setting-screen",
       updateUserScreen = "/update-user-screen",
-      settingScreen = "/setting-screen";
+      createPostScreen = "/create-post-screen",
+      postDetail = "/post-detail",
+      categories = "/categories",
+      createCategories = "/createCategories",
+      createSubCategories = "/createSubCategories",
+      adminDashBoard = "/admin-dash-board",
+      noti = "/notification-screen",
+      singleChat = "/single-chat",
+      searchPost = "/search-post",
+      subCategories = "/sub-categories";
 }
 
 Route? router(RouteSettings settings) {
@@ -51,7 +60,7 @@ Route? router(RouteSettings settings) {
               ),
             ),
             BlocProvider(
-              create: (_) => PostCreateCubit(),
+              create: (_) => CreateCubit(),
             ),
           ], child: const HomeScreen()),
           settings);
@@ -63,6 +72,29 @@ Route? router(RouteSettings settings) {
             child: const LoginScreen(),
           ),
           settings);
+    case RouteNames.categories:
+      return _protectedRoute(
+          incomingRoute,
+          BlocProvider(
+            create: (_) => HomeBloc(
+              HomeInitialState(Injection<AuthService>().currentUser),
+            ),
+            child: const SearchCategory(),
+          ),
+          settings);
+    case RouteNames.subCategories:
+      return _protectedRoute(
+          incomingRoute,
+          BlocProvider(
+            create: (_) => HomeBloc(
+              HomeInitialState(Injection<AuthService>().currentUser),
+            ),
+            child: SearchSubCategory(
+              id: settings.arguments.toString(),
+            ),
+          ),
+          settings);
+
     case RouteNames.registerScreen:
       return _protectedRoute(
         incomingRoute,
@@ -93,7 +125,7 @@ Route? router(RouteSettings settings) {
         settings,
       );
 
-    case RouteNames.profileScreen:
+    case RouteNames.settingScreen:
       final value = settings.arguments;
       if (value is! HomeBloc) {
         return _pageRoute(ErrorWidget("Home bloc is not found!!"), settings);
@@ -102,7 +134,7 @@ Route? router(RouteSettings settings) {
         incomingRoute,
         BlocProvider.value(
           value: value,
-          child: const ProfileScreen(),
+          child: const SettingScreen(),
         ),
         settings,
       );
@@ -166,10 +198,68 @@ Route? router(RouteSettings settings) {
         ),
         settings,
       );
-    case RouteNames.settingScreen:
+
+    case RouteNames.postDetail:
       return _protectedRoute(
         incomingRoute,
-        const SettingScreen(),
+        const PostDetail(),
+        settings,
+      );
+    case RouteNames.noti:
+      return _protectedRoute(
+        incomingRoute,
+        const NotificationScreen(),
+        settings,
+      );
+    case RouteNames.adminDashBoard:
+      return _protectedRoute(
+        incomingRoute,
+        const AdminDashboard(),
+        settings,
+      );
+    case RouteNames.singleChat:
+      return _protectedRoute(
+        incomingRoute,
+        const SingleChat(),
+        settings,
+      );
+    case RouteNames.searchPost:
+      return _protectedRoute(
+        incomingRoute,
+        const SearchPostScreen(),
+        settings,
+      );
+    case RouteNames.createPostScreen:
+      final value = settings.arguments;
+      if (value is! CreateCubit) {
+        return _pageRoute(ErrorWidget("Post bloc is not found!!"), settings);
+      }
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: value),
+          ],
+          child: const CreatePost(),
+        ),
+        settings,
+      );
+    case RouteNames.createCategories:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [BlocProvider(create: (_) => CreateCubit())],
+          child: const CreateCategory(),
+        ),
+        settings,
+      );
+    case RouteNames.createSubCategories:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [BlocProvider(create: (_) => CreateCubit())],
+          child: const CreateSubCategory(),
+        ),
         settings,
       );
 

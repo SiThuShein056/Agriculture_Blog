@@ -5,173 +5,159 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<HomeBloc>();
-
     return Scaffold(
       appBar: AppBar(
-          automaticallyImplyLeading: false,
-          leading: const IconButton(
-              onPressed: (StarlightUtils.pop),
-              icon: Icon(Icons.chevron_left_outlined)),
-          title: const Text("Profile")),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20.0, right: 20, bottom: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GestureDetector(
-              onTap: () async {
-                await Injection<AuthService>().updatePickCoverPhoto();
-              },
-              child: Stack(
-                clipBehavior: Clip.none,
-                alignment: Alignment.center,
-                children: [
-                  BlocBuilder<HomeBloc, HomeBaseState>(builder: (_, state) {
-                    final isNotUploaded = state.user?.photoURL == null;
-                    final name =
-                        state.user?.displayName ?? state.user?.email ?? "NA";
-
-                    if (isNotUploaded) {
-                      return CircleAvatar(
-                        radius: 50,
-                        child: Text(
-                          (name)[0].toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                      );
-                    }
-
-                    return FutureBuilder(
-                        future: Injection<FirebaseStorage>()
-                            .ref(state.user?.photoURL)
-                            .getDownloadURL(),
-                        builder: (_, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return LoadingAnimationWidget.hexagonDots(
-                                color: Colors.green, size: 20);
-                          }
-                          // if (snapshot.error != null) {
-                          //   StarlightUtils.snackbar(
-                          //       const SnackBar(content: Text("URL Error")));
-                          // }
-
-                          final url = snapshot.data;
-                          if (url == null) {
-                            return CircleAvatar(
-                              radius: 50,
-                              child: Text(
-                                (name)[0].toUpperCase(),
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                ),
-                              ),
-                            );
-                          }
-                          return Container(
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.5,
-                                color: const Color.fromARGB(255, 152, 192, 153),
-                              ),
-                              shape: BoxShape.circle,
-                            ),
-                            child: ClipOval(
-                              child: Image.network(
-                                url,
-                                fit: BoxFit.cover,
-                                loadingBuilder: (_, child, c) {
-                                  if (c == null) return child;
-                                  return const CupertinoActivityIndicator();
-                                },
-                              ),
-                            ),
-                          );
-                        });
-                  }),
-                  const Positioned(
-                      bottom: -10,
-                      child: Icon(
-                        Icons.add_circle_outline,
-                        color: Color.fromARGB(255, 22, 49, 18),
-                      ))
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: BlocBuilder<HomeBloc, HomeBaseState>(
-                  buildWhen: (previous, current) =>
-                      previous.user?.displayName != current.user?.displayName,
-                  builder: (_, state) {
-                    return Text(
-                      (state.user?.displayName ??
-                          state.user?.email?[0] ??
-                          "NA"),
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
-                    );
-                  }),
-            ),
-            Expanded(
-                child: Column(
-              children: [
-                BlocBuilder<HomeBloc, HomeBaseState>(
-                    buildWhen: (previous, current) =>
-                        previous.user?.displayName != current.user?.displayName,
-                    builder: (_, state) {
-                      log("NAME BLOC BUILDER BUILD");
-
-                      return ReuseListTileWidget(
-                        icon: const Icon(Icons.person_outline),
-                        title: state.user?.displayName ??
-                            state.user?.email?[0] ??
-                            "NA",
-                        onpress: () {
-                          StarlightUtils.pushNamed(RouteNames.nameChangeScreen,
-                              arguments: bloc);
-                        },
-                      );
-                    }),
-                BlocBuilder<HomeBloc, HomeBaseState>(
-                    buildWhen: (previous, current) =>
-                        previous.user?.email != current.user?.email,
-                    builder: (_, state) {
-                      log("Mail BLOC BUILDER BUILD");
-                      return ReuseListTileWidget(
-                        icon: const Icon(Icons.email_outlined),
-                        title: state.user?.email ?? "",
-                        onpress: () {
-                          StarlightUtils.pushNamed(RouteNames.mailChangeScreen,
-                              arguments: bloc);
-                        },
-                      );
-                    }),
-                ReuseListTileWidget(
-                  icon: const Icon(Icons.lock_open_outlined),
-                  title: "Change Password",
-                  onpress: () {
-                    StarlightUtils.pushNamed(RouteNames.passswordChangeScreen,
-                        arguments: bloc);
-                  },
-                ),
-                // ReuseListTileWidget(
-                //     icon: const Icon(Icons.logout_outlined),
-                //     title: "logout",
-                //     onpress: () {
-                //       bloc.add(const HomeUserSignOutEvent());
-                //     }),
-              ],
-            )),
-          ],
+        // centerTitle: true,
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Profile",
+          style: TextStyle(
+              fontSize: 25, letterSpacing: 1, fontWeight: FontWeight.w900),
         ),
+      ),
+      body: StreamBuilder(
+          stream: FirebaseStoreDb()
+              .getUser(Injection<AuthService>().currentUser!.uid),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CupertinoActivityIndicator());
+            }
+            if (snapshot.data == null) {
+              return const Text("NONAME");
+            }
+            UserModel? user;
+            for (var element in snapshot.data!.docs) {
+              user = UserModel.fromJson(element);
+            }
+            if (user == null) {
+              return const Text("No User");
+            }
+
+            return Column(
+              children: [
+                Container(
+                  color: Colors.white,
+                  height: 230,
+                  child: Stack(
+                    children: [
+                      InkWell(
+                          onTap: () {},
+                          child: user.profielUrl.isNotEmpty
+                              ? CachedNetworkImage(
+                                  imageUrl: user.profielUrl,
+                                  height: 200,
+                                  width: MediaQuery.of(context).size.width,
+                                  fit: BoxFit.cover,
+                                )
+                              : const SizedBox()),
+                      Positioned(
+                        left: 10,
+                        bottom: 0,
+                        child: (user.profielUrl.isEmpty ||
+                                user.profielUrl == "")
+                            ? const CircleProfile(
+                                name: "NA",
+                                radius: 60,
+                              )
+                            : CircleAvatar(
+                                radius: 60,
+                                backgroundImage: NetworkImage(user.profielUrl),
+                              ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 90,
+                  color: Colors.white,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 10,
+                          left: 20,
+                          right: 10,
+                          bottom: 5,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              user.name,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const Spacer(),
+                            CustomOutlinedButton(
+                              function: () {},
+                              lable: "Chat",
+                              icon: Icons.comment_outlined,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Expanded(
+                //   child: ListView.builder(
+                //       itemCount: 20,
+                //       itemBuilder: (_, index) {
+                //         return const ListTile(
+                //           title: Text("data"),
+                //         );
+                //       }),
+                // )
+              ],
+            );
+          }),
+    );
+  }
+}
+
+class StaticCard extends StatelessWidget {
+  final double width;
+  final IconData icon;
+  final String label;
+  const StaticCard({
+    super.key,
+    required this.width,
+    required this.icon,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width,
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(175, 177, 169, 0.2),
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            color: Theme.of(context).primaryColor,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,20 +1,22 @@
-abstract class PostCreateState {
-  const PostCreateState();
+abstract class CreateState {
+  final String? url;
+
+  const CreateState([this.url]);
 }
 
-class PostCreateInitialState extends PostCreateState {
-  const PostCreateInitialState();
+class CreateInitialState extends CreateState {
+  const CreateInitialState();
 }
 
-class PostCreateLoadingState extends PostCreateState {
-  const PostCreateLoadingState();
+class CreateLoadingState extends CreateState {
+  const CreateLoadingState();
 }
 
-class PostCreateSuccessState extends PostCreateState {
-  const PostCreateSuccessState();
+class CreateSuccessState extends CreateState {
+  const CreateSuccessState([super.url]);
 }
 
-class PostCreateErrorState extends PostCreateState {
+class CreateErrorState extends CreateState {
   final String message;
-  const PostCreateErrorState(this.message);
+  const CreateErrorState(this.message);
 }

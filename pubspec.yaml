@@ -60,6 +60,7 @@ dependencies:
   # starlight_utils: ^0.0.3
   email_otp: ^2.1.2
   pinput: ^4.0.0
+  flutter_slidable: ^3.1.0
   starlight_utils:
     git:
       url: https://github.com/YeMyoAung/starlight_utils.git
@@ -71,6 +72,7 @@ dependencies:
   animation_wrappers: ^2.0.0
   smooth_page_indicator: ^1.1.0
   velocity_x: ^4.2.1
+  intl:
 
 dev_dependencies:
   flutter_test:

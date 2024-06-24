@@ -23,6 +23,13 @@ class BottomNavWidget extends StatelessWidget {
             selectedColor: Colors.teal,
           ),
 
+          /// Create Post
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.post_add_outlined),
+            title: const Text("New Post"),
+            selectedColor: Colors.teal,
+          ),
+
           /// chat
           SalomonBottomBarItem(
             icon: const Icon(Icons.chat_bubble_outline),
@@ -32,14 +39,8 @@ class BottomNavWidget extends StatelessWidget {
 
           /// Search
           SalomonBottomBarItem(
-            icon: const Icon(Icons.search_outlined),
-            title: const Text("Search"),
-            selectedColor: Colors.teal,
-          ),
-
-          SalomonBottomBarItem(
-            icon: const Icon(Icons.post_add_outlined),
-            title: const Text("New Post"),
+            icon: const Icon(Icons.person_outline),
+            title: const Text("Profile"),
             selectedColor: Colors.teal,
           ),
         ],

@@ -3,10 +3,9 @@ part of 'authu_service_import.dart';
 class AuthService {
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
-  // final FacebookAuth _facebookAuth;
 
   User? currentUser;
-
+  late String imageUrl;
   StreamSubscription? _streamSubscription;
   final StreamController<User?> _authStateController =
       StreamController.broadcast();
@@ -14,9 +13,7 @@ class AuthService {
 
   AuthService()
       : _auth = FirebaseAuth.instance,
-        _googleSignIn = GoogleSignIn.standard()
-  // _facebookAuth = FacebookAuth.instance
-  {
+        _googleSignIn = GoogleSignIn.standard() {
     _streamSubscription = _auth.userChanges().listen((user) {
       _authStateController.sink.add(user);
       currentUser = user;
@@ -58,7 +55,13 @@ class AuthService {
 
       final UserCredential credential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
-
+      await FirebaseStoreDb().createUser(
+        id: _auth.currentUser!.uid,
+        name: _auth.currentUser?.displayName.toString() ??
+            _auth.currentUser!.email![0],
+        email: _auth.currentUser!.email.toString(),
+        profileUrl: _auth.currentUser?.photoURL ?? "",
+      );
       return Result(data: credential.user);
     });
   }
@@ -71,7 +74,13 @@ class AuthService {
       }
       final UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-
+      await FirebaseStoreDb().createUser(
+        id: _auth.currentUser!.uid,
+        name: _auth.currentUser?.displayName.toString() ??
+            _auth.currentUser!.email![0],
+        email: _auth.currentUser!.email.toString(),
+        profileUrl: _auth.currentUser?.photoURL ?? "",
+      );
       return Result(data: credential.user);
     });
   }
@@ -87,6 +96,14 @@ class AuthService {
 
     final credential = await _auth.signInWithCredential(
       GoogleAuthProvider.credential(accessToken: auth.accessToken),
+    );
+
+    await FirebaseStoreDb().createUser(
+      id: _auth.currentUser!.uid,
+      name: _auth.currentUser?.displayName.toString() ??
+          _auth.currentUser!.email![1],
+      email: _auth.currentUser!.email.toString(),
+      profileUrl: _auth.currentUser?.photoURL ?? "",
     );
 
     return Result(data: credential.user);
@@ -112,6 +129,8 @@ class AuthService {
   Future<Result> displayNameUpdate(String value) {
     return _try(() async {
       await _auth.currentUser?.updateDisplayName(value);
+      await FirebaseStoreDb()
+          .updateUserData(id: _auth.currentUser!.uid, name: value);
       return Result(data: value);
     });
   }
@@ -122,7 +141,9 @@ class AuthService {
       var cred = EmailAuthProvider.credential(
           email: _auth.currentUser!.email!, password: password);
       await currentUser!.reauthenticateWithCredential(cred).then((value) async {
-        await currentUser!.verifyBeforeUpdateEmail(newMail);
+        await currentUser!.verifyBeforeUpdateEmail(newMail).then((v) =>
+            FirebaseStoreDb()
+                .updateUserData(id: _auth.currentUser!.uid, email: newMail));
       });
       return const Result();
     });
@@ -167,7 +188,7 @@ class AuthService {
         ),
       ));
       if (userChoice == null) {
-        return const Result(error: GeneralError("NOt no choice"));
+        return const Result(error: GeneralError("Not no choice"));
       }
       final XFile? image =
           await Injection<ImagePicker>().pickImage(source: userChoice);
@@ -177,9 +198,15 @@ class AuthService {
       final point = Injection<FirebaseStorage>().ref(
           "profile/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
       final uploaded = await point.putFile(image.path.file);
-      log("$uploaded");
+
       await _auth.currentUser?.updatePhotoURL(uploaded.ref.fullPath);
 
+      imageUrl = await Injection<FirebaseStorage>()
+          .ref(uploaded.ref.fullPath)
+          .getDownloadURL();
+      log("image is $imageUrl");
+      await FirebaseStoreDb()
+          .updateUserData(id: currentUser!.uid, profileUrl: imageUrl);
       return Result(data: uploaded);
     });
   }

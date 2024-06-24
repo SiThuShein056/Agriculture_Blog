@@ -1,11 +1,13 @@
 part of 'create_post_import.dart';
 
 class CreatePost extends StatelessWidget {
-  PostCreateCubit bloc;
-  CreatePost({super.key, required this.bloc});
+  const CreatePost({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final postCreateBloc = context.read<CreateCubit>();
     return Stack(
       children: [
         Scaffold(
@@ -16,7 +18,7 @@ class CreatePost extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CustomOutlinedButton(
                     function: () async {
-                      bloc.onSave();
+                      postCreateBloc.createPost();
                     },
                     lable: "Create Post",
                     icon: Icons.post_add_outlined,
@@ -36,6 +38,31 @@ class CreatePost extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          InkWell(
+                            onTap: () {
+                              postCreateBloc.pickPostPhoto();
+                            },
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.height * .15,
+                              height: MediaQuery.of(context).size.width * .3,
+                              child: Card(
+                                child: BlocBuilder<CreateCubit, CreateState>(
+                                    builder: (_, state) {
+                                  var image = state.url;
+
+                                  if (image == null) {
+                                    return const Icon(Icons.upload_outlined);
+                                  }
+                                  log("Post image Url is$image ");
+
+                                  return Image.network(
+                                    image,
+                                    fit: BoxFit.cover,
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.0),
                             child: Text(
@@ -44,24 +71,34 @@ class CreatePost extends StatelessWidget {
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          TextFormField(
-                            validator: (value) {
-                              if (value!.isEmpty) return "";
-                              return null;
-                            },
-                            onTap: () {
-                              log("tapped");
-                            },
-                            // readOnly: true,
-                            // autovalidateMode: AutovalidateMode.onUserInteraction,
-                            controller: bloc.categoryController,
-                            decoration: InputDecoration(
-                              hintText: "Select Category",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
+                          BlocBuilder<CreateCubit, CreateState>(
+                              builder: (context, snapshot) {
+                            return TextFormField(
+                              validator: (value) {
+                                if (value!.isEmpty) return "";
+                                return null;
+                              },
+                              onTap: () {
+                                StarlightUtils.pushNamed(RouteNames.categories,
+                                        arguments: false)
+                                    .then((category) {
+                                  postCreateBloc.categoryController.text =
+                                      category;
+                                  log("Selected item is $category");
+                                });
+                              },
+                              readOnly: true,
+                              // autovalidateMode:
+                              //     AutovalidateMode.onUserInteraction,
+                              controller: postCreateBloc.categoryController,
+                              decoration: InputDecoration(
+                                hintText: "Select Category",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.0),
                             child: Text(
@@ -78,7 +115,7 @@ class CreatePost extends StatelessWidget {
                             maxLines: 3,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
-                            controller: bloc.descriptionController,
+                            controller: postCreateBloc.descriptionController,
                             decoration: InputDecoration(
                               hintText: "Enter a description",
                               border: OutlineInputBorder(
@@ -93,9 +130,8 @@ class CreatePost extends StatelessWidget {
                 ),
               ),
             )),
-        BlocConsumer<PostCreateCubit, PostCreateState>(
-            builder: (context, state) {
-          if (state is PostCreateLoadingState) {
+        BlocConsumer<CreateCubit, CreateState>(builder: (context, state) {
+          if (state is CreateLoadingState) {
             return Container(
               width: context.width,
               height: context.height,
@@ -110,14 +146,14 @@ class CreatePost extends StatelessWidget {
           }
           return const SizedBox();
         }, listener: (context, state) {
-          if (state is PostCreateErrorState) {
+          if (state is CreateErrorState) {
             log("UI login fail State");
 
             StarlightUtils.snackbar(const SnackBar(
               content: Text("Fail Create"),
             ));
           }
-          if (state is PostCreateSuccessState) {
+          if (state is CreateSuccessState) {
             StarlightUtils.snackbar(const SnackBar(
               content: Text("Success Action"),
             ));
