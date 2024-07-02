@@ -7,7 +7,6 @@ class SearchPostScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         title: const CupertinoSearchTextField(
             // controller: _searchController,

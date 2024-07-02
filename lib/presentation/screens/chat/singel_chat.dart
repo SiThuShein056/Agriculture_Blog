@@ -6,6 +6,8 @@ class SingleChat extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String userName = ModalRoute.of(context)!.settings.arguments as String;
+
     return Scaffold(
       appBar: AppBar(
         // leading: IconButton(
@@ -28,9 +30,9 @@ class SingleChat extends StatelessWidget {
             const SizedBox(
               width: 5,
             ),
-            const Text(
-              "title",
-              style: TextStyle(
+            Text(
+              userName,
+              style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.black),

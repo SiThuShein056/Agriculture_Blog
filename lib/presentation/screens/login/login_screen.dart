@@ -26,6 +26,30 @@ class LoginScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.0),
+                          child: FlutterLogo(
+                            size: 100,
+                          ),
+                        ),
+                        const Text(
+                          "Glad To See You",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            "Please login to access your account",
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+
                         TextFormField(
                           validator: (value) {
                             if (value!.isEmpty) return "Need to fill";

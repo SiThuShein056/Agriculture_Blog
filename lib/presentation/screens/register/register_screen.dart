@@ -21,16 +21,30 @@ class RegisterScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: FlutterLogo(
+                      size: 100,
+                    ),
+                  ),
                   const Text(
-                    "Register",
+                    "Welcome From Farmer Hub",
                     style: TextStyle(
-                      fontSize: 28,
+                      fontSize: 25,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                  const Text(
+                    "Please register to access your account",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40, bottom: 10),
+                    padding: const EdgeInsets.only(top: 25, bottom: 10),
                     child: TextFormField(
                       controller: registerBloc.emailContrller,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -59,7 +73,7 @@ class RegisterScreen extends StatelessWidget {
                             if (value!.isEmpty) return "Password is required";
                             return value.isStrongPassword(
                               minLength: 6,
-                              checkSpecailChar: false,
+                              // checkSpecailChar: true,
                             );
                           },
                           decoration: InputDecoration(
@@ -93,17 +107,17 @@ class RegisterScreen extends StatelessWidget {
                               if (value!.isEmpty) return "Password is required";
                               final isStrongPassword = value.isStrongPassword(
                                 minLength: 6,
-                                checkSpecailChar: false,
+                                // checkSpecailChar: false,
                               );
 
                               if (isStrongPassword == null) {
                                 return isStrongPassword;
                               }
-
-                              return value ==
-                                      registerBloc.passwordController.text
-                                  ? null
-                                  : "Password does not match.";
+                              if (value ==
+                                  registerBloc.passwordController.text) {
+                                return "Password does not match.";
+                              }
+                              return null;
                             },
                             decoration: InputDecoration(
                               suffixIcon: IconButton(

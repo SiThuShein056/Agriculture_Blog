@@ -33,7 +33,7 @@ class CreatePost extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FormBox(
-                      height: MediaQuery.of(context).size.height * .7,
+                      height: MediaQuery.of(context).size.height,
                       width: context.width,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,9 +79,9 @@ class CreatePost extends StatelessWidget {
                                 return null;
                               },
                               onTap: () {
-                                StarlightUtils.pushNamed(RouteNames.categories,
-                                        arguments: false)
-                                    .then((category) {
+                                StarlightUtils.pushNamed(
+                                  RouteNames.categories,
+                                ).then((category) {
                                   postCreateBloc.categoryController.text =
                                       category;
                                   log("Selected item is $category");

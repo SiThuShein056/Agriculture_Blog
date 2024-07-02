@@ -16,6 +16,7 @@ class RouteNames {
       mailChangeScreen = "/mail-change-screen",
       settingScreen = "/setting-screen",
       updateUserScreen = "/update-user-screen",
+      profileScreen = "/profile-screen",
       createPostScreen = "/create-post-screen",
       postDetail = "/post-detail",
       categories = "/categories",
@@ -34,16 +35,6 @@ Route? router(RouteSettings settings) {
   switch (incomingRoute) {
     case RouteNames.splash:
       return _protectedRoute(incomingRoute, const SplashScreen(), settings);
-    // case RouteNames.auth:
-    //   return _protectedRoute(
-    //       incomingRoute,
-    //       MultiBlocProvider(providers: [
-    //         BlocProvider<LoginBloc>(
-    //           create: (_) => LoginBloc(),
-    //         ),
-    //         BlocProvider<RegisterBloc>(create: (_) => RegisterBloc())
-    //       ], child: AuthScreen()),
-    //       settings);
 
     case RouteNames.home:
       return _protectedRoute(
@@ -209,6 +200,12 @@ Route? router(RouteSettings settings) {
       return _protectedRoute(
         incomingRoute,
         const NotificationScreen(),
+        settings,
+      );
+    case RouteNames.profileScreen:
+      return _protectedRoute(
+        incomingRoute,
+        const ProfileScreen(),
         settings,
       );
     case RouteNames.adminDashBoard:
