@@ -49,7 +49,7 @@ class SearchCategory extends StatelessWidget {
               for (var element in snapshot.data!.docs) {
                 user = UserModel.fromJson(element);
               }
-              if (user!.role == "admin") {
+              if (user!.role != "admin") {
                 return const SizedBox();
               }
               return FloatingActionButton(
@@ -60,36 +60,6 @@ class SearchCategory extends StatelessWidget {
                 child: const Icon(Icons.add),
               );
             }),
-        // body: Padding(
-        //   padding: const EdgeInsets.all(20.0),
-        //   child: resultList.isEmpty
-        //       ? const Center(
-        //           child:
-        //               Text("သင်လိုချင်တာမရှီလျှင် 'အခြားမျိုးစား' ကို ရွေး ပါ။"),
-        //         )
-        //       : ListView.builder(
-        //           itemCount: resultList.length,
-        //           itemBuilder: (context, indext) {
-        //             return Card(
-        //               color: Theme.of(context).primaryColor,
-        //               child: ListTile(
-        //                 title: Text(
-        //                   resultList[indext]['name'],
-        //                 ),
-        //                 onTap: () {
-        //                   StarlightUtils.pushNamed(
-        //                     RouteNames.subCategories,
-        //                     arguments: resultList[indext]['id'],
-        //                   ).then((v) => setState(() {
-        //                         subName = "${resultList[indext]['name']}/$v";
-        //                         StarlightUtils.pop(result: subName);
-        //                       }));
-        //                 },
-        //               ),
-        //             );
-        //           }),
-        // ),
-
         body: StreamBuilder(
           stream: FirebaseStoreDb().categories,
           builder: (_, snap) {
@@ -116,21 +86,20 @@ class SearchCategory extends StatelessWidget {
                   itemCount: categories.length,
                   itemBuilder: (_, i) {
                     return Card(
-                      color: Theme.of(context).primaryColor,
-                      child: ListTile(
-                        onTap: () {
-                          StarlightUtils.pushNamed(
-                            RouteNames.subCategories,
-                            arguments: categories[i].id,
-                          ).then((v) {
-                            log("${categories[i].name}/$v");
-                            return StarlightUtils.pop(
-                                result: "${categories[i].name}/$v");
-                          });
-                        },
-                        title: Text(categories[i].name),
-                      ),
-                    );
+                        color: Theme.of(context).primaryColor,
+                        child: ListTile(
+                          onTap: () {
+                            StarlightUtils.pushNamed(
+                              RouteNames.subCategories,
+                              arguments: categories[i].id,
+                            ).then((v) {
+                              log("${categories[i].name}/$v");
+                              return StarlightUtils.pop(
+                                  result: "${categories[i].name}/$v");
+                            });
+                          },
+                          title: Text(categories[i].name),
+                        ));
                   }),
             );
           },

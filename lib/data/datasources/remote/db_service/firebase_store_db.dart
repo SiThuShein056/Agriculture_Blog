@@ -234,34 +234,6 @@ class FirebaseStoreDb {
     return _subCategoryStream.stream;
   }
 
-  final List<CommentModel> _comments = [];
-  void commentsParser(event) {
-    for (var i in event.docs) {
-      var model = CommentModel.fromJson(i.data());
-      if (!_comments.contains(model)) {
-        _comments.add(model);
-      }
-    }
-    _commentStream.add(_comments);
-  }
-
-  Stream<List<CommentModel>> comments(String postId) {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("comments")
-          .where("post_id", isEqualTo: postId)
-          .orderBy(
-            "created_at",
-            descending: false,
-          )
-          .snapshots()
-          .listen(commentsParser),
-    );
-
-    return _commentStream.stream;
-  }
-
   final List<PostModel> _singlePosts = [];
   void singlePostParser(event) {
     for (var i in event.docs) {
@@ -303,5 +275,43 @@ class FirebaseStoreDb {
       () => _db.collection("notification").snapshots().listen(notiParser),
     );
     return _notiStream.stream;
+  }
+
+  final List<CommentModel> _comments = [];
+  void commentsParser(event) {
+    for (var i in event.docs) {
+      var model = CommentModel.fromJson(i.data());
+      if (!_comments.contains(model)) {
+        _comments.add(model);
+      }
+    }
+    _commentStream.add(_comments);
+  }
+
+  Stream<List<CommentModel>> comments(String postId) {
+    Future.delayed(
+      const Duration(milliseconds: 200),
+      () => _db
+          .collection("comments")
+          .where("post_id", isEqualTo: postId)
+          .orderBy(
+            "created_at",
+            descending: false,
+          )
+          .snapshots()
+          .listen(commentsParser),
+    );
+
+    return _commentStream.stream;
+  }
+
+  dispose() {
+    _postStream.close();
+    _myPostStream.close();
+    _singlePostStream.close();
+    _categoryStream.close();
+    _subCategoryStream.close();
+    _commentStream.close();
+    _likeStream.close();
   }
 }

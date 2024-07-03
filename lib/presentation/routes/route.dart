@@ -25,7 +25,6 @@ class RouteNames {
       adminDashBoard = "/admin-dash-board",
       noti = "/notification-screen",
       singleChat = "/single-chat",
-      searchPost = "/search-post",
       subCategories = "/sub-categories";
 }
 
@@ -220,12 +219,7 @@ Route? router(RouteSettings settings) {
         const SingleChat(),
         settings,
       );
-    case RouteNames.searchPost:
-      return _protectedRoute(
-        incomingRoute,
-        const SearchPostScreen(),
-        settings,
-      );
+
     case RouteNames.createPostScreen:
       final value = settings.arguments;
       if (value is! CreateCubit) {

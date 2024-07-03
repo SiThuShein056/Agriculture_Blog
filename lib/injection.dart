@@ -21,6 +21,9 @@ Future<void> setup() async {
   Injection.registerSingleton(AuthService(), dispose: (instance) {
     instance.dispose();
   });
+  // Injection.registerLazySingleton(()=>FirebaseStoreDb(), dispose: (instance) {
+  //   instance.dispose();
+  // });
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   Injection.registerLazySingleton(() => prefs);

@@ -20,7 +20,7 @@ import 'post_create_state.dart';
 class CreateCubit extends Cubit<CreateState> {
   CreateCubit() : super(const CreateInitialState());
 
-  final FirebaseFirestore db = Injection<FirebaseFirestore>();
+  final FirebaseFirestore _db = Injection<FirebaseFirestore>();
   final AuthService auth = Injection<AuthService>();
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
@@ -33,13 +33,13 @@ class CreateCubit extends Cubit<CreateState> {
   ValueNotifier<int> readCounts = ValueNotifier(0);
   ValueNotifier<int> notiCounts = ValueNotifier(0);
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
-
+  // final ValueNotifier<bool> myLike = ValueNotifier(false);
   Future<void> createPost() async {
     if (state is CreateLoadingState) return;
     emit(const CreateLoadingState());
     try {
-      final doc = db.collection("posts").doc();
-      final notiDoc = db.collection("notification").doc();
+      final doc = _db.collection("posts").doc();
+      final notiDoc = _db.collection("notification").doc();
 
       final post = PostModel(
         id: doc.id,
@@ -73,79 +73,11 @@ class CreateCubit extends Cubit<CreateState> {
     }
   }
 
-  Future<void> createComment(String postId, String body) async {
-    if (state is CreateLoadingState ||
-        formKey?.currentState?.validate() != true) return;
-    emit(const CreateLoadingState());
-    try {
-      final doc = db.collection("comments").doc();
-
-      final comment = CommentModel(
-        id: doc.id,
-        postId: postId,
-        userId: Injection<AuthService>().currentUser!.uid,
-        body: body,
-        createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
-      );
-      await doc.set(
-        comment.toJson(),
-      );
-      commentController.text = "";
-      emit(const CreateSuccessState());
-    } on FirebaseException catch (e) {
-      emit(CreateErrorState(e.code));
-    } catch (e) {
-      emit(CreateErrorState(e.toString()));
-    }
-  }
-
-  Future<void> likeAction(String postId) async {
-    try {
-      final doc = db.collection("likes").doc();
-      var exitUser = false;
-      var likeId = "";
-
-      final like = LikeModel(
-        id: doc.id,
-        postId: postId,
-        userId: Injection<AuthService>().currentUser!.uid,
-        createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
-      );
-
-      var data = await db.collection("likes").get();
-      var likedUser = data.docs;
-      for (var element in likedUser) {
-        var userId = element["user_id"].toString();
-        var postedId = element["post_id"].toString();
-        likeId = element["id"].toString();
-        if (userId == auth.currentUser!.uid && postedId == postId) {
-          exitUser = true;
-        }
-      }
-      if (exitUser) {
-        log("ExistUser $likeId");
-        db.collection("likes").doc(likeId).delete().asStream();
-      } else {
-        log("Not ExistUser");
-
-        await doc.set(
-          like.toJson(),
-        );
-      }
-
-      emit(const CreateSuccessState());
-    } on FirebaseException catch (e) {
-      emit(CreateErrorState(e.code));
-    } catch (e) {
-      emit(CreateErrorState(e.toString()));
-    }
-  }
-
   Future<void> createCategory() async {
     if (state is CreateLoadingState) return;
     emit(const CreateLoadingState());
     try {
-      final doc = db.collection("categories").doc();
+      final doc = _db.collection("categories").doc();
 
       final post = CategoryModel(
         id: doc.id,
@@ -166,7 +98,7 @@ class CreateCubit extends Cubit<CreateState> {
     if (state is CreateLoadingState) return;
     emit(const CreateLoadingState());
     try {
-      final doc = db.collection("subCategories").doc();
+      final doc = _db.collection("subCategories").doc();
 
       final post = SubCategoryModel(
         id: doc.id,
@@ -236,6 +168,81 @@ class CreateCubit extends Cubit<CreateState> {
 
     emit(CreateSuccessState(imageUrl));
     return;
+  }
+
+  Future<void> createComment(String postId, String body) async {
+    if (state is CreateLoadingState ||
+        formKey?.currentState?.validate() != true) return;
+    emit(const CreateLoadingState());
+    try {
+      final doc = _db.collection("comments").doc();
+
+      final comment = CommentModel(
+        id: doc.id,
+        postId: postId,
+        userId: Injection<AuthService>().currentUser!.uid,
+        body: body,
+        createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+      );
+      await doc.set(
+        comment.toJson(),
+      );
+      commentController.text = "";
+      emit(const CreateSuccessState());
+    } on FirebaseException catch (e) {
+      emit(CreateErrorState(e.code));
+    } catch (e) {
+      emit(CreateErrorState(e.toString()));
+    }
+  }
+
+  Future<void> deleteComment(String commentId) async {
+    await _db.collection("comments").doc(commentId).delete();
+  }
+
+  Future<void> likeAction(String postId) async {
+    try {
+      final doc = _db.collection("likes").doc();
+      var likedId = "";
+      var existUser = false;
+      final like = LikeModel(
+        id: doc.id,
+        postId: postId,
+        userId: Injection<AuthService>().currentUser!.uid,
+        createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+      );
+
+      var data = await _db.collection("likes").get();
+      var likedUser = data.docs;
+      for (var element in likedUser) {
+        var userId = element["user_id"].toString();
+        var postedId = element["post_id"].toString();
+
+        if (userId == auth.currentUser!.uid && postedId == postId) {
+          likedId = element["id"].toString();
+          existUser = true;
+        }
+      }
+
+      if (existUser) {
+        log("ExistUser $likedId");
+        await _db.collection("likes").doc(likedId).delete();
+        // myLike.value = false;
+      } else {
+        log("Not ExistUser");
+
+        await doc.set(
+          like.toJson(),
+        );
+        // myLike.value = true;
+      }
+
+      emit(const CreateSuccessState());
+    } on FirebaseException catch (e) {
+      emit(CreateErrorState(e.code));
+    } catch (e) {
+      emit(CreateErrorState(e.toString()));
+    }
   }
 
   @override

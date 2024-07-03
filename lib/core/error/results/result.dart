@@ -14,7 +14,7 @@ class Result<T> {
 
   @override
   String toString() {
-    if (error != null) return error!.message;
+    if (error != null) return error!.message.toString();
     return data.toString();
   }
 }
