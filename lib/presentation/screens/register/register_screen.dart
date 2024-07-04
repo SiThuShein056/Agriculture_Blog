@@ -113,7 +113,7 @@ class RegisterScreen extends StatelessWidget {
                               if (isStrongPassword == null) {
                                 return isStrongPassword;
                               }
-                              if (value ==
+                              if (value !=
                                   registerBloc.passwordController.text) {
                                 return "Password does not match.";
                               }

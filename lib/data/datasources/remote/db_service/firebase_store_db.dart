@@ -133,57 +133,54 @@ class FirebaseStoreDb {
   }
 
   final List<PostModel> _posts = [];
-  void postParser(event) {
-    for (var i in event.docs) {
-      var model = PostModel.fromJson(i.data());
-      if (!_posts.contains(model)) {
-        _posts.add(model);
-      }
-    }
+  void postParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = PostModel.fromJson(i.data());
+    //   if (!_posts.contains(model)) {
+    //     _posts.add(model);
+    //   }
+    // }
+    _posts.clear();
+    _posts.addAll(event.docs.map((e) => PostModel.fromJson(e.data())));
     _postStream.add(_posts);
   }
 
+  Map<String, StreamSubscription> postsStream = {};
+  void _postStreamSetup() {
+    postsStream["data"] = _db
+        .collection("posts")
+        // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
+        .orderBy(
+          "createdAt",
+          descending: true,
+        )
+        .snapshots()
+        .listen((e) {
+      return postParser(e);
+    });
+  }
+
   Stream<List<PostModel>> get posts {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("posts")
-          // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
-          .orderBy(
-            "createdAt",
-            descending: true,
-          )
-          .snapshots()
-          .listen(postParser),
-    );
+    // Future.delayed(
+    //   const Duration(milliseconds: 200),
+    //   () => _db
+    //       .collection("posts")
+    //       // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
+    //       .orderBy(
+    //         "createdAt",
+    //         descending: true,
+    //       )
+    //       .snapshots()
+    //       .listen(postParser),
+    // );
 
-    return _postStream.stream;
-  }
-
-  final List<LikeModel> _likes = [];
-  void likeParser(event) {
-    for (var i in event.docs) {
-      var model = LikeModel.fromJson(i.data());
-      if (!_likes.contains(model)) {
-        _likes.add(model);
-      }
+    var stream = postsStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      postsStream.remove("data");
     }
-    _likeStream.add(_likes);
-  }
-
-  Stream<List<LikeModel>> likes(String postId) {
-    Future.delayed(
-        const Duration(milliseconds: 200),
-        () => _db
-            .collection("likes")
-            .where("post_id", isEqualTo: postId)
-            // .orderBy(
-            //   "created_at",
-            //   descending: false,
-            // )
-            .snapshots()
-            .listen(likeParser));
-    return _likeStream.stream;
+    _postStreamSetup();
+    return _postStream.stream;
   }
 
   final List<CategoryModel> _categories = [];
@@ -259,51 +256,173 @@ class FirebaseStoreDb {
   }
 
   final List<NotificationModel> _notis = [];
-  void notiParser(event) {
-    for (var i in event.docs) {
-      var model = NotificationModel.fromJson(i.data());
-      if (!_notis.contains(model)) {
-        _notis.add(model);
-      }
-    }
+  void notiParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = NotificationModel.fromJson(i.data());
+    //   if (!_notis.contains(model)) {
+    //     _notis.add(model);
+    //   }
+    // }
+    _notis.clear();
+    _notis.addAll(event.docs.map((e) => NotificationModel.fromJson(e.data())));
     _notiStream.add(_notis);
   }
 
+  Map<String, StreamSubscription> notisStream = {};
+  void notiStreamSetup() {
+    notisStream["data"] =
+        _db.collection("notification").snapshots().listen((e) {
+      return notiParser(e);
+    });
+  }
+
   Stream<List<NotificationModel>> get notis {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db.collection("notification").snapshots().listen(notiParser),
-    );
+    var stream = notisStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      notisStream.remove("data");
+    }
+    // Future.delayed(
+    //   const Duration(milliseconds: 200),
+    //   () => _db.collection("notification").snapshots().listen(notiParser),
+    // );
+    notiStreamSetup();
     return _notiStream.stream;
   }
 
-  final List<CommentModel> _comments = [];
-  void commentsParser(event) {
-    for (var i in event.docs) {
-      var model = CommentModel.fromJson(i.data());
-      if (!_comments.contains(model)) {
-        _comments.add(model);
-      }
+  ///LIKE
+  final List<LikeModel> _likes = [];
+  void likeParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = LikeModel.fromJson(i.data());
+    //   if (!_likes.contains(model)) {
+    //     _likes.add(model);
+    //   }
+    // }
+    _likes.clear();
+
+    _likes.addAll(event.docs.map((e) => LikeModel.fromJson(e.data())));
+    _likeStream.add(_likes);
+  }
+
+  final Map<String, StreamSubscription> _likesStream = {};
+  void _likeStreamSetup(String postId) {
+    _likesStream[postId] = _db
+        .collection("likes")
+        .where("post_id", isEqualTo: postId)
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) {
+      return likeParser(event);
+    });
+  }
+
+  Stream<List<LikeModel>> likes(String postId) {
+    var stream = _likesStream[postId];
+    if (stream != null) {
+      stream.cancel();
+      _cmtStream.remove(postId);
     }
+    _likeStreamSetup(postId);
+    return _likeStream.stream;
+  }
+  // Stream<List<LikeModel>> likes(String postId) {
+  //   Future.delayed(
+  //       const Duration(milliseconds: 200),
+  //       () => _db
+  //           .collection("likes")
+  //           .where("post_id", isEqualTo: postId)
+  //           // .orderBy(
+  //           //   "created_at",
+  //           //   descending: false,
+  //           // )
+  //           .snapshots()
+  //           .listen(likeParser));
+  //   return _likeStream.stream;
+  // }
+
+  ///COMMENTS
+  final List<CommentModel> _comments = [];
+  void commentsParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = CommentModel.fromJson(i.data());
+    //   if (!_comments.contains(model)) {
+    //     _comments.add(model);
+    //   }
+    // }
+    _comments.clear();
+
+    _comments.addAll(event.docs.map((e) => CommentModel.fromJson(e.data())));
     _commentStream.add(_comments);
   }
 
-  Stream<List<CommentModel>> comments(String postId) {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("comments")
-          .where("post_id", isEqualTo: postId)
-          .orderBy(
-            "created_at",
-            descending: false,
-          )
-          .snapshots()
-          .listen(commentsParser),
-    );
+  // // Stream<List<CommentModel>> comments(String postId) {
+  // //   Future.delayed(
+  // //     const Duration(milliseconds: 200),
+  // //     () => _db
+  // //         .collection("comments")
+  // //         .where("post_id", isEqualTo: postId)
+  // //         .orderBy(
+  // //           "created_at",
+  // //           descending: false,
+  // //         )
+  // //         .snapshots(includeMetadataChanges: true)
+  // //         .listen(commentsParser),
+  // //   );
 
+  // //   return _commentStream.stream;
+  // // }
+
+  final Map<String, StreamSubscription> _cmtStream = {};
+  void _commentStreamSetup(String postId) {
+    _cmtStream[postId] = _db
+        .collection("comments")
+        .where("post_id", isEqualTo: postId)
+        .orderBy(
+          "created_at",
+          descending: false,
+        )
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) {
+      return commentsParser(event);
+    });
+  }
+
+  Stream<List<CommentModel>> comments(String postId) {
+    var stream = _cmtStream[postId];
+    if (stream != null) {
+      stream.cancel();
+      _cmtStream.remove(postId);
+    }
+    _commentStreamSetup(postId);
     return _commentStream.stream;
   }
+
+//////////////////////////////////////////////////////////////////////////////////////////
+  // final Map<String, List<CommentModel>> _commentStore = {};
+  // final Map<String, StreamSubscription> _cmtStream = {};
+  // Stream<List<CommentModel>> comments(String postId) {
+  //   if (_cmtStream[postId] == null) {
+  //     _cmtStream[postId] = _db
+  //         .collection("comments")
+  //         .where("post_id", isEqualTo: postId)
+  //         .orderBy(
+  //           "created_at",
+  //           descending: false,
+  //         )
+  //         .snapshots(includeMetadataChanges: true)
+  //         .listen((e) {
+  //       _commentStore[postId] = e.docs
+  //           .map((element) => CommentModel.fromJson(element.data()))
+  //           .toList();
+  //     });
+  //   }
+
+  //   Future.delayed(
+  //     const Duration(milliseconds: 500),
+  //     () => _commentStream.sink.add(_commentStore[postId] ?? []),
+  //   );
+  //   return _commentStream.stream;
+  // }
 
   dispose() {
     _postStream.close();

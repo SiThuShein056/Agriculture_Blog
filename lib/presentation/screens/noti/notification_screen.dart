@@ -42,7 +42,7 @@ class NotificationScreen extends StatelessWidget {
               List<NotificationModel> notis = snapshot.data!.toList();
               if (notis.isEmpty) {
                 return const Center(
-                  child: Text("No Data"),
+                  child: Text("No noti data"),
                 );
               }
               return Column(
@@ -101,7 +101,7 @@ class NotificationScreen extends StatelessWidget {
                                       }
                                       if (postSnap.data == null) {
                                         return const Center(
-                                          child: Text("No Data"),
+                                          child: Text("Post No Dkkkata"),
                                         );
                                       }
                                       List<PostModel> notiPost =
@@ -109,7 +109,7 @@ class NotificationScreen extends StatelessWidget {
 
                                       if (notiPost.isEmpty) {
                                         return const Center(
-                                          child: Text("No Data"),
+                                          child: Text("No Post Data"),
                                         );
                                       }
 

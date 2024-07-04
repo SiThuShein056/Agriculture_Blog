@@ -179,7 +179,14 @@ class ShowPost extends StatelessWidget {
                                                 context: context,
                                                 time: posts[i].createdAt)),
                                           ],
-                                        )
+                                        ),
+                                        // const Spacer(),
+                                        // IconButton(
+                                        //     onPressed: () {
+                                        //       createBloc
+                                        //           .deletePost(posts[i].id);
+                                        //     },
+                                        //     icon: const Icon(Icons.delete))
                                       ],
                                     )),
                                 Padding(
@@ -248,17 +255,41 @@ class ShowPost extends StatelessWidget {
                                             }
                                             List<LikeModel> likes =
                                                 likeSnap.data!.toList();
-
-                                            return PostActionButton(
-                                              onTap: () {
-                                                createBloc
-                                                    .likeAction(posts[i].id);
-                                              },
-                                              icon: Icons.thumb_up_outlined,
-                                              label: likes.isEmpty
-                                                  ? "Likes"
-                                                  : "Likes ${likes.length}",
-                                            );
+                                            log(likes.toString());
+                                            return likes.isEmpty
+                                                ? PostActionButton(
+                                                    onTap: () {
+                                                      createBloc.likeAction(
+                                                          posts[i].id);
+                                                    },
+                                                    icon:
+                                                        Icons.thumb_up_outlined,
+                                                    label: "Likes",
+                                                  )
+                                                : likes[0].userId ==
+                                                        createBloc.auth
+                                                            .currentUser!.uid
+                                                    ? PostActionButton(
+                                                        onTap: () {
+                                                          createBloc.likeAction(
+                                                              posts[i].id);
+                                                        },
+                                                        color: Colors.blue,
+                                                        icon: Icons
+                                                            .thumb_up_rounded,
+                                                        label:
+                                                            "Liked ${likes.length}",
+                                                      )
+                                                    : PostActionButton(
+                                                        onTap: () {
+                                                          createBloc.likeAction(
+                                                              posts[i].id);
+                                                        },
+                                                        icon: Icons
+                                                            .thumb_up_outlined,
+                                                        label:
+                                                            "Likes ${likes.length}",
+                                                      );
                                             // return ValueListenableBuilder(
                                             //     valueListenable:
                                             //         createBloc.myLike,

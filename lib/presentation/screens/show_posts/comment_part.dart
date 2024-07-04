@@ -77,7 +77,10 @@ class CommentPart extends StatelessWidget {
                               padding: const EdgeInsets.only(
                                   bottom: 10.0, left: 10, right: 10),
                               child: CommentTextField(
-                                  createBloc: createBloc, postsId: postsId),
+                                createBloc: createBloc,
+                                postsId: postsId,
+                                comments: comments,
+                              ),
                             ),
                           ],
                         );
@@ -105,10 +108,12 @@ class CommentBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
+      // shrinkWrap: true,
+      // physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-      separatorBuilder: (_, __) => const Divider(),
+      separatorBuilder: (_, __) => const Divider(
+        color: Colors.grey,
+      ),
       itemCount: comments.length,
       itemBuilder: (_, i) {
         return Column(
@@ -152,12 +157,15 @@ class CommentBody extends StatelessWidget {
                       Text(user.name.isEmpty ? user.email[0] : user.name),
                       const Spacer(),
                       comments[i].userId == createBloc.auth.currentUser!.uid
-                          ? IconButton(
-                              onPressed: () {
-                                createBloc.deleteComment(comments[i].id);
-                                log("DeleteComment ${comments[i].id}");
-                              },
-                              icon: const Icon(Icons.delete))
+                          ? PopupMenuButton<int>(
+                              onSelected: (value) => onSelected(context, value,
+                                  comments[i].id, comments[i].body),
+                              itemBuilder: (context) => [
+                                    const PopupMenuItem(
+                                        value: 0, child: Text("Delete")),
+                                    const PopupMenuItem(
+                                        value: 1, child: Text("Edit"))
+                                  ])
                           : const SizedBox()
                     ],
                   );
@@ -172,6 +180,21 @@ class CommentBody extends StatelessWidget {
       },
     );
   }
+
+  onSelected(c, v, commentId, body) {
+    switch (v) {
+      case 0:
+        createBloc.deleteComment(commentId);
+        break;
+      case 1:
+        createBloc.ediable.value = true;
+        createBloc.commentId = commentId;
+
+        createBloc.commentController.text = body;
+        break;
+      default:
+    }
+  }
 }
 
 class CommentTextField extends StatelessWidget {
@@ -179,10 +202,12 @@ class CommentTextField extends StatelessWidget {
     super.key,
     required this.createBloc,
     required this.postsId,
+    required this.comments,
   });
 
   final CreateCubit createBloc;
   final String postsId;
+  final List<CommentModel> comments;
 
   @override
   Widget build(BuildContext context) {
@@ -219,13 +244,25 @@ class CommentTextField extends StatelessWidget {
                 ),
               ),
             ),
-            IconButton(
-                onPressed: () {
-                  createBloc.createComment(
-                      postsId, createBloc.commentController.text);
-                  log("Add Commented");
-                },
-                icon: const Icon(Icons.send_outlined))
+            ValueListenableBuilder(
+                valueListenable: createBloc.ediable,
+                builder: (_, v, child) {
+                  return v
+                      ? IconButton(
+                          onPressed: () {
+                            createBloc.updateComment();
+                            createBloc.ediable.value = false;
+                            createBloc.commentController.text = "";
+                          },
+                          icon: const Icon(Icons.check))
+                      : IconButton(
+                          onPressed: () {
+                            createBloc.createComment(
+                                postsId, createBloc.commentController.text);
+                            log("Add Commented");
+                          },
+                          icon: const Icon(Icons.send_outlined));
+                })
           ],
         ),
       ),

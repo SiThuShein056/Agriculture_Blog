@@ -33,7 +33,8 @@ class CreateCubit extends Cubit<CreateState> {
   ValueNotifier<int> readCounts = ValueNotifier(0);
   ValueNotifier<int> notiCounts = ValueNotifier(0);
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
-  // final ValueNotifier<bool> myLike = ValueNotifier(false);
+  final ValueNotifier<bool> ediable = ValueNotifier(false);
+
   Future<void> createPost() async {
     if (state is CreateLoadingState) return;
     emit(const CreateLoadingState());
@@ -198,6 +199,29 @@ class CreateCubit extends Cubit<CreateState> {
 
   Future<void> deleteComment(String commentId) async {
     await _db.collection("comments").doc(commentId).delete();
+  }
+
+  String updateBody = "";
+  String commentId = "";
+  Future<void> updateComment() async {
+    await _db
+        .collection("comments")
+        .doc(commentId)
+        .update({"body": commentController.text});
+  }
+
+  Future<void> deletePost(String postId) async {
+    await _db.collection("posts").doc(postId).delete();
+    var data = await _db.collection("notification").get();
+    var notis = data.docs;
+    for (var element in notis) {
+      var postedId = element["post_id"].toString();
+
+      if (postedId == postId) {
+        await _db.collection("notification").doc(element['id']).delete();
+        log("DELETED NOTIS${element['id']} ");
+      }
+    }
   }
 
   Future<void> likeAction(String postId) async {

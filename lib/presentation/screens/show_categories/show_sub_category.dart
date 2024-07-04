@@ -98,14 +98,14 @@ class SearchSubCategory extends StatelessWidget {
                           StarlightUtils.pop(result: subCategories[i].name);
                         },
                         title: Text(subCategories[i].name),
-                        trailing: IconButton(
-                            onPressed: () async {
-                              // await Injection<FirebaseFirestore>()
-                              //     .collection("subCategories")
-                              //     .doc(subCategories[i].id)
-                              //     .delete();
-                            },
-                            icon: const Icon(Icons.delete_outlined)),
+                        // trailing: IconButton(
+                        //     onPressed: () async {
+                        //       // await Injection<FirebaseFirestore>()
+                        //       //     .collection("subCategories")
+                        //       //     .doc(subCategories[i].id)
+                        //       //     .delete();
+                        //     },
+                        //     icon: const Icon(Icons.delete_outlined)),
                       ),
                     );
                   }),

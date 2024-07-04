@@ -144,7 +144,7 @@ class LoginScreen extends StatelessWidget {
                             const Text("New User?"),
                             TextButton(
                                 onPressed: () {
-                                  StarlightUtils.pushNamed(
+                                  StarlightUtils.pushReplacementNamed(
                                       RouteNames.registerScreen);
                                 },
                                 child: const Text("Sign Up"))
