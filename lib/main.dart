@@ -12,6 +12,8 @@ import 'presentation/routes/route_import.dart';
 
 void main() async {
   await setup();
+  // await LikeRepository.init();
+
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en', 'US'), Locale('my', 'MM')],

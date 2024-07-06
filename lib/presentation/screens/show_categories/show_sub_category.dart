@@ -49,9 +49,9 @@ class SearchSubCategory extends StatelessWidget {
               for (var element in snapshot.data!.docs) {
                 user = UserModel.fromJson(element);
               }
-              if (user!.role == "admin") {
-                return const SizedBox();
-              }
+              // if (user!.role != "admin") {
+              //   return const SizedBox();
+              // }
               return FloatingActionButton(
                 onPressed: () {
                   StarlightUtils.pushNamed(RouteNames.createSubCategories,
@@ -100,10 +100,10 @@ class SearchSubCategory extends StatelessWidget {
                         title: Text(subCategories[i].name),
                         // trailing: IconButton(
                         //     onPressed: () async {
-                        //       // await Injection<FirebaseFirestore>()
-                        //       //     .collection("subCategories")
-                        //       //     .doc(subCategories[i].id)
-                        //       //     .delete();
+                        //       await Injection<FirebaseFirestore>()
+                        //           .collection("subCategories")
+                        //           .doc(subCategories[i].id)
+                        //           .delete();
                         //     },
                         //     icon: const Icon(Icons.delete_outlined)),
                       ),

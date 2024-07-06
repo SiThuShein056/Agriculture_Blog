@@ -21,73 +21,114 @@ class ShowPost extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              showSearch(context: context, delegate: SearchPost());
+            onPressed: () async {
+              // showSearch(context: context, delegate: SearchPost());
+              await showDialog(
+                  context: context,
+                  builder: (context) => Center(
+                        child: AlertDialog(
+                          elevation: 0.01,
+                          title: const Text("Select Action"),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextButton.icon(
+                                  onPressed: () {
+                                    StarlightUtils.pop();
+
+                                    showSearch(
+                                        context: context,
+                                        delegate: SearchUser());
+                                  },
+                                  label: const Text("Search User"),
+                                  icon: const Icon(Icons.people)),
+                              TextButton.icon(
+                                  onPressed: () {
+                                    StarlightUtils.pop();
+
+                                    showSearch(
+                                        context: context,
+                                        delegate: SearchPost());
+                                  },
+                                  label: const Text("Search Post"),
+                                  icon: const Icon(Icons.post_add_outlined)),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  StarlightUtils.pop();
+                                },
+                                child: const Text("Close"))
+                          ],
+                        ),
+                      ));
             },
             icon: const Icon(Icons.search),
           ),
-          StreamBuilder<List<NotificationModel>>(
-              stream: FirebaseStoreDb().notis,
-              builder: (_, snap) {
-                if (snap.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CupertinoActivityIndicator(),
-                  );
-                }
-                if (snap.hasError) {
-                  return const SizedBox();
-                }
-                if (snap.data == null) {
-                  return const Center(
-                    child: Text("No Data"),
-                  );
-                }
-                List<NotificationModel> notis = snap.data!.toList();
-                log("local length${createBloc.readCounts.value}");
-                log("Globle length${createBloc.notiCounts.value}");
-                log("noti length${notis.length}");
-                log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-                // if (createBloc.readCounts.value == 0 &&
-                //     createBloc.notiCounts.value == notis.length) {
-                //   createBloc.readCounts.value = 0;
-                // } else
-                if (createBloc.notiCounts.value != notis.length) {
-                  createBloc.notiCounts.value = notis.length;
-                  createBloc.readCounts.value += 1;
-                } else {
-                  createBloc.notiCounts.value = createBloc.notiCounts.value;
-                  createBloc.readCounts.value = createBloc.readCounts.value;
-                }
-                log("local length${createBloc.readCounts.value}");
-                log("Globle length${createBloc.notiCounts.value}");
-                log("noti length${notis.length}");
-                log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+          // StreamBuilder<List<NotificationModel>>(
+          //     stream: FirebaseStoreDb().notis,
+          //     builder: (_, snap) {
+          //       if (snap.connectionState == ConnectionState.waiting) {
+          //         return const Center(
+          //           child: CupertinoActivityIndicator(),
+          //         );
+          //       }
+          //       if (snap.hasError) {
+          //         return const SizedBox();
+          //       }
+          //       if (snap.data == null) {
+          //         return const Center(
+          //           child: Text("No Data"),
+          //         );
+          //       }
+          //       List<NotificationModel> notis = snap.data!.toList();
+          //       log("local length${createBloc.readCounts.value}");
+          //       log("Globle length${createBloc.notiCounts.value}");
+          //       log("noti length${notis.length}");
+          //       log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+          //       // if (createBloc.readCounts.value == 0 &&
+          //       //     createBloc.notiCounts.value == notis.length) {
+          //       //   createBloc.readCounts.value = 0;
+          //       // } else
+          //       if (createBloc.notiCounts.value != notis.length) {
+          //         createBloc.notiCounts.value = notis.length;
+          //         createBloc.readCounts.value += 1;
+          //       } else {
+          //         createBloc.notiCounts.value = createBloc.notiCounts.value;
+          //         createBloc.readCounts.value = createBloc.readCounts.value;
+          //       }
+          //       log("local length${createBloc.readCounts.value}");
+          //       log("Globle length${createBloc.notiCounts.value}");
+          //       log("noti length${notis.length}");
+          //       log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          StarlightUtils.pushNamed(RouteNames.noti)
-                              .then((onValue) {
-                            createBloc.readCounts.value = 0;
-                            // log("local count$readCounts");
-                          });
-                        },
-                        icon: const Icon(Icons.notifications_outlined),
-                      ),
-                      ValueListenableBuilder(
-                          valueListenable: createBloc.readCounts,
-                          builder: (_, v, s) {
-                            return createBloc.readCounts.value == 0
-                                ? const SizedBox()
-                                : Text(createBloc.readCounts.value.toString());
-                          })
-                    ],
-                  ),
-                );
-              }),
+          //       return Padding(
+          //         padding: const EdgeInsets.all(8.0),
+          //         child: Row(
+          //           children: [
+          //             IconButton(
+          //               onPressed: () {
+          //                 StarlightUtils.pushNamed(RouteNames.noti)
+          //                     .then((onValue) {
+          //                   createBloc.readCounts.value = 0;
+          //                   // log("local count$readCounts");
+          //                 });
+          //               },
+          //               icon: const Icon(Icons.notifications_outlined),
+          //             ),
+          //             ValueListenableBuilder(
+          //                 valueListenable: createBloc.readCounts,
+          //                 builder: (_, v, s) {
+          //                   return createBloc.readCounts.value == 0
+          //                       ? const SizedBox()
+          //                       : Text(createBloc.readCounts.value.toString());
+          //                 })
+          //           ],
+          //         ),
+          //       );
+          //     }),
         ],
       ),
       body: StreamBuilder<List<PostModel>>(
@@ -139,7 +180,7 @@ class ShowPost extends StatelessWidget {
                               user = UserModel.fromJson(element);
                             }
                             if (user == null) {
-                              return const Text("No User");
+                              return const Text("No lkhjhjUser");
                             }
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,6 +240,22 @@ class ShowPost extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
+                                if (posts[i].phone == null) const SizedBox(),
+                                if (posts[i].phone != null)
+                                  InkWell(
+                                      onTap: () {
+                                        createBloc
+                                            .callNumber("${posts[i].phone}");
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 3.0),
+                                        child: Text(
+                                          "Phone Number: ${posts[i].phone}",
+                                          style: const TextStyle(
+                                              color: Colors.blue),
+                                        ),
+                                      )),
                                 GestureDetector(
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -238,92 +295,29 @@ class ShowPost extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      StreamBuilder(
-                                          stream: FirebaseStoreDb()
-                                              .likes(posts[i].id),
-                                          builder: (context, likeSnap) {
-                                            if (likeSnap.connectionState ==
-                                                ConnectionState.waiting) {
-                                              return const Center(
-                                                  child:
-                                                      CupertinoActivityIndicator());
-                                            }
-                                            if (likeSnap.data == null) {
-                                              return const Center(
-                                                child: Text("No Data"),
-                                              );
-                                            }
-                                            List<LikeModel> likes =
-                                                likeSnap.data!.toList();
-                                            log(likes.toString());
-                                            return likes.isEmpty
-                                                ? PostActionButton(
-                                                    onTap: () {
-                                                      createBloc.likeAction(
-                                                          posts[i].id);
-                                                    },
-                                                    icon:
-                                                        Icons.thumb_up_outlined,
-                                                    label: "Likes",
-                                                  )
-                                                : likes[0].userId ==
-                                                        createBloc.auth
-                                                            .currentUser!.uid
-                                                    ? PostActionButton(
-                                                        onTap: () {
-                                                          createBloc.likeAction(
-                                                              posts[i].id);
-                                                        },
-                                                        color: Colors.blue,
-                                                        icon: Icons
-                                                            .thumb_up_rounded,
-                                                        label:
-                                                            "Liked ${likes.length}",
-                                                      )
-                                                    : PostActionButton(
-                                                        onTap: () {
-                                                          createBloc.likeAction(
-                                                              posts[i].id);
-                                                        },
-                                                        icon: Icons
-                                                            .thumb_up_outlined,
-                                                        label:
-                                                            "Likes ${likes.length}",
-                                                      );
-                                            // return ValueListenableBuilder(
-                                            //     valueListenable:
-                                            //         createBloc.myLike,
-                                            //     builder: (_, v, child) {
-                                            //       return PostActionButton(
-                                            //         onTap: () {
-                                            //           createBloc.likeAction(
-                                            //               posts[i].id);
-                                            //         },
-                                            //         color: v
-                                            //             ? Colors.blue
-                                            //             : Colors.black,
-                                            //         icon:
-                                            //             Icons.thumb_up_outlined,
-                                            //         label: likes.isEmpty
-                                            //             ? "Likes"
-                                            //             : "Likes ${likes.length}",
-                                            //       );
-                                            //     });
-                                          }),
+                                      LikePart(
+                                        postId: posts[i].id,
+                                        createCubit: createBloc,
+                                      ),
                                       CommentPart(
                                           postsId: posts[i].id,
                                           createBloc: createBloc),
-                                      PostActionButton(
-                                        icon: Icons.add_chart_outlined,
-                                        label: "Chat",
-                                        onTap: () {
-                                          StarlightUtils.pushNamed(
-                                              RouteNames.singleChat,
-                                              arguments:
-                                                  user?.name.toString() ??
-                                                      "NA");
-                                        },
-                                      ),
+                                      user.id !=
+                                              Injection<AuthService>()
+                                                  .currentUser!
+                                                  .uid
+                                          ? PostActionButton(
+                                              icon: Icons.add_chart_outlined,
+                                              label: "Chat",
+                                              onTap: () {
+                                                StarlightUtils.pushNamed(
+                                                    RouteNames.singleChat,
+                                                    arguments:
+                                                        user?.name.toString() ??
+                                                            "NA");
+                                              },
+                                            )
+                                          : const Text("This's Me"),
                                     ],
                                   ),
                                 )
@@ -334,40 +328,6 @@ class ShowPost extends StatelessWidget {
                   );
                 });
           }),
-    );
-  }
-}
-
-class CircleProfile extends StatelessWidget {
-  final String name;
-  final double radius;
-  const CircleProfile({
-    super.key,
-    // this.url,
-    this.name = "A",
-    this.radius = 17,
-  })
-  // : assert((name == null && (url != null || url != "")) ||
-  //           (name != null && (url == null || url == "")))
-  ;
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: radius,
-      // backgroundImage: (url != null || url != "") ? NetworkImage(url!) : null,
-      child:
-          // name == null
-          //     ? const SizedBox()
-          //     :
-          Text(
-        // name ?? "NA",
-        name,
-        style: const TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
     );
   }
 }

@@ -10,7 +10,10 @@ class RegisterBloc extends Bloc<RegisterBaseEvent, RegisterBaseState> {
       emit(const RegisterLoadingState());
 
       final result = await _auth.register(
-          emailContrller.text, confirmPasswordController.text);
+        emailContrller.text,
+        confirmPasswordController.text,
+        nameController.text,
+      );
 
       if (result.hasError) {
         return emit(RegisterFailState(error: result.error!.message.toString()));
@@ -23,6 +26,7 @@ class RegisterBloc extends Bloc<RegisterBaseEvent, RegisterBaseState> {
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
   final TextEditingController emailContrller = TextEditingController(),
       passwordController = TextEditingController(),
+      nameController = TextEditingController(),
       confirmPasswordController = TextEditingController();
 
   final FocusNode emailFocus = FocusNode(),
@@ -44,6 +48,7 @@ class RegisterBloc extends Bloc<RegisterBaseEvent, RegisterBaseState> {
     emailContrller.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
+    nameController.dispose();
 
     emailFocus.dispose();
     passWordFocus.dispose();

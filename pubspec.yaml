@@ -65,6 +65,7 @@ dependencies:
     git:
       url: https://github.com/YeMyoAung/starlight_utils.git
   firebase_app_check: ^0.2.1+8
+  flutter_phone_direct_caller: ^2.1.1
   animated_toggle_switch: ^0.8.2
   dropdown_button2: ^2.3.9
   salomon_bottom_bar: ^3.3.2

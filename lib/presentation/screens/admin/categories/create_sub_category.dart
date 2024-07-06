@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blog_app/presentation/blocs/create_post_bloc/post_create_cubit.dart';
 import 'package:blog_app/presentation/blocs/create_post_bloc/post_create_state.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
@@ -27,6 +29,7 @@ class CreateSubCategory extends StatelessWidget {
                 child: CustomOutlinedButton(
                   function: () async {
                     postCreateBloc.createSubCategory(id);
+                    log("message");
                   },
                   lable: "Create",
                   icon: Icons.post_add_outlined,
@@ -37,21 +40,26 @@ class CreateSubCategory extends StatelessWidget {
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: FormBox(
-              width: context.width,
-              height: context.height * .1,
-              child: TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) return "";
-                  return null;
-                },
-
-                // autovalidateMode:
-                //     AutovalidateMode.onUserInteraction,
-                controller: postCreateBloc.categoryController,
-                decoration: InputDecoration(
-                  hintText: "Enter SubCategory",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              padding: const EdgeInsets.all(0),
+              height: MediaQuery.of(context).size.height * .1,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, top: 15, right: 8),
+                child: Form(
+                  key: postCreateBloc.formKey,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) return "";
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: postCreateBloc.categoryController,
+                    decoration: InputDecoration(
+                      hintText: "Enter SubCategory",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -83,6 +91,7 @@ class CreateSubCategory extends StatelessWidget {
             StarlightUtils.snackbar(const SnackBar(
               content: Text("Success Create"),
             ));
+            StarlightUtils.pop();
           }
         }),
       ],

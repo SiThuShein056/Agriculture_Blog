@@ -6,6 +6,8 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String? userId = ModalRoute.of(context)!.settings.arguments as String?;
+    final createCubit = context.read<CreateCubit>();
+
     log("User Id is $userId");
     return Scaffold(
       appBar: AppBar(
@@ -146,7 +148,7 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 StreamBuilder<List<PostModel>>(
-                    stream: FirebaseStoreDb().myPosts,
+                    stream: FirebaseStoreDb().profilePosts(user.id),
                     builder: (context, snap) {
                       if (snap.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -271,110 +273,32 @@ class ProfileScreen extends StatelessWidget {
                                         height: 40,
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                              MainAxisAlignment.spaceAround,
                                           children: [
-                                            // const LikeButton(),
-                                            PostActionButton(
-                                              onTap: () {
-                                                showModalBottomSheet(
-                                                  context: context,
-                                                  builder: (_) => Container(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 10),
-                                                    child: Column(
-                                                      children: [
-                                                        /////အတုံးလေးလုပ်တာ//////
-                                                        Container(
-                                                          width: 100,
-                                                          height: 8,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: const Color
-                                                                .fromRGBO(188,
-                                                                188, 188, 0.4),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        8),
-                                                          ),
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                                  bottom: 20),
-                                                        ),
-                                                        Expanded(
-                                                          child: ListView
-                                                              .separated(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .only(
-                                                                    bottom: 20,
-                                                                    left: 20,
-                                                                    right: 20),
-                                                            separatorBuilder: (_,
-                                                                    __) =>
-                                                                const Divider(),
-                                                            // itemCount: post.comments.length,
-                                                            itemCount: 12,
-                                                            itemBuilder:
-                                                                (_, i) {
-                                                              // final comment =
-                                                              //     post.comments[i];
-                                                              return const Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      CircleProfile(
-                                                                        // name: comment
-                                                                        //     .name[0],
-                                                                        name:
-                                                                            "A",
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            10,
-                                                                      ),
-                                                                      // Text(comment.email),
-                                                                      Text(
-                                                                          "hhtz12450@gmail.com")
-                                                                    ],
-                                                                  ),
-                                                                  // Text(comment.name),
-                                                                  // Text(comment.body),
-                                                                  SizedBox(
-                                                                      height:
-                                                                          5),
-                                                                  Text("Sithu"),
-                                                                  Text(
-                                                                      "ကျေး ဇူးများကြီးတင်ပါတယ်"),
-                                                                ],
-                                                              );
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                              icon: Icons.mode_comment_outlined,
-                                              // label: "Comment ${post.comments.length}",
-                                              label: "Comments",
-                                            ),
-                                            PostActionButton(
-                                              icon: Icons.add_chart_outlined,
-                                              label: "Chat",
-                                              onTap: () {
-                                                StarlightUtils.pushNamed(
-                                                    RouteNames.singleChat,
-                                                    arguments:
-                                                        user!.name.toString());
-                                              },
-                                            ),
+                                            LikePart(
+                                                postId: myPosts[index].id,
+                                                createCubit: createCubit),
+                                            CommentPart(
+                                                postsId: myPosts[index].id,
+                                                createBloc: createCubit),
+                                            (userId !=
+                                                        Injection<AuthService>()
+                                                            .currentUser!
+                                                            .uid &&
+                                                    userId != null)
+                                                ? PostActionButton(
+                                                    icon: Icons
+                                                        .add_chart_outlined,
+                                                    label: "Chat",
+                                                    onTap: () {
+                                                      StarlightUtils.pushNamed(
+                                                          RouteNames.singleChat,
+                                                          arguments: user?.name
+                                                                  .toString() ??
+                                                              "NA");
+                                                    },
+                                                  )
+                                                : const Text("This's Me"),
                                           ],
                                         ),
                                       )

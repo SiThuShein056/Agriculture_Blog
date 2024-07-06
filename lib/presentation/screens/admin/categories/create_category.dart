@@ -24,7 +24,7 @@ class CreateCategory extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomOutlinedButton(
-                  function: () async {
+                  function: () {
                     postCreateBloc.createCategory();
                   },
                   lable: "Create",
@@ -36,21 +36,27 @@ class CreateCategory extends StatelessWidget {
           body: Padding(
             padding: const EdgeInsets.all(8.0),
             child: FormBox(
-              width: context.width,
-              height: context.height * .1,
-              child: TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) return "";
-                  return null;
-                },
-
-                // autovalidateMode:
-                //     AutovalidateMode.onUserInteraction,
-                controller: postCreateBloc.categoryController,
-                decoration: InputDecoration(
-                  hintText: "Enter Category",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
+              padding: const EdgeInsets.all(0),
+              height: MediaQuery.of(context).size.height * .1,
+              width: MediaQuery.of(context).size.width,
+              // alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, top: 15, right: 8),
+                child: Form(
+                  key: postCreateBloc.formKey,
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) return "";
+                      return null;
+                    },
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    controller: postCreateBloc.categoryController,
+                    decoration: InputDecoration(
+                      hintText: "Enter Category",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                   ),
                 ),
               ),

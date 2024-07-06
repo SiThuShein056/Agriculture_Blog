@@ -204,7 +204,10 @@ Route? router(RouteSettings settings) {
     case RouteNames.profileScreen:
       return _protectedRoute(
         incomingRoute,
-        const ProfileScreen(),
+        BlocProvider<CreateCubit>(
+          create: (_) => CreateCubit(),
+          child: const ProfileScreen(),
+        ),
         settings,
       );
     case RouteNames.adminDashBoard:
@@ -231,7 +234,7 @@ Route? router(RouteSettings settings) {
           providers: [
             BlocProvider.value(value: value),
           ],
-          child: const CreatePost(),
+          child: CreatePost(),
         ),
         settings,
       );

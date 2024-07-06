@@ -46,7 +46,8 @@ class AuthService {
     }
   }
 
-  Future<Result> register(String email, String password) async {
+  Future<Result> register(
+      String email, String password, String userName) async {
     return _try(() async {
       final validate = _isValid(email, password);
       if (validate != null) {
@@ -55,13 +56,15 @@ class AuthService {
 
       final UserCredential credential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      await displayNameUpdate(userName);
       await FirebaseStoreDb().createUser(
         id: _auth.currentUser!.uid,
-        name: _auth.currentUser?.displayName.toString() ??
-            _auth.currentUser!.email![0],
+        name: _auth.currentUser!.displayName!,
         email: _auth.currentUser!.email.toString(),
         profileUrl: _auth.currentUser?.photoURL ?? "",
       );
+
       return Result(data: credential.user);
     });
   }
@@ -108,13 +111,6 @@ class AuthService {
 
     return Result(data: credential.user);
   }
-
-  // Future<Result> forgetPassword(String email) {
-  //   return _try(() async {
-  //     await _auth.sendPasswordResetEmail(email: email);
-  //     return const Result();
-  //   });
-  // }
 
   Future<Result> signOut() {
     return _try(() async {

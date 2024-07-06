@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
@@ -25,6 +26,7 @@ class CreateCubit extends Cubit<CreateState> {
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
       commentController = TextEditingController(),
+      phoneController = TextEditingController(),
       descriptionController = TextEditingController();
 
   final FocusNode titleFocusNode = FocusNode(),
@@ -32,11 +34,14 @@ class CreateCubit extends Cubit<CreateState> {
   String? imageUrl;
   ValueNotifier<int> readCounts = ValueNotifier(0);
   ValueNotifier<int> notiCounts = ValueNotifier(0);
+  ValueNotifier<String> privacy = ValueNotifier("public");
+
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> ediable = ValueNotifier(false);
 
   Future<void> createPost() async {
-    if (state is CreateLoadingState) return;
+    if (state is CreateLoadingState ||
+        formKey?.currentState?.validate() != true) return;
     emit(const CreateLoadingState());
     try {
       final doc = _db.collection("posts").doc();
@@ -48,6 +53,8 @@ class CreateCubit extends Cubit<CreateState> {
         createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
         category: categoryController.text,
         image: imageUrl ?? "",
+        phone: phoneController.text,
+        privacy: privacy.value,
         description: descriptionController.text,
       );
       await doc.set(
@@ -65,6 +72,7 @@ class CreateCubit extends Cubit<CreateState> {
       notiCounts.value++;
       categoryController.text = "";
       descriptionController.text = "";
+      phoneController.text = "";
       imageUrl = "";
       emit(const CreateSuccessState());
     } on FirebaseException catch (e) {
@@ -75,7 +83,8 @@ class CreateCubit extends Cubit<CreateState> {
   }
 
   Future<void> createCategory() async {
-    if (state is CreateLoadingState) return;
+    if (state is CreateLoadingState ||
+        formKey?.currentState?.validate() != true) return;
     emit(const CreateLoadingState());
     try {
       final doc = _db.collection("categories").doc();
@@ -96,7 +105,8 @@ class CreateCubit extends Cubit<CreateState> {
   }
 
   Future<void> createSubCategory(String id) async {
-    if (state is CreateLoadingState) return;
+    if (state is CreateLoadingState ||
+        formKey?.currentState?.validate() != true) return;
     emit(const CreateLoadingState());
     try {
       final doc = _db.collection("subCategories").doc();
@@ -212,8 +222,8 @@ class CreateCubit extends Cubit<CreateState> {
 
   Future<void> deletePost(String postId) async {
     await _db.collection("posts").doc(postId).delete();
-    var data = await _db.collection("notification").get();
-    var notis = data.docs;
+    var notiData = await _db.collection("notification").get();
+    var notis = notiData.docs;
     for (var element in notis) {
       var postedId = element["post_id"].toString();
 
@@ -251,14 +261,12 @@ class CreateCubit extends Cubit<CreateState> {
       if (existUser) {
         log("ExistUser $likedId");
         await _db.collection("likes").doc(likedId).delete();
-        // myLike.value = false;
       } else {
         log("Not ExistUser");
 
         await doc.set(
           like.toJson(),
         );
-        // myLike.value = true;
       }
 
       emit(const CreateSuccessState());
@@ -267,6 +275,10 @@ class CreateCubit extends Cubit<CreateState> {
     } catch (e) {
       emit(CreateErrorState(e.toString()));
     }
+  }
+
+  callNumber(String number) async {
+    await FlutterPhoneDirectCaller.callNumber(number);
   }
 
   @override

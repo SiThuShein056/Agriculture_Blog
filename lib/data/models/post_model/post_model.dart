@@ -4,6 +4,8 @@ class PostModel {
   final String createdAt;
   final String category;
   final String image;
+  final String? phone;
+  final String privacy;
   final String description;
 
   PostModel({
@@ -12,6 +14,8 @@ class PostModel {
     required this.createdAt,
     required this.category,
     required this.image,
+    this.phone,
+    required this.privacy,
     required this.description,
   });
 
@@ -31,6 +35,8 @@ class PostModel {
         "createdAt": createdAt,
         "category": category,
         "image": image,
+        "phone": phone,
+        "post_type": privacy,
         "description": description,
       };
 
@@ -41,6 +47,8 @@ class PostModel {
       createdAt: data["createdAt"],
       category: data["category"],
       image: data["image"],
+      phone: data["phone"],
+      privacy: data["post_type"],
       description: data["description"],
     );
   }

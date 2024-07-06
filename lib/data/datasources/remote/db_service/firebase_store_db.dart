@@ -17,7 +17,7 @@ class FirebaseStoreDb {
   final AuthService _auth = Injection<AuthService>();
   final StreamController<List<PostModel>> _postStream =
       StreamController<List<PostModel>>.broadcast();
-  final StreamController<List<PostModel>> _myPostStream =
+  final StreamController<List<PostModel>> _profilePostStream =
       StreamController<List<PostModel>>.broadcast();
   final StreamController<List<PostModel>> _singlePostStream =
       StreamController<List<PostModel>>.broadcast();
@@ -29,6 +29,8 @@ class FirebaseStoreDb {
       StreamController<List<NotificationModel>>.broadcast();
   final StreamController<List<CommentModel>> _commentStream =
       StreamController<List<CommentModel>>.broadcast();
+  final StreamController<List<UserModel>> _userStream =
+      StreamController<List<UserModel>>.broadcast();
   final StreamController<List<LikeModel>> _likeStream =
       StreamController<List<LikeModel>>.broadcast();
 
@@ -96,40 +98,32 @@ class FirebaseStoreDb {
     log(exitUser.toString());
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllMyPosts() {
-    Stream<QuerySnapshot<Map<String, dynamic>>> docusSnapshot = _db
-        .collection("posts")
-        .where("user_id", isEqualTo: _auth.currentUser!.uid)
-        .snapshots();
-    return docusSnapshot;
-  }
-
-  final List<PostModel> _myPosts = [];
-  void myPostParser(event) {
+  final List<PostModel> _profilePosts = [];
+  void profilePostParser(event) {
     for (var i in event.docs) {
       var model = PostModel.fromJson(i.data());
-      if (!_myPosts.contains(model)) {
-        _myPosts.add(model);
+      if (!_profilePosts.contains(model)) {
+        _profilePosts.add(model);
       }
     }
-    _myPostStream.add(_myPosts);
+    _profilePostStream.add(_profilePosts);
   }
 
-  Stream<List<PostModel>> get myPosts {
+  Stream<List<PostModel>> profilePosts(String userId) {
     Future.delayed(
       const Duration(milliseconds: 200),
       () => _db
           .collection("posts")
-          .where("userId", isEqualTo: _auth.currentUser!.uid)
+          .where("userId", isEqualTo: userId)
           .orderBy(
             "createdAt",
             descending: true,
           )
           .snapshots()
-          .listen(myPostParser),
+          .listen(profilePostParser),
     );
 
-    return _myPostStream.stream;
+    return _profilePostStream.stream;
   }
 
   final List<PostModel> _posts = [];
@@ -149,7 +143,7 @@ class FirebaseStoreDb {
   void _postStreamSetup() {
     postsStream["data"] = _db
         .collection("posts")
-        // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
+        .where("post_type", isEqualTo: "public")
         .orderBy(
           "createdAt",
           descending: true,
@@ -182,6 +176,47 @@ class FirebaseStoreDb {
     _postStreamSetup();
     return _postStream.stream;
   }
+
+  //////////////////////////
+
+  final List<UserModel> _users = [];
+  void userParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = PostModel.fromJson(i.data());
+    //   if (!_posts.contains(model)) {
+    //     _posts.add(model);
+    //   }
+    // }
+    _users.clear();
+    _users.addAll(event.docs.map((e) => UserModel.fromJson(e.data())));
+    _userStream.add(_users);
+  }
+
+  Map<String, StreamSubscription> usersStream = {};
+  void _userStreamSetup() {
+    postsStream["data"] = _db
+        .collection("users")
+        // .where("post_type", isEqualTo: "public")
+        // .orderBy(
+        //   "createdAt",
+        //   descending: true,
+        // )
+        .snapshots()
+        .listen((e) {
+      return userParser(e);
+    });
+  }
+
+  Stream<List<UserModel>> get users {
+    var stream = usersStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      usersStream.remove("data");
+    }
+    _userStreamSetup();
+    return _userStream.stream;
+  }
+  /////////////////////////
 
   final List<CategoryModel> _categories = [];
   void categoryParser(event) {
@@ -426,7 +461,7 @@ class FirebaseStoreDb {
 
   dispose() {
     _postStream.close();
-    _myPostStream.close();
+    _profilePostStream.close();
     _singlePostStream.close();
     _categoryStream.close();
     _subCategoryStream.close();

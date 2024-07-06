@@ -31,7 +31,7 @@ class HomeScreen extends StatelessWidget {
               homeBloc: bloc,
               createBloc: postCreateBloc,
             ),
-            const CreatePost(),
+            CreatePost(),
             const ChatHome(),
             const ProfileScreen(),
           ][state.i];
