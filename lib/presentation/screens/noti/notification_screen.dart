@@ -1,5 +1,5 @@
 import 'package:blog_app/data/datasources/local/date_utils/my_date_util.dart';
-import 'package:blog_app/data/datasources/remote/db_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';

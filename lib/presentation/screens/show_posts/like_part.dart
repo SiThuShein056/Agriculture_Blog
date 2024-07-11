@@ -1,6 +1,6 @@
-import 'package:blog_app/data/datasources/remote/db_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
-import 'package:blog_app/presentation/blocs/create_post_bloc/post_create_cubit.dart';
+import 'package:blog_app/presentation/blocs/db_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

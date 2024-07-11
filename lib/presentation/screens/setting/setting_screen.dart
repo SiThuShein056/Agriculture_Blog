@@ -26,7 +26,7 @@ class SettingScreen extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () async {
-                await Injection<AuthService>().updatePickCoverPhoto();
+                await Injection<AuthService>().updatePickProfilePhoto();
               },
               child: Stack(
                 clipBehavior: Clip.none,
@@ -146,28 +146,28 @@ class SettingScreen extends StatelessWidget {
                         },
                       );
                     }),
-                // BlocBuilder<HomeBloc, HomeBaseState>(
-                //     buildWhen: (previous, current) =>
-                //         previous.user?.email != current.user?.email,
-                //     builder: (_, state) {
-                //       log("Mail BLOC BUILDER BUILD");
-                //       return ReuseListTileWidget(
-                //         icon: const Icon(Icons.email_outlined),
-                //         title: state.user?.email ?? "",
-                //         onpress: () {
-                //           StarlightUtils.pushNamed(RouteNames.mailChangeScreen,
-                //               arguments: bloc);
-                //         },
-                //       );
-                //     }),
-                ReuseListTileWidget(
-                  icon: const Icon(Icons.mail_outline),
-                  title: "Change Mail",
-                  onpress: () {
-                    StarlightUtils.pushNamed(RouteNames.mailChangeScreen,
-                        arguments: bloc);
-                  },
-                ),
+                BlocBuilder<HomeBloc, HomeBaseState>(
+                    buildWhen: (previous, current) =>
+                        previous.user?.email != current.user?.email,
+                    builder: (_, state) {
+                      log("Mail BLOC BUILDER BUILD");
+                      return ReuseListTileWidget(
+                        icon: const Icon(Icons.email_outlined),
+                        title: state.user?.email ?? "",
+                        onpress: () {
+                          StarlightUtils.pushNamed(RouteNames.mailChangeScreen,
+                              arguments: bloc);
+                        },
+                      );
+                    }),
+                // ReuseListTileWidget(
+                //   icon: const Icon(Icons.mail_outline),
+                //   title: "Change Mail",
+                //   onpress: () {
+                //     StarlightUtils.pushNamed(RouteNames.mailChangeScreen,
+                //         arguments: bloc);
+                //   },
+                // ),
                 ReuseListTileWidget(
                   icon: const Icon(Icons.lock_open_outlined),
                   title: "Change Password",

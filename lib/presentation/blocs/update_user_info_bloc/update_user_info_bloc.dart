@@ -54,7 +54,7 @@ class UpdateUserInfoBloc
       if (state is UpdateUserInfoLoadingState ||
           formKey?.currentState?.validate() != true) return;
       emit(UpdateUserInfoLoadingState());
-      final result = await _auth.updatePickCoverPhoto();
+      final result = await _auth.updatePickProfilePhoto();
       if (result.hasError) {
         emit(UpdateUserInfoFailState(
           result.error!.message.toString(),

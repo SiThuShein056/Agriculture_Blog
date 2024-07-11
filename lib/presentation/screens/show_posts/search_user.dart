@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:blog_app/data/datasources/remote/db_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -73,9 +73,20 @@ class SearchUser extends SearchDelegate {
               itemBuilder: (_, i) {
                 return ListTile(
                   onTap: () {
-                    StarlightUtils.pushNamed(RouteNames.postDetail,
-                        arguments: searchUser[i]);
+                    StarlightUtils.pushNamed(RouteNames.profileScreen,
+                        arguments: searchUser[i].id);
                   },
+                  leading: CircleAvatar(
+                    radius: 17,
+                    backgroundImage: (searchUser[i].profielUrl.isEmpty ||
+                            searchUser[i].profielUrl == '')
+                        ? null
+                        : NetworkImage(searchUser[i].profielUrl),
+                    child: (searchUser[i].profielUrl.isEmpty ||
+                            searchUser[i].profielUrl == '')
+                        ? Text(searchUser[i].name[0])
+                        : null,
+                  ),
                   title: Text(searchUser[i].name),
                   subtitle: Text(
                     searchUser[i].email,

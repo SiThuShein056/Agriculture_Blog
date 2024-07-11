@@ -16,6 +16,9 @@ class RouteNames {
       mailChangeScreen = "/mail-change-screen",
       settingScreen = "/setting-screen",
       updateUserScreen = "/update-user-screen",
+      updatePostScreen = "/update-post-screen",
+      updateCategoryScreen = "/update-category-screen",
+      updateSubCategoryScreen = "/update-sub-category-screen",
       profileScreen = "/profile-screen",
       createPostScreen = "/create-post-screen",
       postDetail = "/post-detail",
@@ -25,6 +28,10 @@ class RouteNames {
       adminDashBoard = "/admin-dash-board",
       noti = "/notification-screen",
       singleChat = "/single-chat",
+      readPosts = "/read-post",
+      readUsers = "/read-user",
+      readCategories = "/read-category",
+      readSubCategories = "/read-sub-category",
       subCategories = "/sub-categories";
 }
 
@@ -69,19 +76,14 @@ Route? router(RouteSettings settings) {
             create: (_) => HomeBloc(
               HomeInitialState(Injection<AuthService>().currentUser),
             ),
-            child: const SearchCategory(),
+            child: const ShowCategories(),
           ),
           settings);
     case RouteNames.subCategories:
       return _protectedRoute(
           incomingRoute,
-          BlocProvider(
-            create: (_) => HomeBloc(
-              HomeInitialState(Injection<AuthService>().currentUser),
-            ),
-            child: SearchSubCategory(
-              id: settings.arguments.toString(),
-            ),
+          ShowSubCategory(
+            id: settings.arguments.toString(),
           ),
           settings);
 
@@ -204,12 +206,80 @@ Route? router(RouteSettings settings) {
     case RouteNames.profileScreen:
       return _protectedRoute(
         incomingRoute,
-        BlocProvider<CreateCubit>(
-          create: (_) => CreateCubit(),
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => CreateCubit()),
+          ],
           child: const ProfileScreen(),
         ),
         settings,
       );
+    case RouteNames.updatePostScreen:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => UpdateDataCubit()),
+          ],
+          child: const UpdatePostScreen(),
+        ),
+        settings,
+      );
+    case RouteNames.updateCategoryScreen:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => UpdateDataCubit()),
+          ],
+          child: const UpdateCategoryScreen(),
+        ),
+        settings,
+      );
+    case RouteNames.updateSubCategoryScreen:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => UpdateDataCubit()),
+          ],
+          child: const UpdateSubCategoryScreen(),
+        ),
+        settings,
+      );
+    case RouteNames.readPosts:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => CreateCubit()),
+          ],
+          child: const ReadPost(),
+        ),
+        settings,
+      );
+    case RouteNames.readUsers:
+      return _protectedRoute(
+        incomingRoute,
+        const ReadUser(),
+        settings,
+      );
+    case RouteNames.readCategories:
+      return _protectedRoute(
+        incomingRoute,
+        const ReadCategory(),
+        settings,
+      );
+
+    case RouteNames.readSubCategories:
+      return _protectedRoute(
+        incomingRoute,
+        ReadSubCategory(
+          id: settings.arguments.toString(),
+        ),
+        settings,
+      );
+
     case RouteNames.adminDashBoard:
       return _protectedRoute(
         incomingRoute,
@@ -225,16 +295,17 @@ Route? router(RouteSettings settings) {
 
     case RouteNames.createPostScreen:
       final value = settings.arguments;
-      if (value is! CreateCubit) {
-        return _pageRoute(ErrorWidget("Post bloc is not found!!"), settings);
+      if (value is! PostModel) {
+        return _pageRoute(ErrorWidget("Post Model is not found!!"), settings);
       }
       return _protectedRoute(
         incomingRoute,
         MultiBlocProvider(
           providers: [
-            BlocProvider.value(value: value),
+            BlocProvider<UpdateDataCubit>(create: (_) => UpdateDataCubit()),
+            BlocProvider<CreateCubit>(create: (_) => CreateCubit()),
           ],
-          child: CreatePost(),
+          child: const CreatePost(),
         ),
         settings,
       );

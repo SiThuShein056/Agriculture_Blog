@@ -12,6 +12,14 @@ class CreateLoadingState extends CreateState {
   const CreateLoadingState();
 }
 
+class CoverPhotoPickingState extends CreateState {
+  const CoverPhotoPickingState();
+}
+
+class ProfilePhotoPickingState extends CreateState {
+  const ProfilePhotoPickingState();
+}
+
 class CreateSuccessState extends CreateState {
   const CreateSuccessState([super.url]);
 }

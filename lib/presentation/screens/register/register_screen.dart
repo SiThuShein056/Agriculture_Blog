@@ -54,7 +54,8 @@ class RegisterScreen extends StatelessWidget {
                         onEditingComplete:
                             registerBloc.passWordFocus.requestFocus,
                         validator: (value) {
-                          if (value!.isEmpty) return "Email is required";
+                          value = value ?? "";
+                          if (value.isEmpty) return "Email is required";
                           return value.isEmail ? null : "Invalid email";
                         },
                         decoration: const InputDecoration(
@@ -70,7 +71,8 @@ class RegisterScreen extends StatelessWidget {
                         // onEditingComplete:
                         //     registerBloc.passWordFocus.requestFocus,
                         validator: (value) {
-                          if (value!.isEmpty) return "Name is required";
+                          value = value ?? "";
+                          if (value.isEmpty) return "Name is required";
                           return null;
                         },
                         decoration: const InputDecoration(
@@ -90,7 +92,8 @@ class RegisterScreen extends StatelessWidget {
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value!.isEmpty) return "Password is required";
+                              value = value ?? "";
+                              if (value.isEmpty) return "Password is required";
                               return value.isStrongPassword(
                                 minLength: 6,
                                 // checkSpecailChar: true,
@@ -125,15 +128,17 @@ class RegisterScreen extends StatelessWidget {
                                   AutovalidateMode.onUserInteraction,
                               onEditingComplete: register,
                               validator: (value) {
-                                if (value!.isEmpty) {
+                                value = value ?? "";
+                                if (value.isEmpty) {
                                   return "Password is required";
                                 }
+
                                 final isStrongPassword = value.isStrongPassword(
                                   minLength: 6,
                                   // checkSpecailChar: false,
                                 );
 
-                                if (isStrongPassword == null) {
+                                if (isStrongPassword != null) {
                                   return isStrongPassword;
                                 }
                                 if (value !=

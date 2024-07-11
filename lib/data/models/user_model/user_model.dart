@@ -3,6 +3,7 @@ class UserModel {
   final String name;
   final String email;
   final String profielUrl;
+  final String coverUrl;
   final String role;
 
   UserModel({
@@ -10,6 +11,7 @@ class UserModel {
     required this.name,
     required this.email,
     required this.profielUrl,
+    required this.coverUrl,
     this.role = "user",
   });
 
@@ -28,6 +30,7 @@ class UserModel {
         "name": name,
         "email": email,
         "profileUrl": profielUrl,
+        "coverUrl": coverUrl,
         "role": role,
       };
 
@@ -37,6 +40,7 @@ class UserModel {
       name: data["name"],
       email: data["email"],
       profielUrl: data["profileUrl"],
+      coverUrl: data["coverUrl"],
       role: data["role"],
     );
   }

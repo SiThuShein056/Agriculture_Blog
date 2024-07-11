@@ -10,11 +10,19 @@ class AuthService {
   final StreamController<User?> _authStateController =
       StreamController.broadcast();
   Stream<User?> authState() => _authStateController.stream;
-
+  Timer? _timer;
   AuthService()
       : _auth = FirebaseAuth.instance,
         _googleSignIn = GoogleSignIn.standard() {
-    _streamSubscription = _auth.userChanges().listen((user) {
+    _auth.currentUser?.reload();
+
+    /// disitinct ka to nay yin maloke bu
+    _streamSubscription = _auth.userChanges().distinct().listen((user) async {
+      if (user == null) {
+        _timer?.cancel();
+        _timer = null;
+        log("[User is null]");
+      }
       _authStateController.sink.add(user);
       currentUser = user;
     });
@@ -31,7 +39,7 @@ class AuthService {
     return null;
   }
 
-  Future<Result> _try(Future<Result> Function() callback) async {
+  Future<Result> tried(Future<Result> Function() callback) async {
     try {
       final result = await callback();
       return result;
@@ -48,7 +56,7 @@ class AuthService {
 
   Future<Result> register(
       String email, String password, String userName) async {
-    return _try(() async {
+    return tried(() async {
       final validate = _isValid(email, password);
       if (validate != null) {
         return validate;
@@ -59,18 +67,18 @@ class AuthService {
 
       await displayNameUpdate(userName);
       await FirebaseStoreDb().createUser(
-        id: _auth.currentUser!.uid,
-        name: _auth.currentUser!.displayName!,
-        email: _auth.currentUser!.email.toString(),
-        profileUrl: _auth.currentUser?.photoURL ?? "",
-      );
+          id: _auth.currentUser!.uid,
+          name: _auth.currentUser!.displayName!,
+          email: _auth.currentUser!.email.toString(),
+          profileUrl: _auth.currentUser?.photoURL ?? "",
+          coverUrl: "");
 
       return Result(data: credential.user);
     });
   }
 
   Future<Result> login(String email, String password) async {
-    return _try(() async {
+    return tried(() async {
       final validate = _isValid(email, password);
       if (validate != null) {
         return validate;
@@ -83,7 +91,10 @@ class AuthService {
             _auth.currentUser!.email![0],
         email: _auth.currentUser!.email.toString(),
         profileUrl: _auth.currentUser?.photoURL ?? "",
+        coverUrl: "",
       );
+      await FirebaseStoreDb().checkUpdateMail(email);
+
       return Result(data: credential.user);
     });
   }
@@ -107,25 +118,26 @@ class AuthService {
           _auth.currentUser!.email![1],
       email: _auth.currentUser!.email.toString(),
       profileUrl: _auth.currentUser?.photoURL ?? "",
+      coverUrl: "",
     );
+
+    await _googleSignIn.signOut();
 
     return Result(data: credential.user);
   }
 
   Future<Result> signOut() {
-    return _try(() async {
+    return tried(() async {
       await _auth.signOut();
-      await _googleSignIn.signOut();
 
-      // await _streamSubscription?.cancel();
       return const Result();
     });
   }
 
   Future<Result> displayNameUpdate(String value) {
-    return _try(() async {
+    return tried(() async {
       await _auth.currentUser?.updateDisplayName(value);
-      await FirebaseStoreDb()
+      await DatabaseUpdateService()
           .updateUserData(id: _auth.currentUser!.uid, name: value);
       return Result(data: value);
     });
@@ -133,21 +145,57 @@ class AuthService {
 
   Future<Result> gmailUpdate(
       {required String newMail, required String password}) {
-    return _try(() async {
+    return tried(() async {
+      if (currentUser == null) {
+        return const Result(error: GeneralError("Please Login First"));
+      }
+      await currentUser!.reload();
+      if (!currentUser!.emailVerified) {
+        await currentUser!.sendEmailVerification();
+        return const Result(error: GeneralError("Please Verify Email"));
+      }
       var cred = EmailAuthProvider.credential(
-          email: _auth.currentUser!.email!, password: password);
-      await currentUser!.reauthenticateWithCredential(cred).then((value) async {
-        await currentUser!.verifyBeforeUpdateEmail(newMail).then((v) =>
-            FirebaseStoreDb()
-                .updateUserData(id: _auth.currentUser!.uid, email: newMail));
+        email: currentUser!.email!,
+        password: password,
+      );
+      final value = await currentUser!.reauthenticateWithCredential(cred);
+      await value.user!.verifyBeforeUpdateEmail(newMail);
+      await value.user!.reload();
+      _timer = Timer.periodic(const Duration(seconds: 5), (_) async {
+        log("[User reload]");
+        await _auth.currentUser!.reload();
       });
-      return const Result();
+      Future.delayed(const Duration(seconds: 10), () {
+        log("[Timer Cancel]");
+
+        _timer?.cancel();
+        _timer = null;
+      });
+      return const Result(error: GeneralError("OK"));
     });
   }
 
+  // void runUntilEmailVerified(String newEmail) {
+  //   Timer.periodic(const Duration(seconds: 5), (timer) async {
+  //     log("[runUntilEmailVerified] ${timer.tick}");
+  //     if (timer.tick > 60 * 30) {
+  //       timer.cancel();
+  //       return;
+  //     }
+
+  //     await currentUser!.reload();
+  //     if (currentUser!.email == newEmail) {
+  //       log("[database mail change]");
+  //       FirebaseStoreDb().updateUserData(
+  //           id: _auth.currentUser!.uid, email: currentUser!.email);
+  //       timer.cancel();
+  //     }
+  //   });
+  // }
+
   Future<Result> passwordUpdate(
       {required String oldPassword, required String newPassword}) {
-    return _try(() async {
+    return tried(() async {
       var cred = EmailAuthProvider.credential(
           email: _auth.currentUser!.email!, password: oldPassword);
 
@@ -159,8 +207,8 @@ class AuthService {
     });
   }
 
-  Future<Result> updatePickCoverPhoto() async {
-    return _try(() async {
+  Future<Result> updatePickProfilePhoto() async {
+    return tried(() async {
       final userChoice = await StarlightUtils.dialog(AlertDialog(
         title: const Text("Choose Method"),
         content: SizedBox(
@@ -201,14 +249,62 @@ class AuthService {
           .ref(uploaded.ref.fullPath)
           .getDownloadURL();
       log("image is $imageUrl");
-      await FirebaseStoreDb()
+      await DatabaseUpdateService()
           .updateUserData(id: currentUser!.uid, profileUrl: imageUrl);
       return Result(data: uploaded);
     });
   }
 
+  Future<Result> pickCoverPhoto() async {
+    return tried(() async {
+      final userChoice = await StarlightUtils.dialog(AlertDialog(
+        title: const Text("Choose Method"),
+        content: SizedBox(
+          height: 120,
+          child: Column(children: [
+            ListTile(
+              onTap: () {
+                StarlightUtils.pop(result: ImageSource.camera);
+              },
+              leading: const Icon(Icons.camera),
+              title: const Text("Camera"),
+            ),
+            ListTile(
+              onTap: () {
+                StarlightUtils.pop(result: ImageSource.gallery);
+              },
+              leading: const Icon(Icons.image),
+              title: const Text("Gallery"),
+            )
+          ]),
+        ),
+      ));
+      if (userChoice == null) {
+        return const Result(error: GeneralError("Not no choice"));
+      }
+      final XFile? image =
+          await Injection<ImagePicker>().pickImage(source: userChoice);
+      if (image == null) {
+        return const Result(error: GeneralError("Image is null"));
+      }
+      final point = Injection<FirebaseStorage>().ref(
+          "coverProfileImages/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
+      final uploaded = await point.putFile(image.path.file);
+
+      await _auth.currentUser?.updatePhotoURL(uploaded.ref.fullPath);
+
+      imageUrl = await Injection<FirebaseStorage>()
+          .ref(uploaded.ref.fullPath)
+          .getDownloadURL();
+      log("image is $imageUrl");
+      await DatabaseUpdateService()
+          .updateUserData(id: currentUser!.uid, coverUrl: imageUrl);
+      return Result(data: uploaded);
+    });
+  }
+
   Future<Result> setOtp(String email) {
-    return _try(() async {
+    return tried(() async {
       Injection<EmailOTP>().setConfig(
         otpType: OTPType.digitsOnly,
         otpLength: 6,
@@ -225,7 +321,7 @@ class AuthService {
   }
 
   Future<Result> verifyOtp(String value, String email) {
-    return _try(() async {
+    return tried(() async {
       if (await Injection<EmailOTP>().verifyOTP(otp: value.toString()) !=
           true) {
         return const Result(error: GeneralError("Invalid Otp"));

@@ -28,10 +28,9 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 bloc.drawerKey.currentState?.openDrawer();
               },
-              homeBloc: bloc,
               createBloc: postCreateBloc,
             ),
-            CreatePost(),
+            const CreatePost(),
             const ChatHome(),
             const ProfileScreen(),
           ][state.i];

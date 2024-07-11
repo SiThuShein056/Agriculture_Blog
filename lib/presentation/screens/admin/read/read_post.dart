@@ -1,129 +1,44 @@
-part of 'show_post_import.dart';
+import 'package:blog_app/data/models/user_model/user_model.dart';
+import 'package:blog_app/presentation/common_widgets/post_action_button.dart';
+import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:blog_app/presentation/screens/show_posts/search_post.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:starlight_utils/starlight_utils.dart';
 
-class ShowPost extends StatelessWidget {
-  final Function() onTap;
-  final CreateCubit createBloc;
-  const ShowPost({super.key, required this.onTap, required this.createBloc});
+import '../../../../data/datasources/local/date_utils/my_date_util.dart';
+import '../../../../data/datasources/remote/auth_services/authu_service_import.dart';
+import '../../../../data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import '../../../../data/models/post_model/post_model.dart';
+import '../../../../injection.dart';
+import '../../../blocs/db_crud_bloc/create_post_cubit/post_create_cubit.dart';
+import '../../show_posts/comment_part.dart';
+import '../../show_posts/like_part.dart';
+
+class ReadPost extends StatelessWidget {
+  const ReadPost({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var createBloc = context.read<CreateCubit>();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Agriculture Blog"),
+        title: const Text("Posts"),
         leading: IconButton(
-          onPressed: onTap,
-          icon: const Icon(Icons.menu),
+          onPressed: () {
+            StarlightUtils.pop();
+          },
+          icon: const Icon(Icons.chevron_left),
         ),
         actions: [
           IconButton(
             onPressed: () async {
-              // showSearch(context: context, delegate: SearchPost());
-              await showDialog(
-                  context: context,
-                  builder: (context) => Center(
-                        child: AlertDialog(
-                          elevation: 0.01,
-                          title: const Text("Select Action"),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextButton.icon(
-                                  onPressed: () {
-                                    StarlightUtils.pop();
-
-                                    showSearch(
-                                        context: context,
-                                        delegate: SearchUser());
-                                  },
-                                  label: const Text("Search User"),
-                                  icon: const Icon(Icons.people)),
-                              TextButton.icon(
-                                  onPressed: () {
-                                    StarlightUtils.pop();
-
-                                    showSearch(
-                                        context: context,
-                                        delegate: SearchPost());
-                                  },
-                                  label: const Text("Search Post"),
-                                  icon: const Icon(Icons.post_add_outlined)),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  StarlightUtils.pop();
-                                },
-                                child: const Text("Close"))
-                          ],
-                        ),
-                      ));
+              showSearch(context: context, delegate: SearchPost());
             },
             icon: const Icon(Icons.search),
           ),
-          // StreamBuilder<List<NotificationModel>>(
-          //     stream: FirebaseStoreDb().notis,
-          //     builder: (_, snap) {
-          //       if (snap.connectionState == ConnectionState.waiting) {
-          //         return const Center(
-          //           child: CupertinoActivityIndicator(),
-          //         );
-          //       }
-          //       if (snap.hasError) {
-          //         return const SizedBox();
-          //       }
-          //       if (snap.data == null) {
-          //         return const Center(
-          //           child: Text("No Data"),
-          //         );
-          //       }
-          //       List<NotificationModel> notis = snap.data!.toList();
-          //       log("local length${createBloc.readCounts.value}");
-          //       log("Globle length${createBloc.notiCounts.value}");
-          //       log("noti length${notis.length}");
-          //       log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-          //       // if (createBloc.readCounts.value == 0 &&
-          //       //     createBloc.notiCounts.value == notis.length) {
-          //       //   createBloc.readCounts.value = 0;
-          //       // } else
-          //       if (createBloc.notiCounts.value != notis.length) {
-          //         createBloc.notiCounts.value = notis.length;
-          //         createBloc.readCounts.value += 1;
-          //       } else {
-          //         createBloc.notiCounts.value = createBloc.notiCounts.value;
-          //         createBloc.readCounts.value = createBloc.readCounts.value;
-          //       }
-          //       log("local length${createBloc.readCounts.value}");
-          //       log("Globle length${createBloc.notiCounts.value}");
-          //       log("noti length${notis.length}");
-          //       log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-
-          //       return Padding(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: Row(
-          //           children: [
-          //             IconButton(
-          //               onPressed: () {
-          //                 StarlightUtils.pushNamed(RouteNames.noti)
-          //                     .then((onValue) {
-          //                   createBloc.readCounts.value = 0;
-          //                   // log("local count$readCounts");
-          //                 });
-          //               },
-          //               icon: const Icon(Icons.notifications_outlined),
-          //             ),
-          //             ValueListenableBuilder(
-          //                 valueListenable: createBloc.readCounts,
-          //                 builder: (_, v, s) {
-          //                   return createBloc.readCounts.value == 0
-          //                       ? const SizedBox()
-          //                       : Text(createBloc.readCounts.value.toString());
-          //                 })
-          //           ],
-          //         ),
-          //       );
-          //     }),
         ],
       ),
       body: StreamBuilder<List<PostModel>>(
@@ -217,13 +132,56 @@ class ShowPost extends StatelessWidget {
                                                 time: posts[i].createdAt)),
                                           ],
                                         ),
-                                        // const Spacer(),
-                                        // IconButton(
-                                        //     onPressed: () {
-                                        //       createBloc
-                                        //           .deletePost(posts[i].id);
-                                        //     },
-                                        //     icon: const Icon(Icons.delete))
+                                        const Spacer(),
+                                        IconButton(
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                                context: context,
+                                                builder: (_) {
+                                                  return Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    children: [
+                                                      ListTile(
+                                                        onTap: () {
+                                                          Injection<
+                                                                  FirebaseFirestore>()
+                                                              .collection(
+                                                                  "posts")
+                                                              .doc(posts[i].id)
+                                                              .delete()
+                                                              .then((_) {
+                                                            StarlightUtils
+                                                                .pop();
+                                                          });
+                                                        },
+                                                        title: const Text(
+                                                            "Delete"),
+                                                        trailing: const Icon(
+                                                            Icons.delete),
+                                                      ),
+                                                      ListTile(
+                                                        onTap: () {
+                                                          StarlightUtils.pushNamed(
+                                                              RouteNames
+                                                                  .updatePostScreen,
+                                                              arguments:
+                                                                  posts[i]);
+                                                        },
+                                                        title: const Text(
+                                                            "Update"),
+                                                        trailing: const Icon(
+                                                            Icons.update),
+                                                      )
+                                                    ],
+                                                  );
+                                                });
+                                          },
+                                          icon: const Icon(Icons.more_vert),
+                                        )
                                       ],
                                     )),
                                 Padding(

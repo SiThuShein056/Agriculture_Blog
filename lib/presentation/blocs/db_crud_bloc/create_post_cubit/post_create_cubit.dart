@@ -27,6 +27,7 @@ class CreateCubit extends Cubit<CreateState> {
       categoryController = TextEditingController(),
       commentController = TextEditingController(),
       phoneController = TextEditingController(),
+      privacyController = TextEditingController(),
       descriptionController = TextEditingController();
 
   final FocusNode titleFocusNode = FocusNode(),
@@ -34,14 +35,15 @@ class CreateCubit extends Cubit<CreateState> {
   String? imageUrl;
   ValueNotifier<int> readCounts = ValueNotifier(0);
   ValueNotifier<int> notiCounts = ValueNotifier(0);
-  ValueNotifier<String> privacy = ValueNotifier("public");
+  ValueNotifier<String> privacy = ValueNotifier("select");
 
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> ediable = ValueNotifier(false);
 
   Future<void> createPost() async {
     if (state is CreateLoadingState ||
-        formKey?.currentState?.validate() != true) return;
+        formKey?.currentState?.validate() != true ||
+        privacy.value == "select") return;
     emit(const CreateLoadingState());
     try {
       final doc = _db.collection("posts").doc();
@@ -80,6 +82,57 @@ class CreateCubit extends Cubit<CreateState> {
     } catch (e) {
       emit(CreateErrorState(e.toString()));
     }
+  }
+
+  Future<void> pickPostPhoto() async {
+    if (state is CreateLoadingState) return;
+    emit(const CreateLoadingState());
+
+    final userChoice = await StarlightUtils.dialog(AlertDialog(
+      title: const Text("Choose Method"),
+      content: SizedBox(
+        height: 120,
+        child: Column(children: [
+          ListTile(
+            onTap: () {
+              StarlightUtils.pop(result: ImageSource.camera);
+            },
+            leading: const Icon(Icons.camera),
+            title: const Text("Camera"),
+          ),
+          ListTile(
+            onTap: () {
+              StarlightUtils.pop(result: ImageSource.gallery);
+            },
+            leading: const Icon(Icons.image),
+            title: const Text("Gallery"),
+          )
+        ]),
+      ),
+    ));
+    if (userChoice == null) {
+      emit(const CreateErrorState("User choose is nill"));
+
+      return;
+    }
+    final XFile? image =
+        await Injection<ImagePicker>().pickImage(source: userChoice);
+    if (image == null) {
+      emit(const CreateErrorState("Xfile is nill"));
+
+      return;
+    }
+    final point = Injection<FirebaseStorage>().ref(
+        "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
+    final uploaded = await point.putFile(image.path.file);
+    //TODO
+
+    imageUrl = await Injection<FirebaseStorage>()
+        .ref(uploaded.ref.fullPath)
+        .getDownloadURL();
+
+    emit(CreateSuccessState(imageUrl));
+    return;
   }
 
   Future<void> createCategory() async {
@@ -125,60 +178,6 @@ class CreateCubit extends Cubit<CreateState> {
     } catch (e) {
       emit(CreateErrorState(e.toString()));
     }
-  }
-
-  Future<void> pickPostPhoto() async {
-    if (state is CreateLoadingState) return;
-    emit(const CreateLoadingState());
-
-    final userChoice = await StarlightUtils.dialog(AlertDialog(
-      title: const Text("Choose Method"),
-      content: SizedBox(
-        height: 120,
-        child: Column(children: [
-          ListTile(
-            onTap: () {
-              StarlightUtils.pop(result: ImageSource.camera);
-            },
-            leading: const Icon(Icons.camera),
-            title: const Text("Camera"),
-          ),
-          ListTile(
-            onTap: () {
-              StarlightUtils.pop(result: ImageSource.gallery);
-            },
-            leading: const Icon(Icons.image),
-            title: const Text("Gallery"),
-          )
-        ]),
-      ),
-    ));
-    if (userChoice == null) {
-      log("User choose is null");
-      emit(const CreateErrorState("User choose is nill"));
-
-      return;
-    }
-    final XFile? image =
-        await Injection<ImagePicker>().pickImage(source: userChoice);
-    if (image == null) {
-      log("Xfile  is null");
-      emit(const CreateErrorState("Xfile is nill"));
-
-      return;
-    }
-    final point = Injection<FirebaseStorage>().ref(
-        "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
-    final uploaded = await point.putFile(image.path.file);
-    //TODO
-
-    imageUrl = await Injection<FirebaseStorage>()
-        .ref(uploaded.ref.fullPath)
-        .getDownloadURL();
-    log("image is $imageUrl");
-
-    emit(CreateSuccessState(imageUrl));
-    return;
   }
 
   Future<void> createComment(String postId, String body) async {

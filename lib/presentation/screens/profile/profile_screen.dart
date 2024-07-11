@@ -49,54 +49,77 @@ class ProfileScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           InkWell(
-                              onTap: () {
-                                log("Select Cover Url");
-                              },
-                              child:
-                                  // CachedNetworkImage(
-                                  //     imageUrl: user.profielUrl,
-                                  //     height: 200,
-                                  //     width: MediaQuery.of(context).size.width,
-                                  //     fit: BoxFit.cover,
-                                  //   )
-                                  Card(
-                                child: CachedNetworkImage(
-                                  imageUrl: user.profielUrl,
-                                  imageBuilder: (context, imageProvider) =>
-                                      Container(
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.cover,
-                                        // colorFilter: const ColorFilter.mode(
-                                        //     Colors.red, BlendMode.colorBurn),
+                              onTap:
+                                  user.id != createCubit.auth.currentUser!.uid
+                                      ? null
+                                      : () {
+                                          createCubit.auth.pickCoverPhoto();
+                                          log("Select Cover Url");
+                                        },
+                              child: Card(
+                                child: user.coverUrl == ""
+                                    ? const Center(
+                                        child: Icon(Icons.person_2_outlined),
+                                      )
+                                    : CachedNetworkImage(
+                                        imageUrl: user.coverUrl,
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                        placeholder: (context, url) =>
+                                            const CircularProgressIndicator()
+                                                .centered(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.upload).centered(),
                                       ),
-                                    ),
-                                  ),
-                                  placeholder: (context, url) =>
-                                      const CircularProgressIndicator()
-                                          .centered(),
-                                  errorWidget: (context, url, error) =>
-                                      const Icon(Icons.upload).centered(),
-                                ),
                               )),
                           Positioned(
-                              left: 10,
-                              bottom: 0,
-                              child: InkWell(
-                                child: (user.profielUrl.isEmpty ||
-                                        user.profielUrl == "")
-                                    ? CircleAvatar(
-                                        radius: 60,
-                                        child:
-                                            const Icon(Icons.upload).centered(),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 60,
-                                        backgroundImage:
-                                            NetworkImage(user.profielUrl),
-                                      ),
-                              )),
+                            left: 10,
+                            bottom: 0,
+                            child: InkWell(
+                                onTap:
+                                    user.id != createCubit.auth.currentUser!.uid
+                                        ? null
+                                        : () {
+                                            log("Select Profile Url");
+                                            createCubit.auth
+                                                .updatePickProfilePhoto();
+                                          },
+                                child: CircleAvatar(
+                                  radius: 60,
+                                  child: user.profielUrl == ""
+                                      ? const Center(
+                                          child: Icon(Icons.upload),
+                                        )
+                                      : CachedNetworkImage(
+                                          imageUrl: user.profielUrl,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator()
+                                                  .centered(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.upload)
+                                                  .centered(),
+                                        ),
+                                )),
+                          ),
                         ],
                       ),
                     ),
@@ -170,6 +193,7 @@ class ProfileScreen extends StatelessWidget {
                           physics: const ClampingScrollPhysics(),
                           itemCount: myPosts.length,
                           itemBuilder: (_, index) {
+                            var phone = myPosts[index].phone;
                             return Card(
                               color: Colors.white,
                               shape: const RoundedRectangleBorder(
@@ -186,12 +210,8 @@ class ProfileScreen extends StatelessWidget {
                                         CrossAxisAlignment.start,
                                     children: [
                                       GestureDetector(
-                                          // onTap: onTap,
                                           child: Row(
                                         children: [
-                                          // CircleProfile(
-                                          //   name: user.profielUrl ?? user.name[0],
-                                          // ),
                                           CircleAvatar(
                                             radius: 17,
                                             backgroundImage: (user!
@@ -217,7 +237,64 @@ class ProfileScreen extends StatelessWidget {
                                                   time: myPosts[index]
                                                       .createdAt)),
                                             ],
-                                          )
+                                          ),
+                                          const Spacer(),
+                                          user.id ==
+                                                  createCubit
+                                                      .auth.currentUser!.uid
+                                              ? IconButton(
+                                                  onPressed: () async {
+                                                    await showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (_) {
+                                                          return Column(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              ListTile(
+                                                                onTap: () {
+                                                                  Injection<
+                                                                          FirebaseFirestore>()
+                                                                      .collection(
+                                                                          "posts")
+                                                                      .doc(myPosts[
+                                                                              index]
+                                                                          .id)
+                                                                      .delete();
+                                                                },
+                                                                title: const Text(
+                                                                    "Delete"),
+                                                                trailing:
+                                                                    const Icon(Icons
+                                                                        .delete),
+                                                              ),
+                                                              ListTile(
+                                                                onTap: () {
+                                                                  StarlightUtils.pushNamed(
+                                                                      RouteNames
+                                                                          .updatePostScreen,
+                                                                      arguments:
+                                                                          myPosts[
+                                                                              index]);
+                                                                },
+                                                                title: const Text(
+                                                                    "Update"),
+                                                                trailing:
+                                                                    const Icon(Icons
+                                                                        .update),
+                                                              )
+                                                            ],
+                                                          );
+                                                        });
+                                                  },
+                                                  icon: const Icon(
+                                                      Icons.more_vert),
+                                                )
+                                              : const SizedBox()
                                         ],
                                       )),
                                       Padding(
@@ -233,6 +310,22 @@ class ProfileScreen extends StatelessWidget {
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
+                                      if (phone == "") const SizedBox(),
+                                      if (phone != "")
+                                        InkWell(
+                                            onTap: () {
+                                              createCubit.callNumber("$phone");
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 3.0),
+                                              child: Text(
+                                                "Phone Number: ${myPosts[index].phone}",
+                                                style: const TextStyle(
+                                                    color: Colors.blue),
+                                              ),
+                                            )),
                                       GestureDetector(
                                         child: Padding(
                                           padding: const EdgeInsets.symmetric(

@@ -1,4 +1,6 @@
-class PostModel {
+import 'package:equatable/equatable.dart';
+
+class PostModel extends Equatable {
   final String id;
   final String userId;
   final String createdAt;
@@ -8,7 +10,7 @@ class PostModel {
   final String privacy;
   final String description;
 
-  PostModel({
+  const PostModel({
     required this.id,
     required this.userId,
     required this.createdAt,
@@ -18,16 +20,6 @@ class PostModel {
     required this.privacy,
     required this.description,
   });
-
-  @override
-  bool operator ==(covariant PostModel other) {
-    // TODO: implement ==
-    return other.id == id;
-  }
-
-  @override
-  // TODO: implement hashCode
-  int get hashCode => id.hashCode;
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -52,4 +44,8 @@ class PostModel {
       description: data["description"],
     );
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [id];
 }

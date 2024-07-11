@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:blog_app/data/datasources/remote/db_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -69,22 +69,28 @@ class SearchPost extends SearchDelegate {
               child: Text("ရှာ သော ပို့စ် မတွေ့ ပါ"),
             );
           }
-          return ListView.builder(
-              itemCount: searchPosts.length,
-              itemBuilder: (_, i) {
-                return ListTile(
-                  onTap: () {
-                    StarlightUtils.pushNamed(RouteNames.postDetail,
-                        arguments: searchPosts[i]);
-                  },
-                  title: Text(searchPosts[i].category),
-                  subtitle: Text(
-                    searchPosts[i].description,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                );
-              });
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView.separated(
+                itemCount: searchPosts.length,
+                separatorBuilder: (context, index) {
+                  return const Divider();
+                },
+                itemBuilder: (_, i) {
+                  return ListTile(
+                    onTap: () {
+                      StarlightUtils.pushNamed(RouteNames.postDetail,
+                          arguments: searchPosts[i]);
+                    },
+                    title: Text(searchPosts[i].category),
+                    subtitle: Text(
+                      searchPosts[i].description,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  );
+                }),
+          );
         });
   }
 }

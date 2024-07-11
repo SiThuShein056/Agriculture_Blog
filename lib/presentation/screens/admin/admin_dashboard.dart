@@ -27,16 +27,21 @@ class AdminDashboard extends StatelessWidget {
                 Expanded(
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * .25,
-                    child: Card(
-                      elevation: 3,
-                      shadowColor: const Color.fromARGB(255, 13, 146, 69)
-                          .withOpacity(0.5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.storage_outlined),
-                          const Text("Posts").centered(),
-                        ],
+                    child: InkWell(
+                      onTap: () {
+                        StarlightUtils.pushNamed(RouteNames.readPosts);
+                      },
+                      child: Card(
+                        elevation: 3,
+                        shadowColor: const Color.fromARGB(255, 13, 146, 69)
+                            .withOpacity(0.5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.storage_outlined),
+                            const Text("Posts").centered(),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -46,7 +51,7 @@ class AdminDashboard extends StatelessWidget {
                     height: MediaQuery.of(context).size.height * .25,
                     child: InkWell(
                       onTap: () {
-                        StarlightUtils.pushNamed(RouteNames.categories);
+                        StarlightUtils.pushNamed(RouteNames.readCategories);
                       },
                       child: Card(
                         elevation: 3,
@@ -67,16 +72,21 @@ class AdminDashboard extends StatelessWidget {
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * .25,
-              child: Card(
-                elevation: 3,
-                shadowColor:
-                    const Color.fromARGB(255, 13, 146, 69).withOpacity(0.5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.people_outline_outlined),
-                    const Text("Users").centered(),
-                  ],
+              child: InkWell(
+                onTap: () {
+                  StarlightUtils.pushNamed(RouteNames.readUsers);
+                },
+                child: Card(
+                  elevation: 3,
+                  shadowColor:
+                      const Color.fromARGB(255, 13, 146, 69).withOpacity(0.5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.people_outline_outlined),
+                      const Text("Users").centered(),
+                    ],
+                  ),
                 ),
               ),
             ),

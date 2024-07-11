@@ -49,24 +49,12 @@ class FirebaseStoreDb {
     return docusSnapshot;
   }
 
-  Future<void> updateUserData(
-      {required String id,
-      String? name,
-      String? email,
-      String? profileUrl}) async {
-    Map<String, dynamic> payload = {};
-    if (name != null) payload["name"] = name;
-    if (email != null) payload["email"] = email;
-    if (profileUrl != null) payload["profileUrl"] = profileUrl;
-
-    await _db.collection("users").doc(id).update(payload);
-  }
-
   Future<void> createUser({
     required String id,
     required String name,
     required String email,
     required String profileUrl,
+    required String coverUrl,
   }) async {
     var exitUser = false;
     final doc = FirebaseFirestore.instance
@@ -78,6 +66,7 @@ class FirebaseStoreDb {
       name: name,
       email: email,
       profielUrl: profileUrl,
+      coverUrl: coverUrl,
     );
 
     var data = await FirebaseFirestore.instance.collection("users").get();
@@ -98,42 +87,53 @@ class FirebaseStoreDb {
     log(exitUser.toString());
   }
 
-  final List<PostModel> _profilePosts = [];
-  void profilePostParser(event) {
-    for (var i in event.docs) {
-      var model = PostModel.fromJson(i.data());
-      if (!_profilePosts.contains(model)) {
-        _profilePosts.add(model);
+  Future<void> checkUpdateMail(String email) async {
+    var data = await FirebaseFirestore.instance.collection("users").get();
+    var userData = data.docs;
+    for (var element in userData) {
+      var id = element["id"].toString();
+      if (id == _auth.currentUser!.uid && element["email"] != email) {
+        await _db.collection("users").doc(id).update({"email": email});
       }
     }
+  }
+
+  ///PROFILE POSTS
+  final List<PostModel> _profilePosts = [];
+  void profilePostParser(QuerySnapshot event) {
+    _profilePosts.clear();
+    _profilePosts.addAll(event.docs.map((e) => PostModel.fromJson(e.data())));
     _profilePostStream.add(_profilePosts);
   }
 
-  Stream<List<PostModel>> profilePosts(String userId) {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("posts")
-          .where("userId", isEqualTo: userId)
-          .orderBy(
-            "createdAt",
-            descending: true,
-          )
-          .snapshots()
-          .listen(profilePostParser),
-    );
+  final Map<String, StreamSubscription> _profilePostsStream = {};
+  void _profilePostStreamSetup(String id) {
+    _profilePostsStream[id] = _db
+        .collection("posts")
+        .where("userId", isEqualTo: id)
+        .orderBy(
+          "createdAt",
+          descending: true,
+        )
+        .snapshots()
+        .listen((e) {
+      return profilePostParser(e);
+    });
+  }
 
+  Stream<List<PostModel>> profilePosts(String userId) {
+    var stream = _profilePostsStream[userId];
+    if (stream != null) {
+      stream.cancel();
+      _profilePostsStream.remove(userId);
+    }
+    _profilePostStreamSetup(userId);
     return _profilePostStream.stream;
   }
 
+  /// ALL POSTS
   final List<PostModel> _posts = [];
   void postParser(QuerySnapshot event) {
-    // for (var i in event.docs) {
-    //   var model = PostModel.fromJson(i.data());
-    //   if (!_posts.contains(model)) {
-    //     _posts.add(model);
-    //   }
-    // }
     _posts.clear();
     _posts.addAll(event.docs.map((e) => PostModel.fromJson(e.data())));
     _postStream.add(_posts);
@@ -155,19 +155,6 @@ class FirebaseStoreDb {
   }
 
   Stream<List<PostModel>> get posts {
-    // Future.delayed(
-    //   const Duration(milliseconds: 200),
-    //   () => _db
-    //       .collection("posts")
-    //       // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
-    //       .orderBy(
-    //         "createdAt",
-    //         descending: true,
-    //       )
-    //       .snapshots()
-    //       .listen(postParser),
-    // );
-
     var stream = postsStream["data"];
     if (stream != null) {
       stream.cancel();
@@ -177,16 +164,9 @@ class FirebaseStoreDb {
     return _postStream.stream;
   }
 
-  //////////////////////////
-
+  ///USERS
   final List<UserModel> _users = [];
   void userParser(QuerySnapshot event) {
-    // for (var i in event.docs) {
-    //   var model = PostModel.fromJson(i.data());
-    //   if (!_posts.contains(model)) {
-    //     _posts.add(model);
-    //   }
-    // }
     _users.clear();
     _users.addAll(event.docs.map((e) => UserModel.fromJson(e.data())));
     _userStream.add(_users);
@@ -216,88 +196,99 @@ class FirebaseStoreDb {
     _userStreamSetup();
     return _userStream.stream;
   }
-  /////////////////////////
 
+  ///CATEGORIES
   final List<CategoryModel> _categories = [];
-  void categoryParser(event) {
-    for (var i in event.docs) {
-      var model = CategoryModel.fromJson(i.data());
-      if (!_categories.contains(model)) {
-        _categories.add(model);
-      }
-    }
+  void categoryParser(QuerySnapshot event) {
+    _categories.clear();
+    _categories.addAll(event.docs.map((e) => CategoryModel.fromJson(e.data())));
     _categoryStream.add(_categories);
   }
 
-  Stream<List<CategoryModel>> get categories {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("categories")
-          // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
-          .snapshots()
-          .listen(categoryParser),
-    );
+  Map<String, StreamSubscription> categoriesStream = {};
+  void _categoryStreamSetup() {
+    categoriesStream["data"] = _db
+        .collection("categories")
+        // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
+        .snapshots()
+        .listen((e) {
+      return categoryParser(e);
+    });
+  }
 
+  Stream<List<CategoryModel>> get categories {
+    var stream = categoriesStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      categoriesStream.remove("data");
+    }
+    _categoryStreamSetup();
     return _categoryStream.stream;
   }
 
+  ///SUBCATEGORIES
   final List<SubCategoryModel> _subCategories = [];
-  void subCategoryParser(event) {
-    for (var i in event.docs) {
-      var model = SubCategoryModel.fromJson(i.data());
-      if (!_subCategories.contains(model)) {
-        _subCategories.add(model);
-      }
-    }
+  void subCategoryParser(QuerySnapshot event) {
+    _subCategories.clear();
+    _subCategories
+        .addAll(event.docs.map((e) => SubCategoryModel.fromJson(e.data())));
     _subCategoryStream.add(_subCategories);
   }
 
-  Stream<List<SubCategoryModel>> subcategories(String id) {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("subCategories")
-          .where("category_id", isEqualTo: id)
-          .snapshots()
-          .listen(subCategoryParser),
-    );
+  final Map<String, StreamSubscription> _subCategoriesStram = {};
+  void _subCategoryStreamSetup(String id) {
+    _subCategoriesStram[id] = _db
+        .collection("subCategories")
+        .where("category_id", isEqualTo: id)
+        .snapshots()
+        .listen((e) {
+      return subCategoryParser(e);
+    });
+  }
 
+  Stream<List<SubCategoryModel>> subcategories(String id) {
+    var stream = _subCategoriesStram[id];
+    if (stream != null) {
+      stream.cancel();
+      _subCategoriesStram.remove(id);
+    }
+    _subCategoryStreamSetup(id);
     return _subCategoryStream.stream;
   }
 
+  ///SINGLE POST
   final List<PostModel> _singlePosts = [];
-  void singlePostParser(event) {
-    for (var i in event.docs) {
-      var model = PostModel.fromJson(i.data());
-      if (!_singlePosts.contains(model)) {
-        _singlePosts.add(model);
-      }
-    }
+  void singlePostParser(QuerySnapshot event) {
+    _singlePosts.clear();
+    _singlePosts.addAll(event.docs.map((e) => PostModel.fromJson(e.data())));
     _singlePostStream.add(_singlePosts);
   }
 
+  final Map<String, StreamSubscription> _singlePostsStream = {};
+  void _singlePostStreamSetup(String id) {
+    _singlePostsStream[id] = _db
+        .collection("posts")
+        .where("id", isEqualTo: id)
+        .snapshots()
+        .listen((e) {
+      return singlePostParser(e);
+    });
+  }
+
   Stream<List<PostModel>> singlePosts(String id) {
-    Future.delayed(
-      const Duration(milliseconds: 200),
-      () => _db
-          .collection("posts")
-          .where("id", isEqualTo: id)
-          .snapshots()
-          .listen(singlePostParser),
-    );
+    var stream = _singlePostsStream[id];
+    if (stream != null) {
+      stream.cancel();
+      _singlePostsStream.remove(id);
+    }
+    _singlePostStreamSetup(id);
 
     return _singlePostStream.stream;
   }
 
+  ///NOTIFICATION
   final List<NotificationModel> _notis = [];
   void notiParser(QuerySnapshot event) {
-    // for (var i in event.docs) {
-    //   var model = NotificationModel.fromJson(i.data());
-    //   if (!_notis.contains(model)) {
-    //     _notis.add(model);
-    //   }
-    // }
     _notis.clear();
     _notis.addAll(event.docs.map((e) => NotificationModel.fromJson(e.data())));
     _notiStream.add(_notis);
@@ -317,10 +308,6 @@ class FirebaseStoreDb {
       stream.cancel();
       notisStream.remove("data");
     }
-    // Future.delayed(
-    //   const Duration(milliseconds: 200),
-    //   () => _db.collection("notification").snapshots().listen(notiParser),
-    // );
     notiStreamSetup();
     return _notiStream.stream;
   }
@@ -360,20 +347,6 @@ class FirebaseStoreDb {
     _likeStreamSetup(postId);
     return _likeStream.stream;
   }
-  // Stream<List<LikeModel>> likes(String postId) {
-  //   Future.delayed(
-  //       const Duration(milliseconds: 200),
-  //       () => _db
-  //           .collection("likes")
-  //           .where("post_id", isEqualTo: postId)
-  //           // .orderBy(
-  //           //   "created_at",
-  //           //   descending: false,
-  //           // )
-  //           .snapshots()
-  //           .listen(likeParser));
-  //   return _likeStream.stream;
-  // }
 
   ///COMMENTS
   final List<CommentModel> _comments = [];

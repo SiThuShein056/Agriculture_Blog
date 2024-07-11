@@ -1,0 +1,121 @@
+import 'package:blog_app/data/models/category_model/category_model.dart';
+import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_cubit.dart';
+import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_state.dart';
+import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
+import 'package:blog_app/presentation/common_widgets/form_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:starlight_utils/starlight_utils.dart';
+
+class UpdateCategoryScreen extends StatelessWidget {
+  const UpdateCategoryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    var bloc = context.read<UpdateDataCubit>();
+    var category = ModalRoute.of(context)!.settings.arguments as CategoryModel;
+    bloc.categoryController.text = bloc.categoryController.text.isEmpty
+        ? category.name
+        : bloc.categoryController.text;
+    return Stack(
+      children: [
+        Scaffold(
+            appBar: AppBar(
+              title: const Text("Update"),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CustomOutlinedButton(
+                    function: () {
+                      bloc.updateCategory(category.id);
+                      StarlightUtils.pop();
+                    },
+                    lable: "Update",
+                    icon: Icons.post_add_outlined,
+                  ),
+                )
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: bloc.formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FormBox(
+                        height: MediaQuery.of(context).size.height,
+                        width: context.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.0),
+                              child: Text(
+                                "Category",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            BlocBuilder<UpdateDataCubit, UpdateDataBaseState>(
+                                builder: (context, snapshot) {
+                              return TextFormField(
+                                validator: (value) {
+                                  if (value!.isEmpty) return "";
+
+                                  return null;
+                                },
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                controller: bloc.categoryController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            )),
+        BlocConsumer<UpdateDataCubit, UpdateDataBaseState>(
+            builder: (context, state) {
+          if (state is UpdateDataLoadingState) {
+            return Container(
+              width: context.width,
+              height: context.height,
+              color: const Color.fromARGB(220, 2, 45, 58),
+              child: Center(
+                child: LoadingAnimationWidget.hexagonDots(
+                  color: Colors.green,
+                  size: 50,
+                ),
+              ),
+            );
+          }
+          return const SizedBox();
+        }, listener: (context, state) {
+          if (state is UpdateDataErrorState) {
+            StarlightUtils.snackbar(const SnackBar(
+              content: Text("Fail Action"),
+            ));
+          }
+          if (state is UpdateDataSuccessState) {
+            StarlightUtils.snackbar(const SnackBar(
+              content: Text("Success Action"),
+            ));
+
+            StarlightUtils.pop();
+          }
+        }),
+      ],
+    );
+  }
+}
