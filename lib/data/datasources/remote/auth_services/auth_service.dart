@@ -165,13 +165,13 @@ class AuthService {
         log("[User reload]");
         await _auth.currentUser!.reload();
       });
-      Future.delayed(const Duration(seconds: 10), () {
+      Future.delayed(const Duration(seconds: 240), () {
         log("[Timer Cancel]");
 
         _timer?.cancel();
         _timer = null;
       });
-      return const Result(error: GeneralError("OK"));
+      return const Result(error: GeneralError("mailed changed"));
     });
   }
 
@@ -310,7 +310,7 @@ class AuthService {
         otpLength: 6,
         userEmail: email,
         appEmail: "sithushein18112000@gmail.com",
-        appName: "blog_app",
+        appName: "Blog_app",
       );
 
       if (await Injection<EmailOTP>().sendOTP() != true) {
@@ -332,6 +332,19 @@ class AuthService {
       return const Result();
     });
   }
+
+  // Future<Result> registerVerifyOtp(
+  //     String value, String name, String password, String email) {
+  //   return tried(() async {
+  //     if (await Injection<EmailOTP>().verifyOTP(otp: value.toString()) !=
+  //         true) {
+  //       return const Result(error: GeneralError("Invalid Otp"));
+  //     }
+
+  //     await register(email, password, name);
+  //     return const Result();
+  //   });
+  // }
 
   dispose() {
     _streamSubscription?.cancel();

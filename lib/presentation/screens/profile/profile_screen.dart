@@ -44,54 +44,78 @@ class ProfileScreen extends StatelessWidget {
                   physics: const ClampingScrollPhysics(),
                   children: [
                     Container(
-                      color: Colors.white,
+                      color: Theme.of(context).cardColor,
                       height: 230,
                       child: Stack(
                         children: [
                           InkWell(
-                              onTap:
-                                  user.id != createCubit.auth.currentUser!.uid
-                                      ? null
-                                      : () {
-                                          createCubit.auth.pickCoverPhoto();
-                                          log("Select Cover Url");
-                                        },
+                              onTap: user.id !=
+                                      createCubit.auth.currentUser!.uid
+                                  ? () {
+                                      user!.coverUrl == ""
+                                          ? null
+                                          : StarlightUtils.pushNamed(
+                                              RouteNames.imageViewerScreen,
+                                              arguments: user.coverUrl);
+                                    }
+                                  : () {
+                                      user!.coverUrl == ""
+                                          ? createCubit.auth.pickCoverPhoto()
+                                          : chooseAction(context, user.coverUrl,
+                                              createCubit, true);
+                                    },
                               child: Card(
                                 child: user.coverUrl == ""
                                     ? const Center(
                                         child: Icon(Icons.person_2_outlined),
                                       )
-                                    : CachedNetworkImage(
-                                        imageUrl: user.coverUrl,
-                                        imageBuilder:
-                                            (context, imageProvider) =>
-                                                Container(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
+                                    : Hero(
+                                        tag: user.coverUrl,
+                                        child: CachedNetworkImage(
+                                          imageUrl: user.coverUrl,
+                                          imageBuilder:
+                                              (context, imageProvider) =>
+                                                  Container(
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: imageProvider,
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator()
+                                                  .centered(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.upload)
+                                                  .centered(),
                                         ),
-                                        placeholder: (context, url) =>
-                                            const CircularProgressIndicator()
-                                                .centered(),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(Icons.upload).centered(),
                                       ),
                               )),
                           Positioned(
                             left: 10,
                             bottom: 0,
                             child: InkWell(
-                                onTap:
-                                    user.id != createCubit.auth.currentUser!.uid
-                                        ? null
-                                        : () {
-                                            log("Select Profile Url");
-                                            createCubit.auth
-                                                .updatePickProfilePhoto();
-                                          },
+                                onTap: user.id !=
+                                        createCubit.auth.currentUser!.uid
+                                    ? () {
+                                        user!.profielUrl == ""
+                                            ? null
+                                            : StarlightUtils.pushNamed(
+                                                RouteNames.imageViewerScreen,
+                                                arguments: user.profielUrl);
+                                      }
+                                    : () {
+                                        user!.profielUrl == ""
+                                            ? createCubit.auth
+                                                .updatePickProfilePhoto()
+                                            : chooseAction(
+                                                context,
+                                                user.profielUrl,
+                                                createCubit,
+                                                false,
+                                              );
+                                      },
                                 child: CircleAvatar(
                                   radius: 60,
                                   child: user.profielUrl == ""
@@ -171,11 +195,15 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 StreamBuilder<List<PostModel>>(
-                    stream: FirebaseStoreDb().profilePosts(user.id),
+                    stream: user.id != createCubit.auth.currentUser!.uid
+                        ? FirebaseStoreDb().profilePosts(user.id)
+                        : FirebaseStoreDb().myProfilePosts(user.id),
                     builder: (context, snap) {
                       if (snap.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                            child: CupertinoActivityIndicator());
+                        return const Padding(
+                          padding: EdgeInsets.only(top: 150.0, bottom: 150),
+                          child: Center(child: CupertinoActivityIndicator()),
+                        );
                       }
                       if (snap.data == null) {
                         return const Center(
@@ -185,7 +213,10 @@ class ProfileScreen extends StatelessWidget {
                       List<PostModel> myPosts = snap.data!.toList();
 
                       if (myPosts.isEmpty) {
-                        return const Text("No Data").centered();
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 150.0),
+                          child: const Text("No Posted Data").centered(),
+                        );
                       }
 
                       return ListView.builder(
@@ -232,10 +263,24 @@ class ProfileScreen extends StatelessWidget {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(user.name),
-                                              Text(MyDateUtil.getPostedTime(
-                                                  context: context,
-                                                  time: myPosts[index]
-                                                      .createdAt)),
+                                              Row(
+                                                children: [
+                                                  Text(MyUtil.getPostedTime(
+                                                      context: context,
+                                                      time: myPosts[index]
+                                                          .createdAt)),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Icon(
+                                                    myPosts[index].privacy ==
+                                                            "public"
+                                                        ? Icons.public_outlined
+                                                        : Icons.lock,
+                                                    size: 15,
+                                                  )
+                                                ],
+                                              ),
                                             ],
                                           ),
                                           const Spacer(),
@@ -256,15 +301,33 @@ class ProfileScreen extends StatelessWidget {
                                                                     .min,
                                                             children: [
                                                               ListTile(
-                                                                onTap: () {
-                                                                  Injection<
-                                                                          FirebaseFirestore>()
-                                                                      .collection(
-                                                                          "posts")
-                                                                      .doc(myPosts[
-                                                                              index]
-                                                                          .id)
-                                                                      .delete();
+                                                                onTap:
+                                                                    () async {
+                                                                  var isEnabled =
+                                                                      await FirebaseStoreDb()
+                                                                          .checkPostStatus();
+                                                                  if (isEnabled) {
+                                                                    Injection<
+                                                                            FirebaseFirestore>()
+                                                                        .collection(
+                                                                            "posts")
+                                                                        .doc(myPosts[index]
+                                                                            .id)
+                                                                        .delete()
+                                                                        .then(
+                                                                            (_) {
+                                                                      StarlightUtils
+                                                                          .pop();
+                                                                    });
+                                                                    MyUtil.showToast(
+                                                                        context);
+                                                                  } else {
+                                                                    StarlightUtils.snackbar(const SnackBar(
+                                                                        content:
+                                                                            Text("Your account has been blocked.")));
+                                                                    StarlightUtils
+                                                                        .pop();
+                                                                  }
                                                                 },
                                                                 title: const Text(
                                                                     "Delete"),
@@ -273,13 +336,29 @@ class ProfileScreen extends StatelessWidget {
                                                                         .delete),
                                                               ),
                                                               ListTile(
-                                                                onTap: () {
-                                                                  StarlightUtils.pushNamed(
-                                                                      RouteNames
-                                                                          .updatePostScreen,
-                                                                      arguments:
-                                                                          myPosts[
-                                                                              index]);
+                                                                onTap:
+                                                                    () async {
+                                                                  var isEnabled =
+                                                                      await FirebaseStoreDb()
+                                                                          .checkPostStatus();
+                                                                  if (isEnabled) {
+                                                                    StarlightUtils.pushNamed(
+                                                                            RouteNames
+                                                                                .updatePostScreen,
+                                                                            arguments: myPosts[
+                                                                                index])
+                                                                        .then(
+                                                                            (_) {
+                                                                      StarlightUtils
+                                                                          .pop();
+                                                                    });
+                                                                  } else {
+                                                                    StarlightUtils.snackbar(const SnackBar(
+                                                                        content:
+                                                                            Text("Your account has been blocked.")));
+                                                                    StarlightUtils
+                                                                        .pop();
+                                                                  }
                                                                 },
                                                                 title: const Text(
                                                                     "Update"),
@@ -343,24 +422,52 @@ class ProfileScreen extends StatelessWidget {
                                               arguments: myPosts[index]);
                                         },
                                       ),
-                                      if (myPosts[index].image.isEmpty ||
-                                          myPosts[index].image == "")
-                                        const SizedBox()
-                                      else
-                                        SizedBox(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                .3,
-                                            child: Card(
-                                              child: Image.network(
-                                                myPosts[index].image,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            )),
+                                      // if (myPosts[index].image.isEmpty ||
+                                      //     myPosts[index].image == "")
+                                      //   const SizedBox()
+                                      // else
+                                      //   SizedBox(
+                                      //       width: MediaQuery.of(context)
+                                      //           .size
+                                      //           .width,
+                                      //       height: MediaQuery.of(context)
+                                      //               .size
+                                      //               .height *
+                                      //           .3,
+                                      //       child: InkWell(
+                                      //         onTap: () {
+                                      //           StarlightUtils.pushNamed(
+                                      //               RouteNames
+                                      //                   .imageViewerScreen,
+                                      //               arguments:
+                                      //                   myPosts[index].image);
+                                      //         },
+                                      //         child: Card(
+                                      //           child: CachedNetworkImage(
+                                      //             imageUrl:
+                                      //                 myPosts[index].image,
+                                      //             imageBuilder: (context,
+                                      //                     imageProvider) =>
+                                      //                 Container(
+                                      //               decoration: BoxDecoration(
+                                      //                 image: DecorationImage(
+                                      //                   image: imageProvider,
+                                      //                   fit: BoxFit.cover,
+                                      //                 ),
+                                      //               ),
+                                      //             ),
+                                      //             placeholder: (context, url) =>
+                                      //                 const CircularProgressIndicator()
+                                      //                     .centered(),
+                                      //             errorWidget: (context, url,
+                                      //                     error) =>
+                                      //                 const Icon(Icons
+                                      //                         .error_outline)
+                                      //                     .centered(),
+                                      //           ),
+                                      //         ),
+                                      //       )),
+                                      MultiPhotoShow(postId: myPosts[index].id),
                                       const Divider(),
                                       SizedBox(
                                         height: 40,
@@ -405,48 +512,113 @@ class ProfileScreen extends StatelessWidget {
           }),
     );
   }
+
+  Future<dynamic> chooseAction(BuildContext context, String url,
+      CreateCubit createCubit, bool isCoverPhoto) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    StarlightUtils.pop();
+                  },
+                  child: const Text("Exit"))
+            ],
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  onTap: () {
+                    StarlightUtils.pop();
+                    StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
+                        arguments: url);
+                  },
+                  title: const Text("View Image"),
+                  trailing: const Icon(Icons.remove_red_eye_outlined),
+                ),
+                const Divider(),
+                ListTile(
+                  title: const Text("Upload Image"),
+                  trailing: const Icon(Icons.upload_outlined),
+                  onTap: () {
+                    StarlightUtils.pop();
+                    isCoverPhoto
+                        ? createCubit.auth.pickCoverPhoto()
+                        : createCubit.auth.updatePickProfilePhoto();
+                  },
+                )
+              ],
+            ),
+          );
+        });
+  }
 }
 
-class StaticCard extends StatelessWidget {
-  final double width;
-  final IconData icon;
-  final String label;
-  const StaticCard({
+class MultiPhotoShow extends StatelessWidget {
+  const MultiPhotoShow({
     super.key,
-    required this.width,
-    required this.icon,
-    required this.label,
+    required this.postId,
   });
+
+  final String postId;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-      margin: const EdgeInsets.symmetric(horizontal: 10),
-      decoration: const BoxDecoration(
-        color: Color.fromRGBO(175, 177, 169, 0.2),
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: Theme.of(context).primaryColor,
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
+    return StreamBuilder(
+        stream: FirebaseStoreDb().postImages(postId),
+        builder: (_, postImageSnap) {
+          if (postImageSnap.connectionState == ConnectionState.waiting) {
+            return const Center(child: CupertinoActivityIndicator());
+          }
+          if (postImageSnap.data == null) {
+            return const Center(
+              child: Text("No Data"),
+            );
+          }
+          List<PostImageModel> postImages = postImageSnap.data!.toList();
+          if (postImages.isEmpty) {
+            return const SizedBox();
+          }
+          return SizedBox(
+            width: context.width,
+            height: 150,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: postImages.length,
+                itemBuilder: (_, i) {
+                  return InkWell(
+                    onTap: () {
+                      StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
+                          arguments: postImages[i].imageUrl);
+                    },
+                    child: SizedBox(
+                      height: 150,
+                      width: postImages.length == 1
+                          ? context.width
+                          : context.width * 0.5,
+                      child: Card(
+                        child: CachedNetworkImage(
+                          imageUrl: postImages[i].imageUrl,
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          placeholder: (context, url) =>
+                              const CircularProgressIndicator().centered(),
+                          errorWidget: (context, url, error) =>
+                              const Icon(Icons.upload).centered(),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
+          );
+        });
   }
 }

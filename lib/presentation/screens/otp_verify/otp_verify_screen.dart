@@ -2,7 +2,15 @@ part of 'otp_verify_import.dart';
 
 class OtpVerifyScreen extends StatelessWidget {
   final String email;
-  const OtpVerifyScreen({super.key, required this.email});
+  final bool isRegister;
+  final String? password, name;
+  const OtpVerifyScreen({
+    super.key,
+    required this.email,
+    required this.isRegister,
+    this.password,
+    this.name,
+  }) : assert(isRegister == true && (password != null && name != null));
 
   @override
   Widget build(BuildContext context) {
@@ -12,27 +20,44 @@ class OtpVerifyScreen extends StatelessWidget {
         Scaffold(
           appBar: AppBar(
             title: const Text('Otp Verify Screen'),
-          ),
-          body: Column(
-            children: [
-              const Text(
-                  'Enter verification code we just sent in your email address'),
-              Pinput(
-                length: 6,
-                showCursor: true,
-                onChanged: (v) {
-                  bloc.value = v;
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
                 },
-              ),
-              CustomOutlinedButton(
-                  function: () {
-                    bloc.userDataController.text = email;
-                    log("Tapped button${bloc.userDataController.text}");
+                icon: const Icon(Icons.chevron_left)),
+          ),
+          body: FormBox(
+            height: context.height,
+            width: context.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Enter verification code we just sent in your email address',
+                  style: TextStyle(fontSize: 18),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  child: Pinput(
+                    length: 6,
+                    showCursor: true,
+                    onChanged: (v) {
+                      bloc.value = v;
+                    },
+                  ),
+                ),
+                CustomOutlinedButton(
+                    function: () {
+                      bloc.userDataController.text = email;
 
-                    bloc.add(const VerifyOTPEvent());
-                  },
-                  lable: "Verify OTP")
-            ],
+                      log("Tapped button${bloc.userDataController.text}");
+
+                      bloc.add(const VerifyOTPEvent());
+                    },
+                    lable: "Verify OTP")
+              ],
+            ),
           ),
         ),
         BlocConsumer<UpdateUserInfoBloc, UpdateUserInfoBaseState>(
@@ -67,7 +92,9 @@ class OtpVerifyScreen extends StatelessWidget {
               actions: [
                 TextButton(
                     onPressed: () {
-                      StarlightUtils.popAndPushNamed(RouteNames.loginScreen);
+                      // StarlightUtils.popAndPushNamed(RouteNames.loginScreen);
+                      StarlightUtils.pushReplacementNamed(
+                          RouteNames.loginScreen);
                     },
                     child: const Text("OK"))
               ],

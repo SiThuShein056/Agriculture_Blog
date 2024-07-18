@@ -10,19 +10,32 @@ class ForgetPasswordScreen extends StatelessWidget {
       children: [
         Scaffold(
           appBar: AppBar(
-            title: const Text("Forget Password Screen"),
+            title: const Text("Forget Password"),
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(Icons.chevron_left)),
           ),
           body: Form(
             key: bloc.formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
+            child: FormBox(
+              height: context.height,
+              width: context.width,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Forget Password?"),
                   const Text(
-                      "Dont't worry about that.Please enter your email adderss linked your account"),
+                    "Forget Password?",
+                    style: TextStyle(fontSize: 17),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                        "Dont't worry about that.Please enter your email adderss linked your account"),
+                  ),
                   TextFormField(
                     controller: bloc.userDataController,
                     validator: (value) {
@@ -34,11 +47,14 @@ class ForgetPasswordScreen extends StatelessWidget {
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                   ),
-                  CustomOutlinedButton(
-                      function: () {
-                        bloc.add(const SentOTPEvent());
-                      },
-                      lable: "Sent OTP"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: CustomOutlinedButton(
+                        function: () {
+                          bloc.add(const SentOTPEvent());
+                        },
+                        lable: "Sent OTP"),
+                  ),
                 ],
               ),
             ),
@@ -63,10 +79,10 @@ class ForgetPasswordScreen extends StatelessWidget {
         }, listener: (context, state) {
           if (state is UpdateUserInfoFailState) {
             StarlightUtils.dialog(DialogWidget(
-                message: state.message.toString(), title: "Fail to Login"));
+                message: state.message.toString(), title: "Fail to Sent OTP"));
           }
           if (state is UpdateUserInfoSuccessState) {
-            StarlightUtils.pushReplacementNamed(RouteNames.verifyOtpScreen,
+            StarlightUtils.pushNamed(RouteNames.forgetPasswordVerifyOtpScreen,
                 arguments: bloc.userDataController.text);
           }
         }),

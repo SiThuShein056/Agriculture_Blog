@@ -1,3 +1,4 @@
+import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/injection.dart';
@@ -195,6 +196,7 @@ class SearchScreen extends SearchDelegate {
                                             .doc(categories[i].id)
                                             .delete()
                                             .then((_) {
+                                          MyUtil.showToast(context);
                                           StarlightUtils.pop();
                                         });
                                       },

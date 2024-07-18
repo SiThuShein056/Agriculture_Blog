@@ -5,6 +5,7 @@ import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
+import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/injection.dart';
@@ -32,7 +33,8 @@ class CreateCubit extends Cubit<CreateState> {
 
   final FocusNode titleFocusNode = FocusNode(),
       descriptionFocusNode = FocusNode();
-  String? imageUrl;
+  List<String> imageUrl = [];
+  String? imgUrl;
   ValueNotifier<int> readCounts = ValueNotifier(0);
   ValueNotifier<int> notiCounts = ValueNotifier(0);
   ValueNotifier<String> privacy = ValueNotifier("select");
@@ -44,6 +46,7 @@ class CreateCubit extends Cubit<CreateState> {
     if (state is CreateLoadingState ||
         formKey?.currentState?.validate() != true ||
         privacy.value == "select") return;
+
     emit(const CreateLoadingState());
     try {
       final doc = _db.collection("posts").doc();
@@ -54,7 +57,6 @@ class CreateCubit extends Cubit<CreateState> {
         userId: auth.currentUser!.uid,
         createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
         category: categoryController.text,
-        image: imageUrl ?? "",
         phone: phoneController.text,
         privacy: privacy.value,
         description: descriptionController.text,
@@ -62,6 +64,25 @@ class CreateCubit extends Cubit<CreateState> {
       await doc.set(
         post.toJson(),
       );
+
+      if (imageUrl != []) {
+        log("For In  ${imageUrl.length.toString()}");
+        for (var element in imageUrl) {
+          final postImageDoc = _db.collection("postImages").doc();
+
+          final postImg = PostImageModel(
+            id: postImageDoc.id,
+            postId: doc.id,
+            userId: auth.currentUser!.uid,
+            createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+            imageUrl: element,
+          );
+          log("buld db");
+          await postImageDoc.set(
+            postImg.toJson(),
+          );
+        }
+      }
 
       final noti = NotificationModel(
           id: notiDoc.id,
@@ -71,11 +92,12 @@ class CreateCubit extends Cubit<CreateState> {
       await notiDoc.set(
         noti.toJson(),
       );
+
       notiCounts.value++;
       categoryController.text = "";
       descriptionController.text = "";
       phoneController.text = "";
-      imageUrl = "";
+
       emit(const CreateSuccessState());
     } on FirebaseException catch (e) {
       emit(CreateErrorState(e.code));
@@ -84,53 +106,76 @@ class CreateCubit extends Cubit<CreateState> {
     }
   }
 
-  Future<void> pickPostPhoto() async {
+  // Future<void> pickPostPhoto() async {
+  //   if (state is CreateLoadingState) return;
+  //   emit(const CreateLoadingState());
+
+  //   final userChoice = await StarlightUtils.dialog(AlertDialog(
+  //     title: const Text("Choose Method"),
+  //     content: SizedBox(
+  //       height: 120,
+  //       child: Column(children: [
+  //         ListTile(
+  //           onTap: () {
+  //             StarlightUtils.pop(result: ImageSource.camera);
+  //           },
+  //           leading: const Icon(Icons.camera),
+  //           title: const Text("Camera"),
+  //         ),
+  //         ListTile(
+  //           onTap: () {
+  //             StarlightUtils.pop(result: ImageSource.gallery);
+  //           },
+  //           leading: const Icon(Icons.image),
+  //           title: const Text("Gallery"),
+  //         )
+  //       ]),
+  //     ),
+  //   ));
+  //   if (userChoice == null) {
+  //     emit(const CreateErrorState("User choose is nill"));
+
+  //     return;
+  //   }
+  //   final XFile? image =
+  //       await Injection<ImagePicker>().pickImage(source: userChoice);
+  //   if (image == null) {
+  //     emit(const CreateErrorState("Xfile is nill"));
+
+  //     return;
+  //   }
+  //   final point = Injection<FirebaseStorage>().ref(
+  //       "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
+  //   final uploaded = await point.putFile(image.path.file);
+  //   //TODO
+
+  //   imageUrl = await Injection<FirebaseStorage>()
+  //       .ref(uploaded.ref.fullPath)
+  //       .getDownloadURL();
+
+  //   emit(CreateSuccessState(imageUrl));
+  //   return;
+  // }
+
+  Future<void> pickPostPhotos() async {
     if (state is CreateLoadingState) return;
     emit(const CreateLoadingState());
+    imageUrl.clear();
+    final List<XFile> image = await Injection<ImagePicker>().pickMultiImage();
 
-    final userChoice = await StarlightUtils.dialog(AlertDialog(
-      title: const Text("Choose Method"),
-      content: SizedBox(
-        height: 120,
-        child: Column(children: [
-          ListTile(
-            onTap: () {
-              StarlightUtils.pop(result: ImageSource.camera);
-            },
-            leading: const Icon(Icons.camera),
-            title: const Text("Camera"),
-          ),
-          ListTile(
-            onTap: () {
-              StarlightUtils.pop(result: ImageSource.gallery);
-            },
-            leading: const Icon(Icons.image),
-            title: const Text("Gallery"),
-          )
-        ]),
-      ),
-    ));
-    if (userChoice == null) {
-      emit(const CreateErrorState("User choose is nill"));
+    for (var element in image) {
+      final point = Injection<FirebaseStorage>().ref(
+          "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${element.name.split(".").last}");
+      final uploaded = await point.putFile(element.path.file);
+      //TODO
 
-      return;
+      var img = await Injection<FirebaseStorage>()
+          .ref(uploaded.ref.fullPath)
+          .getDownloadURL();
+
+      imageUrl.add(img);
     }
-    final XFile? image =
-        await Injection<ImagePicker>().pickImage(source: userChoice);
-    if (image == null) {
-      emit(const CreateErrorState("Xfile is nill"));
-
-      return;
-    }
-    final point = Injection<FirebaseStorage>().ref(
-        "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
-    final uploaded = await point.putFile(image.path.file);
-    //TODO
-
-    imageUrl = await Injection<FirebaseStorage>()
-        .ref(uploaded.ref.fullPath)
-        .getDownloadURL();
-
+    log(imageUrl.length.toString());
     emit(CreateSuccessState(imageUrl));
     return;
   }
@@ -228,9 +273,37 @@ class CreateCubit extends Cubit<CreateState> {
 
       if (postedId == postId) {
         await _db.collection("notification").doc(element['id']).delete();
-        log("DELETED NOTIS${element['id']} ");
       }
     }
+    // var cmtData = await _db.collection("comments").get();
+    // var cmt = cmtData.docs;
+    // for (var element in cmt) {
+    //   var postedId = element["post_id"].toString();
+
+    //   if (postedId == postId) {
+    //     await _db.collection("comments").doc(element['id']).delete();
+    //   }
+    // }
+
+    // var postImgData = await _db.collection("postImages").get();
+    // var postImg = postImgData.docs;
+    // for (var element in postImg) {
+    //   var postedId = element["post_id"].toString();
+
+    //   if (postedId == postId) {
+    //     await _db.collection("postImages").doc(element['id']).delete();
+    //   }
+    // }
+
+    // var likeData = await _db.collection("likes").get();
+    // var like = likeData.docs;
+    // for (var element in like) {
+    //   var postedId = element["post_id"].toString();
+
+    //   if (postedId == postId) {
+    //     await _db.collection("likes").doc(element['id']).delete();
+    //   }
+    // }
   }
 
   Future<void> likeAction(String postId) async {

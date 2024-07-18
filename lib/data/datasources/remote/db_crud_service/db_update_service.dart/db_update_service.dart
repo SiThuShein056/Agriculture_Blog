@@ -12,12 +12,18 @@ class DatabaseUpdateService {
     String? email,
     String? profileUrl,
     String? coverUrl,
+    bool? postStatus,
+    bool? commentStatus,
+    bool? messageStatus,
   }) async {
     Map<String, dynamic> payload = {};
     if (name != null) payload["name"] = name;
     if (email != null) payload["email"] = email;
     if (profileUrl != null) payload["profileUrl"] = profileUrl;
     if (coverUrl != null) payload["coverUrl"] = coverUrl;
+    if (postStatus != null) payload["postStatus"] = postStatus;
+    if (commentStatus != null) payload["commentStatus"] = commentStatus;
+    if (messageStatus != null) payload["messageStatus"] = messageStatus;
 
     await _db.collection("users").doc(id).update(payload);
   }
@@ -25,14 +31,12 @@ class DatabaseUpdateService {
   Future<void> updatePostData({
     required String id,
     String? category,
-    String? image,
     String? phone,
     String? privacy,
     String? description,
   }) async {
     Map<String, dynamic> payload = {};
     if (category != null) payload["category"] = category;
-    if (image != null) payload["image"] = image;
     if (phone != null) payload["phone"] = phone;
     if (privacy != null) payload["post_type"] = privacy;
     if (description != null) payload["description"] = description;

@@ -113,7 +113,7 @@ class LoginScreen extends StatelessWidget {
                             TextButton(
                                 onPressed: () {
                                   StarlightUtils.pushNamed(
-                                      RouteNames.forgetPassword);
+                                      RouteNames.forgetPasswordSentOTPScreen);
                                 },
                                 child: const Text("Forget Password")),
                             CustomOutlinedButton(

@@ -77,6 +77,17 @@ class ReadUser extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                StarlightUtils.pushNamed(
+                                    RouteNames.userControlScreen,
+                                    arguments: users[i].id);
+                              },
+                              icon: const Icon(Icons.read_more_outlined),
+                            ),
+                          ),
                           CircleAvatar(
                             radius: 30,
                             backgroundImage: (users[i].profielUrl == "")

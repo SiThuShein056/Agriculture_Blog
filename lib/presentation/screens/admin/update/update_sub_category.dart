@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
+import '../../../../data/datasources/local/utils/my_util.dart';
+
 class UpdateSubCategoryScreen extends StatelessWidget {
   const UpdateSubCategoryScreen({super.key});
 
@@ -30,6 +32,8 @@ class UpdateSubCategoryScreen extends StatelessWidget {
                   child: CustomOutlinedButton(
                     function: () {
                       bloc.updateSubCategory(subCategory.id);
+                      MyUtil.showToast(context);
+
                       StarlightUtils.pop();
                     },
                     lable: "Update",

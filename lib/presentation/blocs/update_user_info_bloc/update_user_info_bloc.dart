@@ -87,11 +87,25 @@ class UpdateUserInfoBloc
       }
       emit(UpdateUserInfoSuccessState());
     });
+    // on<RegisterVerifyOTPEvent>((event, state) async {
+    //   log("verify event ${userDataController.text} is mail");
+
+    //   if (state is UpdateUserInfoLoadingState) return;
+
+    //   emit(UpdateUserInfoLoadingState());
+    //   final result = await _auth.registerVerifyOtp(value, nameController.text,
+    //       passwordController.text, userDataController.text);
+    //   if (result.hasError) {
+    //     return emit(UpdateUserInfoFailState(result.error!.message.toString()));
+    //   }
+    //   emit(UpdateUserInfoSuccessState());
+    // });
   }
 
   final _auth = Injection<AuthService>();
   final TextEditingController userDataController = TextEditingController(),
       passwordController = TextEditingController();
+  // nameController = TextEditingController();
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
 
   var value = "";

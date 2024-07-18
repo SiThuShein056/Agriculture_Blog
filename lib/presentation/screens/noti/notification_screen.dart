@@ -1,4 +1,4 @@
-import 'package:blog_app/data/datasources/local/date_utils/my_date_util.dart';
+import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
@@ -152,7 +152,7 @@ class NotificationScreen extends StatelessWidget {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              MyDateUtil.getPostedTime(
+                                              MyUtil.getPostedTime(
                                                   context: context,
                                                   time: notiPost[0].createdAt),
                                             ),

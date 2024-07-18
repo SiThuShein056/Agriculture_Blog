@@ -5,6 +5,7 @@ import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/blocs/db_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:starlight_utils/starlight_utils.dart';
 
 import '../../../data/models/comment_model/comment_model.dart';
 import '../../common_widgets/post_action_button.dart';
@@ -181,18 +182,29 @@ class CommentBody extends StatelessWidget {
     );
   }
 
-  onSelected(c, v, commentId, body) {
-    switch (v) {
-      case 0:
-        createBloc.deleteComment(commentId);
-        break;
-      case 1:
-        createBloc.ediable.value = true;
-        createBloc.commentId = commentId;
+  onSelected(c, v, commentId, body) async {
+    var isEnable = await FirebaseStoreDb().checkCommentStatus();
+    if (isEnable) {
+      switch (v) {
+        case 0:
+          createBloc.deleteComment(commentId);
 
-        createBloc.commentController.text = body;
-        break;
-      default:
+          break;
+        case 1:
+          createBloc.ediable.value = true;
+          createBloc.commentId = commentId;
+
+          createBloc.commentController.text = body;
+
+          break;
+        default:
+      }
+    } else {
+      StarlightUtils.snackbar(
+        const SnackBar(
+          content: Text("Your account has been banned"),
+        ),
+      );
     }
   }
 }
@@ -249,17 +261,34 @@ class CommentTextField extends StatelessWidget {
                 builder: (_, v, child) {
                   return v
                       ? IconButton(
-                          onPressed: () {
-                            createBloc.updateComment();
-                            createBloc.ediable.value = false;
-                            createBloc.commentController.text = "";
+                          onPressed: () async {
+                            var isEnabled =
+                                await FirebaseStoreDb().checkCommentStatus();
+                            if (isEnabled) {
+                              createBloc.updateComment();
+                              createBloc.ediable.value = false;
+                              createBloc.commentController.text = "";
+                            } else {
+                              StarlightUtils.snackbar(const SnackBar(
+                                  content:
+                                      Text("Your account has been blocked.")));
+                            }
                           },
                           icon: const Icon(Icons.check))
                       : IconButton(
-                          onPressed: () {
-                            createBloc.createComment(
-                                postsId, createBloc.commentController.text);
-                            log("Add Commented");
+                          onPressed: () async {
+                            var isEnabled =
+                                await FirebaseStoreDb().checkCommentStatus();
+                            log("$isEnabled");
+
+                            if (isEnabled) {
+                              createBloc.createComment(
+                                  postsId, createBloc.commentController.text);
+                            } else {
+                              StarlightUtils.snackbar(const SnackBar(
+                                  content:
+                                      Text("Your account has been blocked.")));
+                            }
                           },
                           icon: const Icon(Icons.send_outlined));
                 })

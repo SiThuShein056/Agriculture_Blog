@@ -27,3 +27,7 @@ class SentOTPEvent extends UpdateUserInfoBaseEvent {
 class VerifyOTPEvent extends UpdateUserInfoBaseEvent {
   const VerifyOTPEvent();
 }
+
+class RegisterVerifyOTPEvent extends UpdateUserInfoBaseEvent {
+  const RegisterVerifyOTPEvent();
+}

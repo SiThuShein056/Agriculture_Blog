@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starlight_utils/starlight_utils.dart';
+import 'package:toastification/toastification.dart';
 
 import 'presentation/blocs/theme_cubit/theme_cubit_import.dart';
 import 'presentation/routes/route_import.dart';
@@ -37,18 +38,20 @@ class MyApp extends StatelessWidget {
               ? ThemeMode.dark
               : ThemeMode.light),
       child: BlocBuilder<ThemeCubit, ThemeMode>(builder: (context, state) {
-        return MaterialApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          navigatorKey: StarlightUtils.navigatorKey,
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          theme: LightTheme().theme,
-          darkTheme: DarkTheme().theme,
-          themeMode: state,
-          onGenerateRoute: router,
-          initialRoute: RouteNames.splash,
+        return ToastificationWrapper(
+          child: MaterialApp(
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            navigatorKey: StarlightUtils.navigatorKey,
+            debugShowCheckedModeBanner: false,
+            title: 'Flutter Demo',
+            theme: LightTheme().theme,
+            darkTheme: DarkTheme().theme,
+            themeMode: state,
+            onGenerateRoute: router,
+            initialRoute: RouteNames.splash,
+          ),
         );
       }),
     );

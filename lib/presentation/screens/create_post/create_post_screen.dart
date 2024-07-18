@@ -36,7 +36,13 @@ class CreatePost extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CustomOutlinedButton(
                     function: () async {
-                      postCreateBloc.createPost();
+                      var isEnabled = await FirebaseStoreDb().checkPostStatus();
+                      if (isEnabled) {
+                        postCreateBloc.createPost();
+                      } else {
+                        StarlightUtils.snackbar(const SnackBar(
+                            content: Text("Your account has been blocked.")));
+                      }
                     },
                     lable: "Create Post",
                     icon: Icons.post_add_outlined,
@@ -58,33 +64,61 @@ class CreatePost extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InkWell(
-                                onTap: () {
-                                  postCreateBloc.pickPostPhoto();
-                                },
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.height * .15,
-                                  height:
-                                      MediaQuery.of(context).size.width * .3,
-                                  child: Card(
-                                    child:
-                                        BlocBuilder<CreateCubit, CreateState>(
-                                            builder: (_, state) {
-                                      var image = state.url;
-
-                                      if (image == "" || image == null) {
-                                        return const Icon(
-                                            Icons.upload_outlined);
-                                      }
-
-                                      return Image.network(
-                                        image,
-                                        fit: BoxFit.cover,
-                                      );
-                                    }),
-                                  ),
-                                )),
+                            Row(
+                              children: [
+                                InkWell(
+                                    onTap: () {
+                                      postCreateBloc.pickPostPhotos();
+                                    },
+                                    child: SizedBox(
+                                      width:
+                                          MediaQuery.of(context).size.height *
+                                              .15,
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              .3,
+                                      child: const Card(
+                                        child: Icon(Icons.upload),
+                                      ),
+                                    )),
+                                Expanded(
+                                  child: BlocBuilder<CreateCubit, CreateState>(
+                                      builder: (_, state) {
+                                    var url = state.url;
+                                    if (url?.length == 0 || url == null) {
+                                      return const SizedBox();
+                                    }
+                                    return SizedBox(
+                                      width: context.width,
+                                      height:
+                                          MediaQuery.of(context).size.width *
+                                              .3,
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: url.length,
+                                          itemBuilder: (_, i) {
+                                            return SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .15,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .3,
+                                              child: Card(
+                                                child: Image.network(
+                                                  url[i],
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                    );
+                                  }),
+                                )
+                              ],
+                            ),
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
                               child: Text(

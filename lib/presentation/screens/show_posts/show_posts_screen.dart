@@ -126,7 +126,7 @@ class ShowPost extends StatelessWidget {
           //     }),
         ],
       ),
-      body: StreamBuilder<List<PostModel>>(
+      body: StreamBuilder(
           stream: FirebaseStoreDb().posts,
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
@@ -212,9 +212,20 @@ class ShowPost extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(user.name),
-                                            Text(MyDateUtil.getPostedTime(
-                                                context: context,
-                                                time: posts[i].createdAt)),
+                                            Row(
+                                              children: [
+                                                Text(MyUtil.getPostedTime(
+                                                    context: context,
+                                                    time: posts[i].createdAt)),
+                                                const SizedBox(
+                                                  width: 5,
+                                                ),
+                                                const Icon(
+                                                  Icons.public_outlined,
+                                                  size: 15,
+                                                )
+                                              ],
+                                            ),
                                           ],
                                         ),
                                         // const Spacer(),
@@ -269,21 +280,44 @@ class ShowPost extends StatelessWidget {
                                         arguments: posts[i]);
                                   },
                                 ),
-                                if (posts[i].image.isEmpty ||
-                                    posts[i].image == "")
-                                  const SizedBox()
-                                else
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .3,
-                                      child: Card(
-                                        child: Image.network(
-                                          posts[i].image,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )),
+                                // if (posts[i].image.isEmpty ||
+                                //     posts[i].image == "")
+                                //   const SizedBox()
+                                // else
+                                //   SizedBox(
+                                //       width: MediaQuery.of(context).size.width,
+                                //       height:
+                                //           MediaQuery.of(context).size.height *
+                                //               .3,
+                                //       child: InkWell(
+                                //         onTap: () {
+                                //           StarlightUtils.pushNamed(
+                                //               RouteNames.imageViewerScreen,
+                                //               arguments: posts[i].image);
+                                //         },
+                                //         child: Card(
+                                //           child: CachedNetworkImage(
+                                //             imageUrl: posts[i].image,
+                                //             imageBuilder:
+                                //                 (context, imageProvider) =>
+                                //                     Container(
+                                //               decoration: BoxDecoration(
+                                //                 image: DecorationImage(
+                                //                     image: imageProvider,
+                                //                     fit: BoxFit.cover),
+                                //               ),
+                                //             ),
+                                //             placeholder: (context, url) =>
+                                //                 const CircularProgressIndicator()
+                                //                     .centered(),
+                                //             errorWidget: (context, url,
+                                //                     error) =>
+                                //                 const Icon(Icons.error_outline)
+                                //                     .centered(),
+                                //           ),
+                                //         ),
+                                //       )),
+                                MultiPhotoShow(postId: posts[i].id),
                                 const Divider(),
                                 SizedBox(
                                   height: 40,

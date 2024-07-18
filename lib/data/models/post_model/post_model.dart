@@ -5,7 +5,6 @@ class PostModel extends Equatable {
   final String userId;
   final String createdAt;
   final String category;
-  final String image;
   final String? phone;
   final String privacy;
   final String description;
@@ -15,7 +14,6 @@ class PostModel extends Equatable {
     required this.userId,
     required this.createdAt,
     required this.category,
-    required this.image,
     this.phone,
     required this.privacy,
     required this.description,
@@ -26,7 +24,6 @@ class PostModel extends Equatable {
         "userId": userId,
         "createdAt": createdAt,
         "category": category,
-        "image": image,
         "phone": phone,
         "post_type": privacy,
         "description": description,
@@ -38,7 +35,6 @@ class PostModel extends Equatable {
       userId: data["userId"],
       createdAt: data["createdAt"],
       category: data["category"],
-      image: data["image"],
       phone: data["phone"],
       privacy: data["post_type"],
       description: data["description"],

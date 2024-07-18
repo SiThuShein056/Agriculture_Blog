@@ -1,15 +1,20 @@
 import 'dart:developer';
 
+import 'package:blog_app/data/datasources/local/utils/my_util.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_cubit.dart';
 import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_state.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/form_widget.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:starlight_utils/starlight_utils.dart';
+
+import '../../../../data/models/post_Images_model/post_image_model.dart';
 
 class UpdatePostScreen extends StatelessWidget {
   const UpdatePostScreen({super.key});
@@ -44,7 +49,9 @@ class UpdatePostScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CustomOutlinedButton(
                     function: () async {
+                      await bloc.deletePostImages(post.id);
                       await bloc.updatePost(post.id);
+                      MyUtil.showToast(context);
                     },
                     lable: "Update",
                     icon: Icons.post_add_outlined,
@@ -66,42 +73,159 @@ class UpdatePostScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                bloc.pickPostPhoto();
-                              },
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.height * .15,
-                                height: MediaQuery.of(context).size.width * .3,
-                                child: Card(
-                                  child: BlocBuilder<UpdateDataCubit,
-                                      UpdateDataBaseState>(builder: (_, state) {
-                                    var stateImage = state.url ?? "";
-                                    var postImage = post.image ?? "";
+                            // InkWell(
+                            //   onTap: () {
+                            //     bloc.pickPostPhoto();
+                            //   },
+                            //   child: SizedBox(
+                            //     width: MediaQuery.of(context).size.height * .15,
+                            //     height: MediaQuery.of(context).size.width * .3,
+                            //     child: Card(
+                            //       child: BlocBuilder<UpdateDataCubit,
+                            //           UpdateDataBaseState>(builder: (_, state) {
+                            //         var stateImage = state.url ?? "";
+                            //         var postImage = post.image ?? "";
 
-                                    if (stateImage == "" && postImage == "") {
-                                      return const Icon(Icons.upload_outlined);
-                                    }
-                                    if (stateImage != "" && postImage == "") {
-                                      return Image.network(
-                                        stateImage,
-                                        fit: BoxFit.cover,
-                                      );
-                                    }
-                                    if (stateImage == "" && postImage != "") {
-                                      return Image.network(
-                                        postImage,
-                                        fit: BoxFit.cover,
-                                      );
-                                    }
-                                    return Image.network(
-                                      stateImage,
-                                      fit: BoxFit.cover,
+                            //         if (stateImage == "" && postImage == "") {
+                            //           return const Icon(Icons.upload_outlined);
+                            //         }
+                            //         if (stateImage != "" && postImage == "") {
+                            //           return Image.network(
+                            //             stateImage,
+                            //             fit: BoxFit.cover,
+                            //           );
+                            //         }
+                            //         if (stateImage == "" && postImage != "") {
+                            //           return Image.network(
+                            //             postImage,
+                            //             fit: BoxFit.cover,
+                            //           );
+                            //         }
+                            //         return Image.network(
+                            //           stateImage,
+                            //           fit: BoxFit.cover,
+                            //         );
+                            //       }),
+                            //     ),
+                            //   ),
+                            // ),
+                            StreamBuilder(
+                                stream: FirebaseStoreDb().postImages(post.id),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CupertinoActivityIndicator());
+                                  }
+                                  if (snapshot.data == null) {
+                                    return const Center(
+                                      child: Text("No Data"),
                                     );
-                                  }),
-                                ),
-                              ),
-                            ),
+                                  }
+                                  List<PostImageModel> postImages =
+                                      snapshot.data!.toList();
+
+                                  return BlocBuilder<UpdateDataCubit,
+                                          UpdateDataBaseState>(
+                                      builder: (context, state) {
+                                    return Row(
+                                      children: [
+                                        InkWell(
+                                            onTap: () {
+                                              bloc.pickPostPhotos();
+                                            },
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  .15,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .3,
+                                              child: const Card(
+                                                child: Icon(Icons.upload),
+                                              ),
+                                            )),
+                                        (state.url == null ||
+                                                (state.url?.isEmpty == true))
+                                            ? const SizedBox()
+                                            : Expanded(
+                                                child: SizedBox(
+                                                  width: context.width,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .3,
+                                                  child: ListView.builder(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      itemCount:
+                                                          state.url!.length,
+                                                      itemBuilder: (_, i) {
+                                                        return SizedBox(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .15,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              .3,
+                                                          child: Card(
+                                                            child:
+                                                                Image.network(
+                                                              state.url![i],
+                                                              fit: BoxFit.cover,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }),
+                                                ),
+                                              ),
+                                        if (postImages.isNotEmpty &&
+                                            state.url == null)
+                                          Expanded(
+                                            child: SizedBox(
+                                              width: context.width,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .3,
+                                              child: ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: postImages.length,
+                                                  itemBuilder: (_, i) {
+                                                    return SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              .15,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .3,
+                                                      child: Card(
+                                                        child: Image.network(
+                                                          postImages[i]
+                                                              .imageUrl,
+                                                          fit: BoxFit.cover,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }),
+                                            ),
+                                          ),
+                                      ],
+                                    );
+                                  });
+                                }),
+
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
                               child: Text(

@@ -11,8 +11,12 @@ class RouteNames {
       registerScreen = "/register-screen",
       nameChangeScreen = "/name-change-Screen",
       passswordChangeScreen = "/password-change-screen",
-      forgetPassword = "/forget-password-screen",
-      verifyOtpScreen = "/verifyOtpScreen",
+      forgetPasswordSentOTPScreen = "/forget-password-sent-otp-screen",
+      forgetPasswordVerifyOtpScreen = "/forget-password-verify-otp-screen",
+      // registerOTPScreen = "/register-otp-screen",
+      // registerVerifyOTPScreen = "/register-verify-otp-screen",
+      userControlScreen = "/user-control-screen",
+      imageViewerScreen = "/image-viewer-screen",
       mailChangeScreen = "/mail-change-screen",
       settingScreen = "/setting-screen",
       updateUserScreen = "/update-user-screen",
@@ -96,7 +100,7 @@ Route? router(RouteSettings settings) {
         ),
         settings,
       );
-    case RouteNames.forgetPassword:
+    case RouteNames.forgetPasswordSentOTPScreen:
       return _protectedRoute(
         incomingRoute,
         BlocProvider<UpdateUserInfoBloc>(
@@ -105,17 +109,41 @@ Route? router(RouteSettings settings) {
         ),
         settings,
       );
-    case RouteNames.verifyOtpScreen:
+    case RouteNames.forgetPasswordVerifyOtpScreen:
       return _protectedRoute(
         incomingRoute,
         BlocProvider<UpdateUserInfoBloc>(
           create: (_) => UpdateUserInfoBloc(),
           child: OtpVerifyScreen(
+            isRegister: false,
             email: settings.arguments.toString(),
           ),
         ),
         settings,
       );
+    // case RouteNames.registerOTPScreen:
+    //   return _protectedRoute(
+    //     incomingRoute,
+    //     BlocProvider<UpdateUserInfoBloc>(
+    //       create: (_) => UpdateUserInfoBloc(),
+    //       child: const ForgetPasswordScreen(
+    //         isRegister: true,
+    //       ),
+    //     ),
+    //     settings,
+    //   );
+    // case RouteNames.registerVerifyOTPScreen:
+    //   return _protectedRoute(
+    //     incomingRoute,
+    //     BlocProvider<UpdateUserInfoBloc>(
+    //       create: (_) => UpdateUserInfoBloc(),
+    //       child: OtpVerifyScreen(
+    //         isRegister: true,
+    //         email: settings.arguments["email"],
+    //       ),
+    //     ),
+    //     settings,
+    //   );
 
     case RouteNames.settingScreen:
       final value = settings.arguments;
@@ -268,6 +296,18 @@ Route? router(RouteSettings settings) {
       return _protectedRoute(
         incomingRoute,
         const ReadCategory(),
+        settings,
+      );
+    case RouteNames.userControlScreen:
+      return _protectedRoute(
+        incomingRoute,
+        const UserControl(),
+        settings,
+      );
+    case RouteNames.imageViewerScreen:
+      return _protectedRoute(
+        incomingRoute,
+        const ImageViewer(),
         settings,
       );
 

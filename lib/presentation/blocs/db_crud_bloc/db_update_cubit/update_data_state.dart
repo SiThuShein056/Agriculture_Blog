@@ -1,5 +1,5 @@
 abstract class UpdateDataBaseState {
-  final String? url;
+  final List<String>? url;
   const UpdateDataBaseState([this.url]);
 }
 

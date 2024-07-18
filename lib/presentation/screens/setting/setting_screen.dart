@@ -254,13 +254,6 @@ class SettingScreen extends StatelessWidget {
                 //     title: const Text("Dark Theme"),
                 //   );
                 // }),
-
-                // ReuseListTileWidget(
-                //     icon: const Icon(Icons.logout_outlined),
-                //     title: "logout",
-                //     onpress: () {
-                //       bloc.add(const HomeUserSignOutEvent());
-                //     }),
               ],
             )),
           ],

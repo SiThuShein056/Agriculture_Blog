@@ -113,11 +113,18 @@ class UpdateUserScreen extends StatelessWidget {
           return const SizedBox();
         }, listener: (context, state) {
           if (state is UpdateUserInfoFailState) {
-            log("Fail");
-            StarlightUtils.dialog(DialogWidget(
-              message: state.message,
-              title: "Update Fail",
-            ));
+            if (state.message.contains("mailed changed")) {
+              StarlightUtils.dialog(const DialogWidget(
+                message:
+                    "You must need to verify your email and login again to update your mail",
+                title: "Notification",
+              ));
+            } else {
+              StarlightUtils.dialog(DialogWidget(
+                message: state.message,
+                title: "Update Fail",
+              ));
+            }
             return;
           } else if (state is UpdateUserInfoSuccessState) {
             log("Success");

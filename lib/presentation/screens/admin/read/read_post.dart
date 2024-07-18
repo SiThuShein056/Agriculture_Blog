@@ -1,6 +1,7 @@
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/common_widgets/post_action_button.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:blog_app/presentation/screens/profile/profile_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/search_post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
-import '../../../../data/datasources/local/date_utils/my_date_util.dart';
+import '../../../../data/datasources/local/utils/my_util.dart';
 import '../../../../data/datasources/remote/auth_services/authu_service_import.dart';
 import '../../../../data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import '../../../../data/models/post_model/post_model.dart';
@@ -127,7 +128,7 @@ class ReadPost extends StatelessWidget {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(user.name),
-                                            Text(MyDateUtil.getPostedTime(
+                                            Text(MyUtil.getPostedTime(
                                                 context: context,
                                                 time: posts[i].createdAt)),
                                           ],
@@ -154,6 +155,9 @@ class ReadPost extends StatelessWidget {
                                                               .doc(posts[i].id)
                                                               .delete()
                                                               .then((_) {
+                                                            MyUtil.showToast(
+                                                                context);
+
                                                             StarlightUtils
                                                                 .pop();
                                                           });
@@ -227,21 +231,44 @@ class ReadPost extends StatelessWidget {
                                         arguments: posts[i]);
                                   },
                                 ),
-                                if (posts[i].image.isEmpty ||
-                                    posts[i].image == "")
-                                  const SizedBox()
-                                else
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .3,
-                                      child: Card(
-                                        child: Image.network(
-                                          posts[i].image,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )),
+                                // if (posts[i].image.isEmpty ||
+                                //     posts[i].image == "")
+                                //   const SizedBox()
+                                // else
+                                //   SizedBox(
+                                //       width: MediaQuery.of(context).size.width,
+                                //       height:
+                                //           MediaQuery.of(context).size.height *
+                                //               .3,
+                                //       child: InkWell(
+                                //         onTap: () {
+                                //           StarlightUtils.pushNamed(
+                                //               RouteNames.imageViewerScreen,
+                                //               arguments: posts[i].image);
+                                //         },
+                                //         child: Card(
+                                //           child: CachedNetworkImage(
+                                //             imageUrl: posts[i].image,
+                                //             imageBuilder:
+                                //                 (context, imageProvider) =>
+                                //                     Container(
+                                //               decoration: BoxDecoration(
+                                //                 image: DecorationImage(
+                                //                     image: imageProvider,
+                                //                     fit: BoxFit.cover),
+                                //               ),
+                                //             ),
+                                //             placeholder: (context, url) =>
+                                //                 const CircularProgressIndicator()
+                                //                     .centered(),
+                                //             errorWidget: (context, url,
+                                //                     error) =>
+                                //                 const Icon(Icons.error_outline)
+                                //                     .centered(),
+                                //           ),
+                                //         ),
+                                //       )),
+                                MultiPhotoShow(postId: posts[i].id),
                                 const Divider(),
                                 SizedBox(
                                   height: 40,

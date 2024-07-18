@@ -1,5 +1,5 @@
 abstract class CreateState {
-  final String? url;
+  final List<String>? url;
 
   const CreateState([this.url]);
 }

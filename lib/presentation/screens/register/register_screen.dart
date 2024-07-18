@@ -162,16 +162,17 @@ class RegisterScreen extends StatelessWidget {
                             );
                           }),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                            onPressed: () {},
-                            child: const Text("Suggest Password")),
-                        CustomOutlinedButton(
-                            function: register, lable: "Register"),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     TextButton(
+                    //         onPressed: () {},
+                    //         child: const Text("Suggest Password")),
+                    //     CustomOutlinedButton(
+                    //         function: register, lable: "Register"),
+                    //   ],
+                    // ),
+                    CustomOutlinedButton(function: register, lable: "Register"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -195,7 +196,7 @@ class RegisterScreen extends StatelessWidget {
             if (state is RegisterFailState) {
               StarlightUtils.dialog(DialogWidget(
                 message: state.error,
-                title: "Fail to Register",
+                title: "Fail Action",
               ));
             }
             if (state is RegisterSuccessState) {

@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
+import '../../../../data/datasources/local/utils/my_util.dart';
+
 class ReadSubCategory extends StatelessWidget {
   final String id;
   const ReadSubCategory({
@@ -92,6 +94,8 @@ class ReadSubCategory extends StatelessWidget {
                                               .doc(subCategories[i].id)
                                               .delete()
                                               .then((_) {
+                                            MyUtil.showToast(context);
+
                                             StarlightUtils.pop();
                                           });
                                         },

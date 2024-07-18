@@ -6,6 +6,7 @@ import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
+import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
@@ -16,6 +17,8 @@ class FirebaseStoreDb {
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
   final AuthService _auth = Injection<AuthService>();
   final StreamController<List<PostModel>> _postStream =
+      StreamController<List<PostModel>>.broadcast();
+  final StreamController<List<PostModel>> _myProfilePostStream =
       StreamController<List<PostModel>>.broadcast();
   final StreamController<List<PostModel>> _profilePostStream =
       StreamController<List<PostModel>>.broadcast();
@@ -33,6 +36,8 @@ class FirebaseStoreDb {
       StreamController<List<UserModel>>.broadcast();
   final StreamController<List<LikeModel>> _likeStream =
       StreamController<List<LikeModel>>.broadcast();
+  final StreamController<List<PostImageModel>> _postImagesStream =
+      StreamController<List<PostImageModel>>.broadcast();
 
   ///
   Stream<QuerySnapshot<Map<String, dynamic>>> getUser(String userId) {
@@ -67,6 +72,9 @@ class FirebaseStoreDb {
       email: email,
       profielUrl: profileUrl,
       coverUrl: coverUrl,
+      postStatus: true,
+      commentStatus: true,
+      messageStatus: true,
     );
 
     var data = await FirebaseFirestore.instance.collection("users").get();
@@ -98,7 +106,82 @@ class FirebaseStoreDb {
     }
   }
 
-  ///PROFILE POSTS
+  Future<bool> checkPostStatus() async {
+    var isStatus = true;
+    var data = await FirebaseFirestore.instance
+        .collection("users")
+        .where("id", isEqualTo: _auth.currentUser!.uid)
+        .get();
+    var userData = data.docs;
+
+    for (var element in userData) {
+      isStatus = element["postStatus"];
+    }
+    return isStatus;
+  }
+
+  Future<bool> checkCommentStatus() async {
+    var isStatus = true;
+    var data = await FirebaseFirestore.instance
+        .collection("users")
+        .where("id", isEqualTo: _auth.currentUser!.uid)
+        .get();
+    var userData = data.docs;
+
+    for (var element in userData) {
+      isStatus = element["commentStatus"];
+    }
+    return isStatus;
+  }
+
+  Future<bool> checkMessageStatus() async {
+    var isStatus = true;
+    var data = await FirebaseFirestore.instance
+        .collection("users")
+        .where("id", isEqualTo: _auth.currentUser!.uid)
+        .get();
+    var userData = data.docs;
+
+    for (var element in userData) {
+      isStatus = element["messageStatus"];
+    }
+    return isStatus;
+  }
+
+  ///My PROFILE POSTS
+  final List<PostModel> _myProfilePosts = [];
+  void myProfilePostParser(QuerySnapshot event) {
+    _myProfilePosts.clear();
+    _myProfilePosts.addAll(event.docs.map((e) => PostModel.fromJson(e.data())));
+    _myProfilePostStream.add(_myProfilePosts);
+  }
+
+  final Map<String, StreamSubscription> _myProfilePostsStream = {};
+  void _myProfilePostStreamSetup(String id) {
+    _myProfilePostsStream[id] = _db
+        .collection("posts")
+        .where("userId", isEqualTo: id)
+        .orderBy(
+          "createdAt",
+          descending: true,
+        )
+        .snapshots()
+        .listen((e) {
+      return myProfilePostParser(e);
+    });
+  }
+
+  Stream<List<PostModel>> myProfilePosts(String userId) {
+    var stream = _myProfilePostsStream[userId];
+    if (stream != null) {
+      stream.cancel();
+      _myProfilePostsStream.remove(userId);
+    }
+    _myProfilePostStreamSetup(userId);
+    return _myProfilePostStream.stream;
+  }
+
+  ///OTHER PROFILE POSTS
   final List<PostModel> _profilePosts = [];
   void profilePostParser(QuerySnapshot event) {
     _profilePosts.clear();
@@ -111,6 +194,7 @@ class FirebaseStoreDb {
     _profilePostsStream[id] = _db
         .collection("posts")
         .where("userId", isEqualTo: id)
+        .where("post_type", isEqualTo: "public")
         .orderBy(
           "createdAt",
           descending: true,
@@ -342,10 +426,47 @@ class FirebaseStoreDb {
     var stream = _likesStream[postId];
     if (stream != null) {
       stream.cancel();
-      _cmtStream.remove(postId);
+      _likesStream.remove(postId);
     }
     _likeStreamSetup(postId);
     return _likeStream.stream;
+  }
+
+  ///POSTIMAGES
+  final List<PostImageModel> _postImages = [];
+  void postImagesParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = LikeModel.fromJson(i.data());
+    //   if (!_likes.contains(model)) {
+    //     _likes.add(model);
+    //   }
+    // }
+    _postImages.clear();
+
+    _postImages
+        .addAll(event.docs.map((e) => PostImageModel.fromJson(e.data())));
+    _postImagesStream.add(_postImages);
+  }
+
+  final Map<String, StreamSubscription> _postImagesStreams = {};
+  void _postImagesStreamsSetUp(String postId) {
+    _postImagesStreams[postId] = _db
+        .collection("postImages")
+        .where("post_id", isEqualTo: postId)
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) {
+      return postImagesParser(event);
+    });
+  }
+
+  Stream<List<PostImageModel>> postImages(String postId) {
+    var stream = _postImagesStreams[postId];
+    if (stream != null) {
+      stream.cancel();
+      _postImagesStreams.remove(postId);
+    }
+    _postImagesStreamsSetUp(postId);
+    return _postImagesStream.stream;
   }
 
   ///COMMENTS
@@ -434,7 +555,7 @@ class FirebaseStoreDb {
 
   dispose() {
     _postStream.close();
-    _profilePostStream.close();
+    _myProfilePostStream.close();
     _singlePostStream.close();
     _categoryStream.close();
     _subCategoryStream.close();
