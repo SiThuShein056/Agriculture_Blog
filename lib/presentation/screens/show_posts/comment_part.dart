@@ -61,7 +61,7 @@ class CommentPart extends StatelessWidget {
                               width: 100,
                               height: 8,
                               decoration: BoxDecoration(
-                                color: const Color.fromARGB(102, 92, 87, 87),
+                                color: const Color.fromARGB(102, 184, 181, 211),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               margin: const EdgeInsets.only(bottom: 20),
@@ -226,7 +226,7 @@ class CommentTextField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: const Color.fromRGBO(221, 225, 228, 1),
+          color: Theme.of(context).cardColor,
           boxShadow: [
             BoxShadow(
               color: const Color.fromARGB(255, 198, 188, 188).withOpacity(0.5),

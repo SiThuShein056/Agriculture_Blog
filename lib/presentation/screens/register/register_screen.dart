@@ -14,20 +14,25 @@ class RegisterScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          resizeToAvoidBottomInset: false,
+          // resizeToAvoidBottomInset: false,
           body: SingleChildScrollView(
             child: Form(
               key: registerBloc.formKey,
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 30.0),
-                      child: FlutterLogo(
-                        size: 100,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 30.0),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Image.asset(
+                          "assets/images/platzi_store_logo.png",
+                          height: MediaQuery.of(context).size.height * 0.2,
+                          width: MediaQuery.of(context).size.width,
+                        ),
                       ),
                     ),
                     const Text(
@@ -59,7 +64,7 @@ class RegisterScreen extends StatelessWidget {
                           return value.isEmail ? null : "Invalid email";
                         },
                         decoration: const InputDecoration(
-                          labelText: "Enter your email",
+                          hintText: "Enter your email",
                         ),
                       ),
                     ),
@@ -76,7 +81,7 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                         decoration: const InputDecoration(
-                          labelText: "Enter your Name",
+                          hintText: "Enter your Name",
                         ),
                       ),
                     ),
@@ -106,9 +111,8 @@ class RegisterScreen extends StatelessWidget {
                                     value
                                         ? Icons.visibility
                                         : Icons.visibility_off,
-                                    color: Colors.grey.shade500,
                                   )),
-                              labelText: "Enter your password",
+                              hintText: "Enter your password",
                             ),
                           );
                         }),
@@ -155,9 +159,8 @@ class RegisterScreen extends StatelessWidget {
                                       value
                                           ? Icons.visibility
                                           : Icons.visibility_off,
-                                      color: Colors.grey.shade500,
                                     )),
-                                labelText: "Enter your confirm password",
+                                hintText: "Enter your confirm password",
                               ),
                             );
                           }),

@@ -10,7 +10,7 @@ class OtpVerifyScreen extends StatelessWidget {
     required this.isRegister,
     this.password,
     this.name,
-  }) : assert(isRegister == true && (password != null && name != null));
+  });
 
   @override
   Widget build(BuildContext context) {

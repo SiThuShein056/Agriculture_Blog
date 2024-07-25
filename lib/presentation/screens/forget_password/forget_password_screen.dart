@@ -24,7 +24,6 @@ class ForgetPasswordScreen extends StatelessWidget {
               height: context.height,
               width: context.width,
               child: Column(
-                // mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
@@ -78,9 +77,12 @@ class ForgetPasswordScreen extends StatelessWidget {
           return const SizedBox();
         }, listener: (context, state) {
           if (state is UpdateUserInfoFailState) {
-            StarlightUtils.dialog(DialogWidget(
-                message: state.message.toString(), title: "Fail to Sent OTP"));
+            StarlightUtils.dialog(
+              DialogWidget(
+                  message: state.message.toString(), title: "Fail to Sent OTP"),
+            );
           }
+
           if (state is UpdateUserInfoSuccessState) {
             StarlightUtils.pushNamed(RouteNames.forgetPasswordVerifyOtpScreen,
                 arguments: bloc.userDataController.text);

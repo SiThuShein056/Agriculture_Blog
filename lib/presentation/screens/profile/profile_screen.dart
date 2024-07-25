@@ -7,6 +7,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String? userId = ModalRoute.of(context)!.settings.arguments as String?;
     final createCubit = context.read<CreateCubit>();
+    // final userImageBloc = context.read<UserImageBloc>();
 
     log("User Id is $userId");
     return Scaffold(
@@ -49,49 +50,48 @@ class ProfileScreen extends StatelessWidget {
                       child: Stack(
                         children: [
                           InkWell(
-                              onTap: user.id !=
-                                      createCubit.auth.currentUser!.uid
-                                  ? () {
-                                      user!.coverUrl == ""
-                                          ? null
-                                          : StarlightUtils.pushNamed(
-                                              RouteNames.imageViewerScreen,
-                                              arguments: user.coverUrl);
-                                    }
-                                  : () {
-                                      user!.coverUrl == ""
-                                          ? createCubit.auth.pickCoverPhoto()
-                                          : chooseAction(context, user.coverUrl,
-                                              createCubit, true);
-                                    },
-                              child: Card(
-                                child: user.coverUrl == ""
-                                    ? const Center(
-                                        child: Icon(Icons.person_2_outlined),
-                                      )
-                                    : Hero(
-                                        tag: user.coverUrl,
-                                        child: CachedNetworkImage(
-                                          imageUrl: user.coverUrl,
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  Container(
-                                            decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                image: imageProvider,
-                                                fit: BoxFit.cover,
-                                              ),
+                            onTap: user.id != createCubit.auth.currentUser!.uid
+                                ? () {
+                                    user!.coverUrl == ""
+                                        ? null
+                                        : StarlightUtils.pushNamed(
+                                            RouteNames.imageViewerScreen,
+                                            arguments: user.coverUrl);
+                                  }
+                                : () {
+                                    user!.coverUrl == ""
+                                        ? createCubit.auth.pickCoverPhoto()
+                                        : chooseAction(context, user.coverUrl,
+                                            createCubit, true);
+                                  },
+                            child: Card(
+                              child: user.coverUrl == ""
+                                  ? const Center(
+                                      child: Icon(Icons.person_2_outlined),
+                                    )
+                                  : Hero(
+                                      tag: user.coverUrl,
+                                      child: CachedNetworkImage(
+                                        imageUrl: user.coverUrl,
+                                        imageBuilder:
+                                            (context, imageProvider) =>
+                                                Container(
+                                          decoration: BoxDecoration(
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
                                             ),
                                           ),
-                                          placeholder: (context, url) =>
-                                              const CircularProgressIndicator()
-                                                  .centered(),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(Icons.upload)
-                                                  .centered(),
                                         ),
+                                        placeholder: (context, url) =>
+                                            const CircularProgressIndicator()
+                                                .centered(),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Icons.upload).centered(),
                                       ),
-                              )),
+                                    ),
+                            ),
+                          ),
                           Positioned(
                             left: 10,
                             bottom: 0,
@@ -149,7 +149,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     Container(
                       height: 90,
-                      color: const Color.fromRGBO(255, 255, 255, 1),
+                      color: Theme.of(context).cardColor,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -181,7 +181,7 @@ class ProfileScreen extends StatelessWidget {
                                     function: () {
                                       StarlightUtils.pushNamed(
                                           RouteNames.singleChat,
-                                          arguments: user!.name.toString());
+                                          arguments: user);
                                     },
                                     lable: "Chat",
                                     icon: Icons.comment_outlined,
@@ -226,7 +226,6 @@ class ProfileScreen extends StatelessWidget {
                           itemBuilder: (_, index) {
                             var phone = myPosts[index].phone;
                             return Card(
-                              color: Colors.white,
                               shape: const RoundedRectangleBorder(
                                 borderRadius: BorderRadius.zero,
                               ),
@@ -493,9 +492,7 @@ class ProfileScreen extends StatelessWidget {
                                                     onTap: () {
                                                       StarlightUtils.pushNamed(
                                                           RouteNames.singleChat,
-                                                          arguments: user?.name
-                                                                  .toString() ??
-                                                              "NA");
+                                                          arguments: user);
                                                     },
                                                   )
                                                 : const Text("This's Me"),

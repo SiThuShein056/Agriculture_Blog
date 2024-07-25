@@ -9,7 +9,7 @@ class ShowPost extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Agriculture Blog"),
+        title: const Text("Farmer Hub"),
         leading: IconButton(
           onPressed: onTap,
           icon: const Icon(Icons.menu),
@@ -149,7 +149,6 @@ class ShowPost extends StatelessWidget {
                 itemCount: posts.length,
                 itemBuilder: (_, i) {
                   return Card(
-                    color: Colors.white,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
                     ),
@@ -342,9 +341,7 @@ class ShowPost extends StatelessWidget {
                                               onTap: () {
                                                 StarlightUtils.pushNamed(
                                                     RouteNames.singleChat,
-                                                    arguments:
-                                                        user?.name.toString() ??
-                                                            "NA");
+                                                    arguments: user);
                                               },
                                             )
                                           : const Text("This's Me"),

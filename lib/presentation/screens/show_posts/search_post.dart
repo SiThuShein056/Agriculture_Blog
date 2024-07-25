@@ -20,7 +20,9 @@ class SearchPost extends SearchDelegate {
         onPressed: () {
           StarlightUtils.pop();
         },
-        icon: const Icon(Icons.chevron_left));
+        icon: const Icon(
+          Icons.chevron_left,
+        ));
   }
 
   @override
@@ -35,6 +37,7 @@ class SearchPost extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     log("Build Suggestion Part");
+
     return StreamBuilder(
         stream: FirebaseStoreDb().posts,
         builder: (_, snap) {

@@ -14,148 +14,146 @@ class LoginScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Form(
-                  key: loginBloc.formKey,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.0),
-                          child: FlutterLogo(
-                            size: 100,
-                          ),
-                        ),
-                        const Text(
-                          "Glad To See You",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(bottom: 20),
-                          child: Text(
-                            "Please login to access your account",
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-
-                        TextFormField(
-                          validator: (value) {
-                            if (value!.isEmpty) return "Need to fill";
-                            return value.isEmail ? null : "Email need to valid";
-                          },
-                          controller: loginBloc.emailController,
-                          focusNode: loginBloc.emailFocusNode,
-                          onEditingComplete:
-                              loginBloc.passwordFocusNode.requestFocus,
-                          keyboardType: TextInputType.emailAddress,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          decoration: InputDecoration(
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            contentPadding: const EdgeInsets.all(10),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            hintText: "email",
-                          ),
-                        ),
-                        Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: ValueListenableBuilder(
-                                valueListenable: loginBloc.isShow,
-                                builder: (_, value, state) {
-                                  return TextFormField(
-                                    validator: (text) {
-                                      if (text!.isEmpty) {
-                                        return "Need to fill";
-                                      }
-                                      return text.isStrongPassword();
-                                    },
-                                    controller: loginBloc.passwordController,
-                                    onEditingComplete: login,
-                                    obscureText: value,
-                                    keyboardType: TextInputType.text,
-                                    autovalidateMode:
-                                        AutovalidateMode.onUserInteraction,
-                                    decoration: InputDecoration(
-                                      prefixIcon: const Icon(
-                                          Icons.lock_outline_rounded),
-                                      suffixIcon: IconButton(
-                                          onPressed: () {
-                                            loginBloc.toggle();
-                                          },
-                                          icon: !value
-                                              ? const Icon(Icons.visibility)
-                                              : const Icon(
-                                                  Icons.visibility_off)),
-                                      contentPadding: const EdgeInsets.all(10),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      hintText: "password",
-                                    ),
-                                  );
-                                })),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                                onPressed: () {
-                                  StarlightUtils.pushNamed(
-                                      RouteNames.forgetPasswordSentOTPScreen);
-                                },
-                                child: const Text("Forget Password")),
-                            CustomOutlinedButton(
-                                function: login, lable: "Login"),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 10,
-                          ),
-                          child: CustomOutlinedButton(
-                              icon: Icons.login_outlined,
-                              function: () {
-                                loginBloc.add(const LoginWithGoogleEvent());
-                              },
-                              lable: "Login With Google"),
-                        ),
-                        // ElevatedButton(
-                        //   onPressed: () async {
-                        //     // await Injection<AuthService>().loginWithGoogle();
-                        //   },
-                        //   child: const Text(" Sign In with facebook"),
-                        // ),
-
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text("New User?"),
-                            TextButton(
-                                onPressed: () {
-                                  StarlightUtils.pushReplacementNamed(
-                                      RouteNames.registerScreen);
-                                },
-                                child: const Text("Sign Up"))
-                          ],
-                        )
-                      ],
+            // resizeToAvoidBottomInset: false,
+            body: SingleChildScrollView(
+          child: Form(
+            key: loginBloc.formKey,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20.0),
+                    child: Image.asset(
+                      "assets/images/platzi_store_logo.png",
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
-                ),
-              ],
-            )),
+                  const Text(
+                    "Glad To See You",
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: Text(
+                      "Please login to access your account",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+
+                  TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) return "Need to fill";
+                      return value.isEmail ? null : "Email need to valid";
+                    },
+                    controller: loginBloc.emailController,
+                    focusNode: loginBloc.emailFocusNode,
+                    onEditingComplete: loginBloc.passwordFocusNode.requestFocus,
+                    keyboardType: TextInputType.emailAddress,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(Icons.email_outlined),
+                      contentPadding: const EdgeInsets.all(10),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      hintText: "email",
+                    ),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: ValueListenableBuilder(
+                          valueListenable: loginBloc.isShow,
+                          builder: (_, value, state) {
+                            return TextFormField(
+                              validator: (text) {
+                                if (text!.isEmpty) {
+                                  return "Need to fill";
+                                }
+                                return text.isStrongPassword();
+                              },
+                              controller: loginBloc.passwordController,
+                              onEditingComplete: login,
+                              obscureText: value,
+                              keyboardType: TextInputType.text,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              decoration: InputDecoration(
+                                prefixIcon:
+                                    const Icon(Icons.lock_outline_rounded),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      loginBloc.toggle();
+                                    },
+                                    icon: !value
+                                        ? const Icon(Icons.visibility)
+                                        : const Icon(Icons.visibility_off)),
+                                contentPadding: const EdgeInsets.all(10),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                hintText: "password",
+                              ),
+                            );
+                          })),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            StarlightUtils.pushNamed(
+                                RouteNames.forgetPasswordSentOTPScreen);
+                          },
+                          child: const Text("Forget Password")),
+                      CustomOutlinedButton(function: login, lable: "Login"),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                    ),
+                    child: CustomOutlinedButton(
+                        icon: Icons.login_outlined,
+                        function: () {
+                          loginBloc.add(const LoginWithGoogleEvent());
+                        },
+                        lable: "Login With Google"),
+                  ),
+                  // ElevatedButton(
+                  //   onPressed: () async {
+                  //     // await Injection<AuthService>().loginWithGoogle();
+                  //   },
+                  //   child: const Text(" Sign In with facebook"),
+                  // ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("New User?"),
+                        TextButton(
+                            onPressed: () {
+                              StarlightUtils.pushReplacementNamed(
+                                  RouteNames.registerScreen);
+                            },
+                            child: const Text("Sign Up"))
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        )),
         BlocConsumer<LoginBloc, LoginBaseState>(builder: (context, state) {
           if (state is LoginLoadingState) {
             log("UI login loading State");

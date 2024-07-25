@@ -51,19 +51,22 @@ dependencies:
   equatable: ^2.0.5
   community_material_icon: ^5.9.55
   logger: ^2.2.0
+  # location:
+  # google_maps_flutter:
+  # geocoding:
   shared_preferences: ^2.2.3
   # logger: ^2.0.2+1
   # socket_io_client: ^2.0.3+1
   google_nav_bar: ^5.0.6
   cached_network_image: ^3.3.1
   loading_animation_widget: ^1.2.1
-  # starlight_utils: ^0.0.3
+  starlight_utils: ^0.0.3
   email_otp: ^2.1.2
   pinput: ^4.0.0
   flutter_slidable: ^3.1.0
-  starlight_utils:
-    git:
-      url: https://github.com/YeMyoAung/starlight_utils.git
+  # starlight_utils:
+  #   git:
+  #     url: https://github.com/YeMyoAung/starlight_utils.git
   firebase_app_check: ^0.2.1+8
   flutter_phone_direct_caller: ^2.1.1
   animated_toggle_switch: ^0.8.2

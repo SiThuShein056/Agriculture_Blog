@@ -70,9 +70,11 @@ class UpdateUserInfoBloc
       emit(UpdateUserInfoLoadingState());
       final result = await _auth.setOtp(userDataController.text);
       if (result.hasError) {
+        log(result.error!.message.toString());
         return emit(UpdateUserInfoFailState(result.error!.message.toString()));
       }
       emit(UpdateUserInfoSuccessState());
+      log(' Succes Otp sent');
     });
 
     on<VerifyOTPEvent>((event, state) async {

@@ -10,65 +10,72 @@ class ChatHome extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: const Text("Chat"),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: const [
-          UserListtite(
-              color: Color.fromARGB(255, 156, 45, 45),
-              username: "soe min naing"),
-          UserListtite(
-              color: Color.fromARGB(255, 219, 193, 193),
-              username: "si thu shein"),
-          UserListtite(
-              color: Color.fromARGB(255, 185, 182, 182), username: "John"),
-          UserListtite(
-              color: Color.fromARGB(255, 99, 161, 93), username: "smith"),
-          UserListtite(
-              color: Color.fromARGB(255, 109, 153, 179), username: "joelay"),
-          UserListtite(
-              color: Color.fromARGB(255, 185, 174, 174), username: "may sweet"),
-          UserListtite(
-              color: Color.fromARGB(255, 33, 167, 100), username: "chit chti"),
-          UserListtite(
-              color: Color.fromARGB(255, 169, 202, 21), username: "Min Khant"),
-          UserListtite(
-              color: Color.fromARGB(255, 2, 173, 159), username: "doe lone"),
-          UserListtite(
-              color: Color.fromARGB(255, 167, 141, 141),
-              username: "soe min naing"),
-          UserListtite(
-              color: Color.fromARGB(255, 156, 45, 45),
-              username: "soe min naing"),
-          UserListtite(
-              color: Color.fromARGB(255, 219, 193, 193),
-              username: "si thu shein"),
-          UserListtite(
-              color: Color.fromARGB(255, 185, 182, 182), username: "John"),
-          UserListtite(
-              color: Color.fromARGB(255, 99, 161, 93), username: "smith"),
-          UserListtite(
-              color: Color.fromARGB(255, 109, 153, 179), username: "joelay"),
-          UserListtite(
-              color: Color.fromARGB(255, 185, 174, 174), username: "may sweet"),
-          UserListtite(
-              color: Color.fromARGB(255, 33, 167, 100), username: "chit chti"),
-          UserListtite(
-              color: Color.fromARGB(255, 169, 202, 21), username: "Min Khant"),
-          UserListtite(
-              color: Color.fromARGB(255, 2, 173, 159), username: "doe lone"),
-          UserListtite(
-              color: Color.fromARGB(255, 167, 141, 141),
-              username: "soe min naing"),
-        ],
-      ),
+      body: StreamBuilder(
+          stream: FirebaseStoreDb().users,
+          builder: (_, snap) {
+            switch (snap.connectionState) {
+              case ConnectionState.waiting:
+              case ConnectionState.none:
+                return const Center(
+                  child: CupertinoActivityIndicator(),
+                );
+              case ConnectionState.active:
+              case ConnectionState.done:
+                if (snap.data == null) {
+                  return const Center(
+                    child: Text("Data is null value"),
+                  );
+                } else {
+                  List<UserModel> users = snap.data!.toList();
+
+                  if (users.isEmpty) {
+                    return const Center(
+                      child: Text("Say hi 👋"),
+                    );
+                  }
+
+                  return ListView.builder(
+                      itemCount: users.length,
+                      itemBuilder: (_, index) {
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          child: ListTile(
+                            onTap: () {
+                              StarlightUtils.pushNamed(RouteNames.singleChat,
+                                  arguments: users[index]);
+                            },
+                            leading: CircleAvatar(
+                              radius: 17,
+                              backgroundImage:
+                                  (users[index].profielUrl.isEmpty ||
+                                          users[index].profielUrl == '')
+                                      ? null
+                                      : NetworkImage(users[index].profielUrl),
+                              child: (users[index].profielUrl.isEmpty ||
+                                      users[index].profielUrl == '')
+                                  ? Text(users[index].name[0])
+                                  : null,
+                            ),
+                            title: Text(users[index].name),
+                            subtitle: Text(
+                              users[index].email,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        );
+                      });
+                }
+            }
+          }),
     );
   }
 }
 
 class UserAvatar extends StatelessWidget {
-  final Color color;
   final String name;
-  const UserAvatar({super.key, required this.color, required this.name});
+  const UserAvatar({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -88,26 +95,6 @@ class UserAvatar extends StatelessWidget {
               color: Color.fromARGB(255, 22, 22, 22), fontSize: 12),
         ),
       ]),
-    );
-  }
-}
-
-class UserListtite extends StatelessWidget {
-  final Color color;
-  final String username;
-  const UserListtite({super.key, required this.color, required this.username});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: color,
-            child: const Text("A"),
-          ),
-          title: Text(username),
-          trailing: const Icon(Icons.notifications_none_outlined)),
     );
   }
 }

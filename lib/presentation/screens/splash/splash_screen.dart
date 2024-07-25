@@ -10,6 +10,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
+    // checkPermission();
     moveToHome();
     super.initState();
   }
@@ -20,13 +21,50 @@ class _SplashScreenState extends State<SplashScreen> {
     });
   }
 
+  // checkPermission() async {
+  //   Location location = new Location();
+
+  //   bool _serviceEnabled;
+  //   PermissionStatus _permissionGranted;
+  //   LocationData _locationData;
+
+  //   _serviceEnabled = await location.serviceEnabled();
+  //   if (!_serviceEnabled) {
+  //     _serviceEnabled = await location.requestService();
+  //     if (!_serviceEnabled) {
+  //       return;
+  //     }
+  //   }
+
+  //   _permissionGranted = await location.hasPermission();
+  //   if (_permissionGranted == PermissionStatus.denied) {
+  //     _permissionGranted = await location.requestPermission();
+  //     if (_permissionGranted != PermissionStatus.granted) {
+  //       return;
+  //     }
+  //   }
+
+  //   _locationData = await location.getLocation();
+  //   if (_locationData.latitude != null && _locationData.longitude != null) {
+  //     // setState(() {
+  //     //   UserLocation.lat = _locationData.latitude!;
+  //     //   UserLocation.log = _locationData.longitude!;
+  //     // });
+
+  //     AddressProvider()
+  //         .changeLatLog(_locationData.latitude!, _locationData.longitude!);
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: FadedScaleAnimation(
-          child: const FlutterLogo(
-            size: 80,
+          child: Image.asset(
+            "assets/images/platzi_store_logo.png",
+            height: 80,
+            width: 80,
           ),
         ),
       ),

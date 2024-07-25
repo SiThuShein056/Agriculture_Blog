@@ -47,6 +47,7 @@ abstract class StandardTheme {
             side: borderSide,
           ),
         ),
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: cardColor),
         primaryColor: primaryColor,
         shadowColor: borderColor,
         scaffoldBackgroundColor: scaffoldBackgroundColor,
@@ -57,6 +58,8 @@ abstract class StandardTheme {
           ),
           isDense: true,
         ),
+        iconButtonTheme: IconButtonThemeData(
+            style: ButtonStyle(iconColor: WidgetStatePropertyAll(iconColor))),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           elevation: 1,
           backgroundColor: cardColor,
@@ -91,6 +94,8 @@ abstract class StandardTheme {
         ),
         listTileTheme: ListTileThemeData(
           tileColor: tileColor,
+          iconColor: iconColor,
+          subtitleTextStyle: TextStyle(color: iconColor),
           titleTextStyle: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w400,

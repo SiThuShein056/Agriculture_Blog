@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <!-- Provide required visibility configuration for API level 30 and above -->
     <queries>
     <!-- If your app checks for SMS support -->
@@ -21,6 +23,9 @@
         android:label="blog_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB7EjVT2nu6Ss4lNQlntovasAP-S2WOhBE"/>
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

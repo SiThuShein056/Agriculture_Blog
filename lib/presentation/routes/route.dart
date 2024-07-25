@@ -13,6 +13,8 @@ class RouteNames {
       passswordChangeScreen = "/password-change-screen",
       forgetPasswordSentOTPScreen = "/forget-password-sent-otp-screen",
       forgetPasswordVerifyOtpScreen = "/forget-password-verify-otp-screen",
+      aboutScreen = "/about-screen",
+
       // registerOTPScreen = "/register-otp-screen",
       // registerVerifyOTPScreen = "/register-verify-otp-screen",
       userControlScreen = "/user-control-screen",
@@ -62,6 +64,9 @@ Route? router(RouteSettings settings) {
             ),
             BlocProvider(
               create: (_) => CreateCubit(),
+            ),
+            BlocProvider(
+              create: (_) => UserImageBloc(),
             ),
           ], child: const HomeScreen()),
           settings);
@@ -237,6 +242,7 @@ Route? router(RouteSettings settings) {
         MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => CreateCubit()),
+            BlocProvider(create: (_) => UserImageBloc())
           ],
           child: const ProfileScreen(),
         ),
@@ -324,6 +330,12 @@ Route? router(RouteSettings settings) {
       return _protectedRoute(
         incomingRoute,
         const AdminDashboard(),
+        settings,
+      );
+    case RouteNames.aboutScreen:
+      return _protectedRoute(
+        incomingRoute,
+        const AboutScreen(),
         settings,
       );
     case RouteNames.singleChat:

@@ -1,14 +1,15 @@
 import 'package:blog_app/core/theme/standard_theme.dart';
 import 'package:flutter/material.dart';
 
-const Color darkScaffoldBackgroundColor = Color.fromRGBO(71, 84, 103, 1), //
+const Color darkScaffoldBackgroundColor = Color.fromRGBO(71, 84, 103, 1),
     darkCardColor = Color.fromRGBO(68, 57, 57, 1),
-    darkBorderColor = Color.fromRGBO(44, 46, 49, 1),
-    darkPrimaryColor = Color.fromRGBO(40, 42, 45, 1),
-    darkOutlinedButtonTextColor = Color.fromRGBO(234, 236, 240, 1), //
+    darkBorderColor = Color.fromRGBO(165, 180, 201, 1),
+    darkPrimaryColor = Color.fromRGBO(226, 233, 245, 1),
+    darkOutlinedButtonTextColor = Color.fromRGBO(234, 236, 240, 1),
     darkUnselectedColor = Color.fromRGBO(21, 27, 36, 1),
     darkUnselectedWidgetColor = Color.fromRGBO(43, 45, 48, 1),
-    darkIconColor = Color.fromRGBO(45, 47, 52, 1);
+    darkIconColor = Color.fromRGBO(223, 228, 241, 1);
+
 const BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(5));
 
 class DarkTheme extends StandardTheme {

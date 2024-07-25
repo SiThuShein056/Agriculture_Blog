@@ -5,6 +5,7 @@ import 'package:blog_app/data/datasources/remote/auth_services/authu_service_imp
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
+import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
@@ -39,7 +40,35 @@ class FirebaseStoreDb {
   final StreamController<List<PostImageModel>> _postImagesStream =
       StreamController<List<PostImageModel>>.broadcast();
 
-  ///
+  String getConservation(String id) {
+    return _auth.currentUser!.uid.hashCode <= id.hashCode
+        ? '${_auth.currentUser!.uid}_$id'
+        : '${id}_${_auth.currentUser!.uid}';
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(UserModel user) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> msg = _db
+        .collection("chats/${getConservation(user.id)}/messages")
+        .snapshots();
+    log(getConservation(user.id));
+
+    return msg;
+  }
+
+  Future<void> sendMessage(UserModel user, String msg) async {
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
+
+    final MessageModel message = MessageModel(
+        fromId: _auth.currentUser!.uid,
+        toId: user.id,
+        readTime: '',
+        sentTime: time,
+        type: "text",
+        message: msg);
+    final ref = _db.collection("chats/${getConservation(user.id)}/messages/");
+    return ref.doc(time).set(message.toJson());
+  }
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getUser(String userId) {
     Stream<QuerySnapshot<Map<String, dynamic>>> user =
         _db.collection("users").where("id", isEqualTo: userId).snapshots();

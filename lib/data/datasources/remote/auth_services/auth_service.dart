@@ -99,6 +99,18 @@ class AuthService {
     });
   }
 
+  String checkProvider() {
+    String? provider;
+    if (currentUser != null) {
+      for (final providerProfile in currentUser!.providerData) {
+        // ID of the provider (google.com, apple.cpm, etc.)
+        provider = providerProfile.providerId;
+      }
+    }
+
+    return provider!;
+  }
+
   Future<Result> loginWithGoogle() async {
     final GoogleSignInAccount? result = await _googleSignIn.signIn();
     if (result == null) {
@@ -291,12 +303,9 @@ class AuthService {
           "coverProfileImages/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
       final uploaded = await point.putFile(image.path.file);
 
-      await _auth.currentUser?.updatePhotoURL(uploaded.ref.fullPath);
-
       imageUrl = await Injection<FirebaseStorage>()
           .ref(uploaded.ref.fullPath)
           .getDownloadURL();
-      log("image is $imageUrl");
       await DatabaseUpdateService()
           .updateUserData(id: currentUser!.uid, coverUrl: imageUrl);
       return Result(data: uploaded);

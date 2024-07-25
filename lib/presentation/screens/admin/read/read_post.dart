@@ -65,7 +65,6 @@ class ReadPost extends StatelessWidget {
                 itemCount: posts.length,
                 itemBuilder: (_, i) {
                   return Card(
-                    color: Colors.white,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.zero,
                     ),
@@ -293,9 +292,7 @@ class ReadPost extends StatelessWidget {
                                               onTap: () {
                                                 StarlightUtils.pushNamed(
                                                     RouteNames.singleChat,
-                                                    arguments:
-                                                        user?.name.toString() ??
-                                                            "NA");
+                                                    arguments: user);
                                               },
                                             )
                                           : const Text("This's Me"),

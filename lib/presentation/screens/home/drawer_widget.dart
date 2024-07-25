@@ -68,25 +68,26 @@ class DrawerWidget extends StatelessWidget {
                         icon: const Icon(Icons.info_rounded),
                         title: "About",
                         onpress: () {
-                          StarlightUtils.aboutDialog(
-                              applicationName: "AGF",
-                              applicationIcon: const FlutterLogo());
+                          // StarlightUtils.aboutDialog(
+                          //     applicationName: "AGF",
+                          //     applicationIcon: const FlutterLogo());
+                          StarlightUtils.pushNamed(RouteNames.aboutScreen);
                         },
                       ),
-                      ReuseListTileWidget(
-                        icon: const Icon(Icons.contact_phone_outlined),
-                        title: "Contacu Us",
-                        onpress: () {
-                          launchUrl(Uri.parse("tel:+95909766758487"));
-                        },
-                      ),
+                      // ReuseListTileWidget(
+                      //   icon: const Icon(Icons.contact_phone_outlined),
+                      //   title: "Contacu Us",
+                      //   onpress: () {
+                      //     launchUrl(Uri.parse("tel:+95909766758487"));
+                      //   },
+                      // ),
                       if (user!.role != "admin")
                         ReuseListTileWidget(
                           icon: const Icon(Icons.help_center_outlined),
                           title: "HelpCenter",
                           onpress: () {
-                            StarlightUtils.pushNamed(RouteNames.singleChat,
-                                arguments: "Admin");
+                            // StarlightUtils.pushNamed(RouteNames.singleChat,
+                            //     arguments: );
                           },
                         ),
                       if (user.role == "admin")
