@@ -35,51 +35,55 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   easy_localization:
-  easy_localization_loader: ^2.0.1
-  firebase_auth: ^4.16.0
-  firebase_core: ^2.25.4
-  firebase_storage: ^11.6.7
+  easy_localization_loader:
+  firebase_auth:
+  firebase_core:
+  # video_player: ^2.9.1
+  appinio_video_player: ^1.3.0
+  firebase_storage:
   cloud_firestore:
-  google_sign_in: ^6.2.1
-  flutter_facebook_auth: ^6.2.0
-  image_picker: ^1.0.7
-  lottie: ^3.0.0
-  get_it: ^7.6.7
+  google_sign_in:
+  flutter_facebook_auth:
+  image_picker:
+  lottie:
+  get_it:
   # permission_handler: ^11.2.0
-  flutter_bloc: ^8.1.3
+  flutter_bloc:
   # dio: ^5.4.0
-  equatable: ^2.0.5
-  community_material_icon: ^5.9.55
-  logger: ^2.2.0
+  equatable:
+  community_material_icon:
+  logger:
   # location:
   # google_maps_flutter:
   # geocoding:
-  shared_preferences: ^2.2.3
+  shared_preferences:
   # logger: ^2.0.2+1
   # socket_io_client: ^2.0.3+1
-  google_nav_bar: ^5.0.6
-  cached_network_image: ^3.3.1
-  loading_animation_widget: ^1.2.1
-  starlight_utils: ^0.0.3
-  email_otp: ^2.1.2
-  pinput: ^4.0.0
-  flutter_slidable: ^3.1.0
+  google_nav_bar:
+  cached_network_image:
+  loading_animation_widget:
+  starlight_utils:
+  email_otp:
+  emoji_picker_flutter:
+  pinput:
+  flutter_slidable:
+  clipboard:
   # starlight_utils:
   #   git:
   #     url: https://github.com/YeMyoAung/starlight_utils.git
-  firebase_app_check: ^0.2.1+8
-  flutter_phone_direct_caller: ^2.1.1
-  animated_toggle_switch: ^0.8.2
-  dropdown_button2: ^2.3.9
-  salomon_bottom_bar: ^3.3.2
-  url_launcher: ^6.2.6
-  animation_wrappers: ^2.0.0
-  smooth_page_indicator: ^1.1.0
-  velocity_x: ^4.2.1
+  firebase_app_check:
+  flutter_phone_direct_caller:
+  animated_toggle_switch:
+  dropdown_button2:
+  salomon_bottom_bar:
+  url_launcher:
+  animation_wrappers:
+  smooth_page_indicator:
+  velocity_x:
   intl:
-  toastification: ^2.0.0
-  fl_chart: ^0.68.0
-  insta_image_viewer: ^1.0.4
+  toastification:
+  fl_chart:
+  insta_image_viewer:
 
 dev_dependencies:
   flutter_test:
@@ -90,7 +94,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

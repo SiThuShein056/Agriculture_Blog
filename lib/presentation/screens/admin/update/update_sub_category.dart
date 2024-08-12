@@ -1,6 +1,6 @@
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
-import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_cubit.dart';
-import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_state.dart';
+import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_cubit.dart';
+import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_state.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/form_widget.dart';
 import 'package:flutter/material.dart';

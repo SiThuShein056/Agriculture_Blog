@@ -5,18 +5,20 @@ class UserModel {
   final String profielUrl;
   final String coverUrl;
   final String role;
-  bool postStatus, commentStatus, messageStatus;
+  bool postStatus, commentStatus, messageStatus, commentPermission;
 
-  UserModel(
-      {required this.id,
-      required this.name,
-      required this.email,
-      required this.profielUrl,
-      required this.coverUrl,
-      this.role = "user",
-      required this.messageStatus,
-      required this.postStatus,
-      required this.commentStatus});
+  UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.profielUrl,
+    required this.coverUrl,
+    this.role = "user",
+    required this.messageStatus,
+    required this.postStatus,
+    required this.commentStatus,
+    required this.commentPermission,
+  });
 
   @override
   bool operator ==(covariant UserModel other) {
@@ -37,6 +39,7 @@ class UserModel {
         "postStatus": postStatus,
         "commentStatus": commentStatus,
         "messageStatus": messageStatus,
+        "commentPermission": commentPermission,
         "role": role,
       };
 
@@ -50,6 +53,7 @@ class UserModel {
       role: data["role"],
       postStatus: data["postStatus"],
       commentStatus: data["commentStatus"],
+      commentPermission: data["commentPermission"],
       messageStatus: data["messageStatus"],
     );
   }

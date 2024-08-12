@@ -275,6 +275,33 @@ class SettingScreen extends StatelessWidget {
                 ),
               ),
             ),
+
+            StreamBuilder(
+                stream: FirebaseStoreDb().getUser(bloc.auth.currentUser!.uid),
+                builder: (_, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CupertinoActivityIndicator());
+                  }
+                  if (snapshot.data == null) {
+                    return const Text("NONAME");
+                  }
+                  UserModel? user;
+                  for (var element in snapshot.data!.docs) {
+                    user = UserModel.fromJson(element);
+                  }
+                  if (user == null) {
+                    return const Text("No User");
+                  }
+                  return Card(
+                    child: SwitchListTile(
+                        value: user.commentPermission,
+                        onChanged: (v) async {
+                          await DatabaseUpdateService().updateUserData(
+                              id: user!.id, commentPermission: v);
+                        },
+                        title: const Text("Allow to comment on your posts")),
+                  );
+                })
           ],
         ),
       ),

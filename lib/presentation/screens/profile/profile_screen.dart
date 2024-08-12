@@ -119,9 +119,18 @@ class ProfileScreen extends StatelessWidget {
                                 child: CircleAvatar(
                                   radius: 60,
                                   child: user.profielUrl == ""
-                                      ? const Center(
-                                          child: Icon(Icons.upload),
-                                        )
+                                      ? (userId !=
+                                                  Injection<AuthService>()
+                                                      .currentUser!
+                                                      .uid &&
+                                              userId != null)
+                                          ? const Center(
+                                              child:
+                                                  Icon(Icons.person_2_outlined),
+                                            )
+                                          : const Center(
+                                              child: Icon(Icons.upload),
+                                            )
                                       : CachedNetworkImage(
                                           imageUrl: user.profielUrl,
                                           imageBuilder:
@@ -139,7 +148,7 @@ class ProfileScreen extends StatelessWidget {
                                               const CircularProgressIndicator()
                                                   .centered(),
                                           errorWidget: (context, url, error) =>
-                                              const Icon(Icons.upload)
+                                              const Icon(Icons.error)
                                                   .centered(),
                                         ),
                                 )),
@@ -179,6 +188,9 @@ class ProfileScreen extends StatelessWidget {
                                     userId != null)
                                   CustomOutlinedButton(
                                     function: () {
+                                      ChatCreateService()
+                                          .createChat(toId: user!.id);
+
                                       StarlightUtils.pushNamed(
                                           RouteNames.singleChat,
                                           arguments: user);
@@ -490,6 +502,10 @@ class ProfileScreen extends StatelessWidget {
                                                         .add_chart_outlined,
                                                     label: "Chat",
                                                     onTap: () {
+                                                      ChatCreateService()
+                                                          .createChat(
+                                                              toId: user!.id);
+
                                                       StarlightUtils.pushNamed(
                                                           RouteNames.singleChat,
                                                           arguments: user);
@@ -609,7 +625,7 @@ class MultiPhotoShow extends StatelessWidget {
                           placeholder: (context, url) =>
                               const CircularProgressIndicator().centered(),
                           errorWidget: (context, url, error) =>
-                              const Icon(Icons.upload).centered(),
+                              const Icon(Icons.error).centered(),
                         ),
                       ),
                     ),

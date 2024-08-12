@@ -1,10 +1,8 @@
-import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseUpdateService {
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
-  final AuthService _auth = Injection<AuthService>();
 
   Future<void> updateUserData({
     required String id,
@@ -15,6 +13,7 @@ class DatabaseUpdateService {
     bool? postStatus,
     bool? commentStatus,
     bool? messageStatus,
+    bool? commentPermission,
   }) async {
     Map<String, dynamic> payload = {};
     if (name != null) payload["name"] = name;
@@ -23,6 +22,9 @@ class DatabaseUpdateService {
     if (coverUrl != null) payload["coverUrl"] = coverUrl;
     if (postStatus != null) payload["postStatus"] = postStatus;
     if (commentStatus != null) payload["commentStatus"] = commentStatus;
+    if (commentPermission != null) {
+      payload["commentPermission"] = commentPermission;
+    }
     if (messageStatus != null) payload["messageStatus"] = messageStatus;
 
     await _db.collection("users").doc(id).update(payload);

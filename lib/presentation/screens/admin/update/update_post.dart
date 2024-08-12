@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
-import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_cubit.dart';
-import 'package:blog_app/presentation/blocs/db_crud_bloc/db_update_cubit/update_data_state.dart';
+import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_cubit.dart';
+import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_state.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/form_widget.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
@@ -49,7 +49,6 @@ class UpdatePostScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CustomOutlinedButton(
                     function: () async {
-                      await bloc.deletePostImages(post.id);
                       await bloc.updatePost(post.id);
                       MyUtil.showToast(context);
                     },
@@ -131,8 +130,10 @@ class UpdatePostScreen extends StatelessWidget {
                                     return Row(
                                       children: [
                                         InkWell(
-                                            onTap: () {
+                                            onTap: () async {
                                               bloc.pickPostPhotos();
+                                              await bloc
+                                                  .deletePostImages(post.id);
                                             },
                                             child: SizedBox(
                                               width: MediaQuery.of(context)

@@ -8,10 +8,21 @@ class ChatHome extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text("Chat"),
+        title: const Text(
+          "Chat",
+          style: TextStyle(
+              fontSize: 25, letterSpacing: 1, fontWeight: FontWeight.w900),
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                showSearch(context: context, delegate: SearcChathUser());
+              },
+              icon: const Icon(Icons.search_outlined))
+        ],
       ),
       body: StreamBuilder(
-          stream: FirebaseStoreDb().users,
+          stream: ChatReadService().getChats(),
           builder: (_, snap) {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
@@ -26,45 +37,134 @@ class ChatHome extends StatelessWidget {
                     child: Text("Data is null value"),
                   );
                 } else {
-                  List<UserModel> users = snap.data!.toList();
+                  // List<ChatModel> chats = snap.data!.reversed.toList();
+                  final data = snap.data!.docs;
+                  List<ChatModel> chats =
+                      data.map((e) => ChatModel.fromJson(e.data())).toList();
 
-                  if (users.isEmpty) {
+                  if (chats.isEmpty) {
                     return const Center(
-                      child: Text("Say hi 👋"),
+                      child: Text("Search User to Start"),
                     );
                   }
 
                   return ListView.builder(
-                      itemCount: users.length,
+                      itemCount: chats.length,
                       itemBuilder: (_, index) {
-                        return Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          child: ListTile(
-                            onTap: () {
-                              StarlightUtils.pushNamed(RouteNames.singleChat,
-                                  arguments: users[index]);
-                            },
-                            leading: CircleAvatar(
-                              radius: 17,
-                              backgroundImage:
-                                  (users[index].profielUrl.isEmpty ||
-                                          users[index].profielUrl == '')
-                                      ? null
-                                      : NetworkImage(users[index].profielUrl),
-                              child: (users[index].profielUrl.isEmpty ||
-                                      users[index].profielUrl == '')
-                                  ? Text(users[index].name[0])
-                                  : null,
-                            ),
-                            title: Text(users[index].name),
-                            subtitle: Text(
-                              users[index].email,
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        );
+                        var myID = Injection<AuthService>().currentUser!.uid;
+                        var user1 = chats[index].participants[0];
+                        var user2 = chats[index].participants[1];
+                        String recerverID = "";
+
+                        if (user1 == myID) {
+                          recerverID = user2;
+                        } else if (user2 == myID) {
+                          recerverID = user1;
+                        }
+                        return StreamBuilder(
+                            stream: FirebaseStoreDb().getUser(recerverID),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return const Center(
+                                    child: CupertinoActivityIndicator());
+                              }
+                              if (snapshot.data == null) {
+                                return const Text("NONAME");
+                              }
+                              UserModel? user;
+                              for (var element in snapshot.data!.docs) {
+                                user = UserModel.fromJson(element);
+                              }
+                              if (user == null) {
+                                return const SizedBox();
+                              }
+                              return StreamBuilder(
+                                  stream: ChatReadService()
+                                      .getLastMessages(chats[index].id),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                          child: CupertinoActivityIndicator());
+                                    }
+                                    if (snapshot.data == null) {
+                                      return const Text("NONAME");
+                                    }
+                                    final data = snapshot.data!.docs;
+                                    MessageModel? message;
+                                    List<MessageModel> last = data
+                                        .map((e) =>
+                                            MessageModel.fromJson(e.data()))
+                                        .toList();
+
+                                    if (last.isNotEmpty) {
+                                      message = last[0];
+                                    }
+                                    return Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: ListTile(
+                                        onTap: () {
+                                          ChatCreateService()
+                                              .createChat(toId: user!.id);
+                                          StarlightUtils.pushNamed(
+                                            RouteNames.singleChat,
+                                            arguments: user,
+                                          );
+                                        },
+                                        leading: CircleAvatar(
+                                          radius: 17,
+                                          backgroundImage: (user!
+                                                      .profielUrl.isEmpty ||
+                                                  user.profielUrl == '')
+                                              ? null
+                                              : NetworkImage(user.profielUrl),
+                                          child: (user.profielUrl.isEmpty ||
+                                                  user.profielUrl == '')
+                                              ? Text(user.name[0])
+                                              : null,
+                                        ),
+                                        title: Text(user.name),
+                                        subtitle: Text(
+                                          message != null
+                                              ? message.type == Type.image
+                                                  ? "Image"
+                                                  : message.type == Type.video
+                                                      ? "Video"
+                                                      : message.message
+                                              : "No message",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        trailing: message == null
+                                            ? null
+                                            : message.readTime.isEmpty &&
+                                                    message.fromId !=
+                                                        Injection<AuthService>()
+                                                            .currentUser!
+                                                            .uid
+                                                ? Container(
+                                                    width: 15,
+                                                    height: 15,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors
+                                                            .greenAccent
+                                                            .shade100,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10)),
+                                                  )
+                                                : Text(
+                                                    MyUtil.getPostedTime(
+                                                        context: context,
+                                                        time: message.sentTime),
+                                                  ),
+                                      ),
+                                    );
+                                  });
+                            });
                       });
                 }
             }

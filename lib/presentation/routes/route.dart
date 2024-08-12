@@ -227,7 +227,12 @@ Route? router(RouteSettings settings) {
     case RouteNames.postDetail:
       return _protectedRoute(
         incomingRoute,
-        const PostDetail(),
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => CreateCubit()),
+          ],
+          child: const PostDetail(),
+        ),
         settings,
       );
     case RouteNames.noti:
@@ -341,7 +346,12 @@ Route? router(RouteSettings settings) {
     case RouteNames.singleChat:
       return _protectedRoute(
         incomingRoute,
-        const SingleChat(),
+        MultiBlocProvider(
+          providers: [
+            BlocProvider<ChatBloc>(create: (_) => ChatBloc()),
+          ],
+          child: const SingleChat(),
+        ),
         settings,
       );
 

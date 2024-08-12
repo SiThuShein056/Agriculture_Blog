@@ -1,11 +1,11 @@
 part of 'home_import.dart';
 
 class HomeBloc extends Bloc<HomeBaseEvent, HomeBaseState> {
-  final AuthService _auth = Injection<AuthService>();
+  final AuthService auth = Injection<AuthService>();
   StreamSubscription? _streamSubscription;
   final GlobalKey<ScaffoldState> drawerKey = GlobalKey<ScaffoldState>();
   HomeBloc(super.initialState) {
-    _streamSubscription = _auth.authState().listen(
+    _streamSubscription = auth.authState().listen(
       (user) {
         if (user == null) {
           add(const HomeUserSignOutEvent());
@@ -21,7 +21,7 @@ class HomeBloc extends Bloc<HomeBaseEvent, HomeBaseState> {
     });
 
     on<HomeUserSignOutEvent>((event, emit) async {
-      await _auth.signOut();
+      await auth.signOut();
 
       return emit(const HomeUserSignOutState());
     });

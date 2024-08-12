@@ -180,6 +180,30 @@ class CreateCubit extends Cubit<CreateState> {
     return;
   }
 
+  Future<void> pickPostVideo() async {
+    if (state is CreateLoadingState) return;
+    emit(const CreateLoadingState());
+    imageUrl.clear();
+    final List<XFile> image =
+        await Injection<ImagePicker>().pickMultipleMedia();
+
+    for (var element in image) {
+      final point = Injection<FirebaseStorage>().ref(
+          "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${element.name.split(".").last}");
+      final uploaded = await point.putFile(element.path.file);
+      //TODO
+
+      var img = await Injection<FirebaseStorage>()
+          .ref(uploaded.ref.fullPath)
+          .getDownloadURL();
+
+      imageUrl.add(img);
+    }
+    log(imageUrl.length.toString());
+    emit(CreateSuccessState(imageUrl));
+    return;
+  }
+
   Future<void> createCategory() async {
     if (state is CreateLoadingState ||
         formKey?.currentState?.validate() != true) return;

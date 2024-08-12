@@ -14,7 +14,7 @@ import '../../../../data/datasources/remote/auth_services/authu_service_import.d
 import '../../../../data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import '../../../../data/models/post_model/post_model.dart';
 import '../../../../injection.dart';
-import '../../../blocs/db_crud_bloc/create_post_cubit/post_create_cubit.dart';
+import '../../../blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import '../../show_posts/comment_part.dart';
 import '../../show_posts/like_part.dart';
 

@@ -5,7 +5,6 @@ import 'package:blog_app/data/datasources/remote/auth_services/authu_service_imp
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
-import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
@@ -35,39 +34,41 @@ class FirebaseStoreDb {
       StreamController<List<CommentModel>>.broadcast();
   final StreamController<List<UserModel>> _userStream =
       StreamController<List<UserModel>>.broadcast();
+  final StreamController<List<UserModel>> _otherUserStream =
+      StreamController<List<UserModel>>.broadcast();
   final StreamController<List<LikeModel>> _likeStream =
       StreamController<List<LikeModel>>.broadcast();
   final StreamController<List<PostImageModel>> _postImagesStream =
       StreamController<List<PostImageModel>>.broadcast();
 
-  String getConservation(String id) {
-    return _auth.currentUser!.uid.hashCode <= id.hashCode
-        ? '${_auth.currentUser!.uid}_$id'
-        : '${id}_${_auth.currentUser!.uid}';
-  }
+  // String getConservation(String id) {
+  //   return _auth.currentUser!.uid.hashCode <= id.hashCode
+  //       ? '${_auth.currentUser!.uid}_$id'
+  //       : '${id}_${_auth.currentUser!.uid}';
+  // }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(UserModel user) {
-    Stream<QuerySnapshot<Map<String, dynamic>>> msg = _db
-        .collection("chats/${getConservation(user.id)}/messages")
-        .snapshots();
-    log(getConservation(user.id));
+  // Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(UserModel user) {
+  //   Stream<QuerySnapshot<Map<String, dynamic>>> msg = _db
+  //       .collection("chats/${getConservation(user.id)}/messages")
+  //       .snapshots();
+  //   log(getConservation(user.id));
 
-    return msg;
-  }
+  //   return msg;
+  // }
 
-  Future<void> sendMessage(UserModel user, String msg) async {
-    final time = DateTime.now().millisecondsSinceEpoch.toString();
+  // Future<void> sendMessage(UserModel user, String msg) async {
+  //   final time = DateTime.now().millisecondsSinceEpoch.toString();
 
-    final MessageModel message = MessageModel(
-        fromId: _auth.currentUser!.uid,
-        toId: user.id,
-        readTime: '',
-        sentTime: time,
-        type: "text",
-        message: msg);
-    final ref = _db.collection("chats/${getConservation(user.id)}/messages/");
-    return ref.doc(time).set(message.toJson());
-  }
+  //   final MessageModel message = MessageModel(
+  //       fromId: _auth.currentUser!.uid,
+  //       toId: user.id,
+  //       readTime: '',
+  //       sentTime: time,
+  //       type: "text",
+  //       message: msg);
+  //   final ref = _db.collection("chats/${getConservation(user.id)}/messages/");
+  //   return ref.doc(time).set(message.toJson());
+  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getUser(String userId) {
     Stream<QuerySnapshot<Map<String, dynamic>>> user =
@@ -104,6 +105,7 @@ class FirebaseStoreDb {
       postStatus: true,
       commentStatus: true,
       messageStatus: true,
+      commentPermission: true,
     );
 
     var data = await FirebaseFirestore.instance.collection("users").get();
@@ -159,6 +161,20 @@ class FirebaseStoreDb {
 
     for (var element in userData) {
       isStatus = element["commentStatus"];
+    }
+    return isStatus;
+  }
+
+  Future<bool> checkCommentPermission() async {
+    var isStatus = true;
+    var data = await FirebaseFirestore.instance
+        .collection("users")
+        .where("id", isEqualTo: _auth.currentUser!.uid)
+        .get();
+    var userData = data.docs;
+
+    for (var element in userData) {
+      isStatus = element["commentPermission"];
     }
     return isStatus;
   }
@@ -277,7 +293,7 @@ class FirebaseStoreDb {
     return _postStream.stream;
   }
 
-  ///USERS
+  ///ALL USERS
   final List<UserModel> _users = [];
   void userParser(QuerySnapshot event) {
     _users.clear();
@@ -287,7 +303,7 @@ class FirebaseStoreDb {
 
   Map<String, StreamSubscription> usersStream = {};
   void _userStreamSetup() {
-    postsStream["data"] = _db
+    usersStream["data"] = _db
         .collection("users")
         // .where("post_type", isEqualTo: "public")
         // .orderBy(
@@ -308,6 +324,39 @@ class FirebaseStoreDb {
     }
     _userStreamSetup();
     return _userStream.stream;
+  }
+
+  ///OTHER USERS
+  final List<UserModel> _otherUsers = [];
+  void otherUserParser(QuerySnapshot event) {
+    _otherUsers.clear();
+    _otherUsers.addAll(event.docs.map((e) => UserModel.fromJson(e.data())));
+    _otherUserStream.add(_otherUsers);
+  }
+
+  Map<String, StreamSubscription> otherUsersStream = {};
+  void _otherUserStreamSetup() {
+    otherUsersStream["data"] = _db
+        .collection("users")
+        .where("id", isNotEqualTo: _auth.currentUser!.uid)
+        // .orderBy(
+        //   "createdAt",
+        //   descending: true,
+        // )
+        .snapshots()
+        .listen((e) {
+      return otherUserParser(e);
+    });
+  }
+
+  Stream<List<UserModel>> get otherUsers {
+    var stream = otherUsersStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      otherUsersStream.remove("data");
+    }
+    _otherUserStreamSetup();
+    return _otherUserStream.stream;
   }
 
   ///CATEGORIES

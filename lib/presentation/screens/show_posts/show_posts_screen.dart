@@ -62,6 +62,8 @@ class ShowPost extends StatelessWidget {
             },
             icon: const Icon(Icons.search),
           ),
+          IconButton(
+              onPressed: () {}, icon: const Icon(Icons.notifications_outlined))
           // StreamBuilder<List<NotificationModel>>(
           //     stream: FirebaseStoreDb().notis,
           //     builder: (_, snap) {
@@ -181,61 +183,14 @@ class ShowPost extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 GestureDetector(
-                                    onTap: () {
-                                      StarlightUtils.pushNamed(
-                                          RouteNames.profileScreen,
-                                          arguments: user!.id.toString());
-                                    },
-                                    child: Row(
-                                      children: [
-                                        // CircleProfile(
-                                        //   name: user.profielUrl ?? user.name[0],
-                                        // ),
-                                        CircleAvatar(
-                                          radius: 17,
-                                          backgroundImage: (user
-                                                      .profielUrl.isEmpty ||
-                                                  user.profielUrl == '')
-                                              ? null
-                                              : NetworkImage(user.profielUrl),
-                                          child: (user.profielUrl.isEmpty ||
-                                                  user.profielUrl == '')
-                                              ? Text(user.name[0])
-                                              : null,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(user.name),
-                                            Row(
-                                              children: [
-                                                Text(MyUtil.getPostedTime(
-                                                    context: context,
-                                                    time: posts[i].createdAt)),
-                                                const SizedBox(
-                                                  width: 5,
-                                                ),
-                                                const Icon(
-                                                  Icons.public_outlined,
-                                                  size: 15,
-                                                )
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        // const Spacer(),
-                                        // IconButton(
-                                        //     onPressed: () {
-                                        //       createBloc
-                                        //           .deletePost(posts[i].id);
-                                        //     },
-                                        //     icon: const Icon(Icons.delete))
-                                      ],
-                                    )),
+                                  onTap: () {
+                                    StarlightUtils.pushNamed(
+                                        RouteNames.profileScreen,
+                                        arguments: user!.id.toString());
+                                  },
+                                  child: PostCardTopRow(
+                                      user: user, post: posts[i]),
+                                ),
                                 Padding(
                                   padding: const EdgeInsets.only(
                                       top: 10, bottom: 5, left: 3, right: 3),
@@ -339,6 +294,9 @@ class ShowPost extends StatelessWidget {
                                               icon: Icons.add_chart_outlined,
                                               label: "Chat",
                                               onTap: () {
+                                                ChatCreateService()
+                                                    .createChat(toId: user!.id);
+
                                                 StarlightUtils.pushNamed(
                                                     RouteNames.singleChat,
                                                     arguments: user);
@@ -356,5 +314,93 @@ class ShowPost extends StatelessWidget {
                 });
           }),
     );
+  }
+}
+
+class PostCardTopRow extends StatelessWidget {
+  const PostCardTopRow({
+    super.key,
+    required this.user,
+    required this.post,
+  });
+
+  final UserModel? user;
+  final PostModel post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        // CircleProfile(
+        //   name: user.profielUrl ?? user.name[0],
+        // ),
+        CircleAvatar(
+          radius: 17,
+          backgroundImage: (user!.profielUrl.isEmpty || user!.profielUrl == '')
+              ? null
+              : NetworkImage(user!.profielUrl),
+          child: (user!.profielUrl.isEmpty || user!.profielUrl == '')
+              ? Text(user!.name[0])
+              : null,
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(user!.name),
+            Row(
+              children: [
+                Text(MyUtil.getPostedTime(
+                    context: context, time: post.createdAt)),
+                const SizedBox(
+                  width: 5,
+                ),
+                const Icon(
+                  Icons.public_outlined,
+                  size: 15,
+                )
+              ],
+            ),
+          ],
+        ),
+//  const Spacer(),PopupMenuButton<int>(
+//                               onSelected: (value) => onSelected(context, value,
+//                                   comments[i].id, comments[i].body),
+//                               itemBuilder: (context) => [
+//                                     const PopupMenuItem(
+//                                         value: 0, child: Text("Delete")),
+//                                     const PopupMenuItem(
+//                                         value: 1, child: Text("Edit"))
+//                                   ])
+      ],
+    );
+  }
+
+  onSelected(c, v, commentId, body) async {
+    var isEnable = await FirebaseStoreDb().checkCommentStatus();
+    if (isEnable) {
+      switch (v) {
+        case 0:
+          // createBloc.deleteComment(commentId);
+
+          break;
+        case 1:
+          // createBloc.ediable.value = true;
+          // createBloc.commentId = commentId;
+
+          // createBloc.commentController.text = body;
+
+          break;
+        default:
+      }
+    } else {
+      StarlightUtils.snackbar(
+        const SnackBar(
+          content: Text("Your account has been banned"),
+        ),
+      );
+    }
   }
 }

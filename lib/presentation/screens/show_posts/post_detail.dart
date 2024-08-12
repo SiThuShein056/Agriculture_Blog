@@ -1,8 +1,14 @@
+import 'dart:developer';
+
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:blog_app/presentation/screens/profile/profile_import.dart';
+import 'package:blog_app/presentation/screens/show_posts/comment_part.dart';
+import 'package:blog_app/presentation/screens/show_posts/like_part.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
 import '../../../injection.dart';
@@ -14,6 +20,10 @@ class PostDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     PostModel posts = ModalRoute.of(context)!.settings.arguments as PostModel;
+    CreateCubit createCubit = context.read<CreateCubit>();
+    var phone = posts.phone;
+
+    log(phone.toString());
 
     return Scaffold(
       appBar: AppBar(
@@ -71,6 +81,19 @@ class PostDetail extends StatelessWidget {
         padding: const EdgeInsets.all(10.0),
         child: ListView(
           children: [
+            if (phone == "") const SizedBox(),
+            if (phone != "")
+              InkWell(
+                  onTap: () {
+                    createCubit.callNumber("${posts.phone}");
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Text(
+                      "Phone Number: $phone",
+                      style: const TextStyle(color: Colors.blue),
+                    ),
+                  )),
             Padding(
               padding: const EdgeInsets.all(5.0),
               child: Text(
@@ -82,6 +105,21 @@ class PostDetail extends StatelessWidget {
               height: 5,
             ),
             MultiPhotoShow(postId: posts.id),
+            const Divider(),
+            SizedBox(
+              height: 40,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  LikePart(
+                    postId: posts.id,
+                    createCubit: createCubit,
+                  ),
+                  CommentPart(postsId: posts.id, createBloc: createCubit),
+                ],
+              ),
+            ),
+            const Divider(),
           ],
         ),
       ),
