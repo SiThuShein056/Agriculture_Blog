@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
   ChatBloc() : super(const ChatInitialState()) {
-    on<SentTextMessageEvent>((event, emit) {
+    on<SentTextMessageEvent>((event, emit) async {
       if (state is ChatLoadingState ||
           formKey?.currentState?.validate() != true) return;
       emit(const ChatLoadingState());
@@ -19,6 +19,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
         emit(const DataSendingState());
         ChatCreateService().createMessage(
             message: messageController.text, toId: event.toId, type: Type.text);
+
         messageController.text = "";
         emit(const DataSentSuccessState());
       } catch (e) {
@@ -60,6 +61,33 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       try {
         emit(const DataSendingState());
         ChatCreateService().sentVideoMessage(toId: event.toId);
+        emit(const DataSentSuccessState());
+        messageController.text = "";
+      } catch (e) {
+        emit(ChatFailState(e));
+      }
+      emit(const ChatSuccessState());
+    });
+
+    on<SentVideoCallLinkEvent>((event, emit) async {
+      if (state is ChatLoadingState) return;
+      emit(const ChatLoadingState());
+      try {
+        emit(const DataSendingState());
+        ChatCreateService().sentVideoCallLinkMessage(toId: event.toId);
+        emit(const DataSentSuccessState());
+        messageController.text = "";
+      } catch (e) {
+        emit(ChatFailState(e));
+      }
+      emit(const ChatSuccessState());
+    });
+    on<SentVoiceCallLinkEvent>((event, emit) async {
+      if (state is ChatLoadingState) return;
+      emit(const ChatLoadingState());
+      try {
+        emit(const DataSendingState());
+        ChatCreateService().sentVoiceCallLinkMessage(toId: event.toId);
         emit(const DataSentSuccessState());
         messageController.text = "";
       } catch (e) {

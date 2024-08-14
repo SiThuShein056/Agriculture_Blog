@@ -7,6 +7,7 @@ import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/data/models/savedPost_model/save_post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -362,6 +363,49 @@ class CreateCubit extends Cubit<CreateState> {
 
         await doc.set(
           like.toJson(),
+        );
+      }
+
+      emit(const CreateSuccessState());
+    } on FirebaseException catch (e) {
+      emit(CreateErrorState(e.code));
+    } catch (e) {
+      emit(CreateErrorState(e.toString()));
+    }
+  }
+
+  Future<void> savedPostAction(String postId) async {
+    try {
+      final doc = _db.collection("savePosts").doc();
+      var savedID = "";
+      var existUser = false;
+      final savePost = SavePostModel(
+        id: doc.id,
+        postId: postId,
+        userId: Injection<AuthService>().currentUser!.uid,
+        createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+      );
+
+      var data = await _db.collection("savePosts").get();
+      var likedUser = data.docs;
+      for (var element in likedUser) {
+        var userId = element["user_id"].toString();
+        var postedId = element["post_id"].toString();
+
+        if (userId == auth.currentUser!.uid && postedId == postId) {
+          savedID = element["id"].toString();
+          existUser = true;
+        }
+      }
+
+      if (existUser) {
+        log("ExistUser $savedID");
+        await _db.collection("savePosts").doc(savedID).delete();
+      } else {
+        log("Not ExistUser");
+
+        await doc.set(
+          savePost.toJson(),
         );
       }
 

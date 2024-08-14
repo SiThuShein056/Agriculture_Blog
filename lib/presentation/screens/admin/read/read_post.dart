@@ -1,7 +1,7 @@
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/common_widgets/post_action_button.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
-import 'package:blog_app/presentation/screens/profile/profile_import.dart';
+import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/search_post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';

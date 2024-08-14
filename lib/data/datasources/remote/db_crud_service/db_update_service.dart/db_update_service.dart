@@ -13,6 +13,8 @@ class DatabaseUpdateService {
     bool? postStatus,
     bool? commentStatus,
     bool? messageStatus,
+    bool? isOnline,
+    String? lastActive,
     bool? commentPermission,
   }) async {
     Map<String, dynamic> payload = {};
@@ -22,6 +24,8 @@ class DatabaseUpdateService {
     if (coverUrl != null) payload["coverUrl"] = coverUrl;
     if (postStatus != null) payload["postStatus"] = postStatus;
     if (commentStatus != null) payload["commentStatus"] = commentStatus;
+    if (lastActive != null) payload["last_Active"] = lastActive;
+    if (isOnline != null) payload["is_Online"] = isOnline;
     if (commentPermission != null) {
       payload["commentPermission"] = commentPermission;
     }

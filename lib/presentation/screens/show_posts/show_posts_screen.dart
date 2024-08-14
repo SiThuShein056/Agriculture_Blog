@@ -17,7 +17,6 @@ class ShowPost extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () async {
-              // showSearch(context: context, delegate: SearchPost());
               await showDialog(
                   context: context,
                   builder: (context) => Center(
@@ -62,8 +61,6 @@ class ShowPost extends StatelessWidget {
             },
             icon: const Icon(Icons.search),
           ),
-          IconButton(
-              onPressed: () {}, icon: const Icon(Icons.notifications_outlined))
           // StreamBuilder<List<NotificationModel>>(
           //     stream: FirebaseStoreDb().notis,
           //     builder: (_, snap) {
@@ -189,7 +186,10 @@ class ShowPost extends StatelessWidget {
                                         arguments: user!.id.toString());
                                   },
                                   child: PostCardTopRow(
-                                      user: user, post: posts[i]),
+                                    user: user,
+                                    post: posts[i],
+                                    createCubit: createBloc,
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
@@ -322,10 +322,12 @@ class PostCardTopRow extends StatelessWidget {
     super.key,
     required this.user,
     required this.post,
+    required this.createCubit,
   });
 
   final UserModel? user;
   final PostModel post;
+  final CreateCubit createCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -365,32 +367,90 @@ class PostCardTopRow extends StatelessWidget {
             ),
           ],
         ),
-//  const Spacer(),PopupMenuButton<int>(
-//                               onSelected: (value) => onSelected(context, value,
-//                                   comments[i].id, comments[i].body),
-//                               itemBuilder: (context) => [
-//                                     const PopupMenuItem(
-//                                         value: 0, child: Text("Delete")),
-//                                     const PopupMenuItem(
-//                                         value: 1, child: Text("Edit"))
-//                                   ])
+        const Spacer(),
+        PopupMenuButton<int>(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            onSelected: (value) => onSelected(
+                  context,
+                  value,
+                  post.id,
+                  createCubit,
+                ),
+            itemBuilder: (context) => [
+                  PopupMenuItem(
+                      value: 0,
+                      child: StreamBuilder<List<SavePostModel>>(
+                          stream: FirebaseStoreDb().savedPosts(post.id),
+                          builder: (context, savePostSnap) {
+                            if (savePostSnap.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CupertinoActivityIndicator());
+                            }
+                            if (savePostSnap.data == null) {
+                              return const Center(
+                                child: Text("No Data"),
+                              );
+                            }
+                            var savedPosts = savePostSnap.data!;
+                            bool saved = false;
+                            for (var element in savedPosts) {
+                              if (element.userId ==
+                                  Injection<AuthService>().currentUser!.uid) {
+                                saved = true;
+                              }
+                            }
+                            return Row(
+                              children: [
+                                Icon(
+                                  saved
+                                      ? Icons.bookmark
+                                      : Icons.bookmark_add_outlined,
+                                  color: saved ? Colors.blue : null,
+                                ),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(savedPosts.isEmpty
+                                    ? "Save Post"
+                                    : saved
+                                        ? "Saved"
+                                        : "Save Post"),
+                              ],
+                            );
+                          })),
+                  const PopupMenuItem(
+                      value: 1,
+                      child: Row(
+                        children: [
+                          Icon(Icons.copy_all_outlined),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text("Copy Post Link"),
+                        ],
+                      ))
+                ])
       ],
     );
   }
 
-  onSelected(c, v, commentId, body) async {
+  onSelected(c, v, postID, CreateCubit createBloc) async {
     var isEnable = await FirebaseStoreDb().checkCommentStatus();
     if (isEnable) {
       switch (v) {
         case 0:
-          // createBloc.deleteComment(commentId);
+          createBloc.savedPostAction(postID);
 
           break;
         case 1:
-          // createBloc.ediable.value = true;
-          // createBloc.commentId = commentId;
-
-          // createBloc.commentController.text = body;
+          FlutterClipboard.copy(postID).then(
+            (_) => StarlightUtils.snackbar(
+              const SnackBar(
+                content: Text("Copied"),
+              ),
+            ),
+          );
 
           break;
         default:

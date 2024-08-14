@@ -98,70 +98,70 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 ),
               ),
             ),
-            Expanded(
-              child: PieChart(
-                PieChartData(
-                  pieTouchData: PieTouchData(
-                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      setState(() {
-                        if (!event.isInterestedForInteractions ||
-                            pieTouchResponse == null ||
-                            pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
-                          return;
-                        }
-                        touchedIndex = pieTouchResponse
-                            .touchedSection!.touchedSectionIndex;
-                      });
-                    },
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  sectionsSpace: 0,
-                  centerSpaceRadius: 40,
-                  sections: showingSections(),
-                ),
-              ),
-            ),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Indicator(
-                  color: Colors.blue,
-                  text: 'First',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Indicator(
-                  color: Colors.yellow,
-                  text: 'Second',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Indicator(
-                  color: Colors.purple,
-                  text: 'Third',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 4,
-                ),
-                Indicator(
-                  color: Colors.green,
-                  text: 'Fourth',
-                  isSquare: true,
-                ),
-                SizedBox(
-                  height: 18,
-                ),
-              ],
-            ),
+            // Expanded(
+            //   child: PieChart(
+            //     PieChartData(
+            //       pieTouchData: PieTouchData(
+            //         touchCallback: (FlTouchEvent event, pieTouchResponse) {
+            //           setState(() {
+            //             if (!event.isInterestedForInteractions ||
+            //                 pieTouchResponse == null ||
+            //                 pieTouchResponse.touchedSection == null) {
+            //               touchedIndex = -1;
+            //               return;
+            //             }
+            //             touchedIndex = pieTouchResponse
+            //                 .touchedSection!.touchedSectionIndex;
+            //           });
+            //         },
+            //       ),
+            //       borderData: FlBorderData(
+            //         show: false,
+            //       ),
+            //       sectionsSpace: 0,
+            //       centerSpaceRadius: 40,
+            //       sections: showingSections(),
+            //     ),
+            //   ),
+            // ),
+            // const Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   crossAxisAlignment: CrossAxisAlignment.start,
+            //   children: <Widget>[
+            //     Indicator(
+            //       color: Colors.blue,
+            //       text: 'First',
+            //       isSquare: true,
+            //     ),
+            //     SizedBox(
+            //       height: 4,
+            //     ),
+            //     Indicator(
+            //       color: Colors.yellow,
+            //       text: 'Second',
+            //       isSquare: true,
+            //     ),
+            //     SizedBox(
+            //       height: 4,
+            //     ),
+            //     Indicator(
+            //       color: Colors.purple,
+            //       text: 'Third',
+            //       isSquare: true,
+            //     ),
+            //     SizedBox(
+            //       height: 4,
+            //     ),
+            //     Indicator(
+            //       color: Colors.green,
+            //       text: 'Fourth',
+            //       isSquare: true,
+            //     ),
+            //     SizedBox(
+            //       height: 18,
+            //     ),
+            //   ],
+            // ),
           ],
         ),
       ),

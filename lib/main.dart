@@ -40,11 +40,11 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<ThemeCubit, ThemeMode>(builder: (context, state) {
         return ToastificationWrapper(
           child: MaterialApp(
+            navigatorKey: StarlightUtils.navigatorKey,
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             debugShowCheckedModeBanner: false,
-            navigatorKey: StarlightUtils.navigatorKey,
             title: 'Flutter Demo',
             theme: LightTheme().theme,
             darkTheme: DarkTheme().theme,

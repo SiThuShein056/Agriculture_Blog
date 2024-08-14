@@ -15,6 +15,13 @@ class ChatReadService {
       StreamController<List<MessageModel>>.broadcast();
 
   ///
+  Stream<QuerySnapshot<Map<String, dynamic>>> getReportedPost(String postID) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> post =
+        _db.collection("posts").where("id", isEqualTo: postID).snapshots();
+    return post;
+  }
+
+  ///
   Stream<QuerySnapshot<Map<String, dynamic>>> getChats() {
     Stream<QuerySnapshot<Map<String, dynamic>>> msg = _db
         .collection("chats")

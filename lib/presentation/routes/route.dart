@@ -14,6 +14,7 @@ class RouteNames {
       forgetPasswordSentOTPScreen = "/forget-password-sent-otp-screen",
       forgetPasswordVerifyOtpScreen = "/forget-password-verify-otp-screen",
       aboutScreen = "/about-screen",
+      savedPostScreen = "/saved-post-screen",
 
       // registerOTPScreen = "/register-otp-screen",
       // registerVerifyOTPScreen = "/register-verify-otp-screen",
@@ -250,6 +251,17 @@ Route? router(RouteSettings settings) {
             BlocProvider(create: (_) => UserImageBloc())
           ],
           child: const ProfileScreen(),
+        ),
+        settings,
+      );
+    case RouteNames.savedPostScreen:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => CreateCubit()),
+          ],
+          child: const SavedPostScreen(),
         ),
         settings,
       );

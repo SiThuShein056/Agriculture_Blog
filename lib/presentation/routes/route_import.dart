@@ -19,12 +19,13 @@ import 'package:blog_app/presentation/screens/admin/update/update_sub_category.d
 import 'package:blog_app/presentation/screens/chat/singel_chat.dart';
 import 'package:blog_app/presentation/screens/create_post/create_post_import.dart';
 import 'package:blog_app/presentation/screens/noti/notification_screen.dart';
-import 'package:blog_app/presentation/screens/profile/image_view.dart';
-import 'package:blog_app/presentation/screens/profile/profile_import.dart';
 import 'package:blog_app/presentation/screens/setting/setting_import.dart';
 import 'package:blog_app/presentation/screens/show_categories/show_categories.dart';
 import 'package:blog_app/presentation/screens/show_categories/show_sub_category.dart';
 import 'package:blog_app/presentation/screens/show_posts/post_detail.dart';
+import 'package:blog_app/presentation/screens/show_posts/profile/image_view.dart';
+import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
+import 'package:blog_app/presentation/screens/show_posts/saved_post/saved_post_import.dart';
 import 'package:blog_app/presentation/screens/splash/splash_import.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

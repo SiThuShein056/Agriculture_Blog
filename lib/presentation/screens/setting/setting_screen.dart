@@ -301,6 +301,38 @@ class SettingScreen extends StatelessWidget {
                         },
                         title: const Text("Allow to comment on your posts")),
                   );
+                }),
+            StreamBuilder(
+                stream: FirebaseStoreDb()
+                    .mySavedPosts(Injection<AuthService>().currentUser!.uid),
+                builder: (context, savePostSnap) {
+                  if (savePostSnap.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CupertinoActivityIndicator());
+                  }
+                  if (savePostSnap.data == null) {
+                    return const Center(
+                      child: Text("No Data"),
+                    );
+                  }
+                  var savedPosts = savePostSnap.data!;
+                  return Card(
+                    child: ListTile(
+                      onTap: () {
+                        StarlightUtils.pushNamed(RouteNames.savedPostScreen,
+                            arguments: savedPosts);
+                      },
+                      leading: const Icon(
+                        Icons.bookmark,
+                      ),
+                      title: Text(
+                          savedPosts.isEmpty ? "Not Save yet" : "My Posts"),
+                      trailing: savedPosts.isEmpty
+                          ? const SizedBox()
+                          : Text(
+                              savedPosts.length.toString(),
+                            ),
+                    ),
+                  );
                 })
           ],
         ),

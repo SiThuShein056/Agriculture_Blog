@@ -133,7 +133,13 @@ class ChatHome extends StatelessWidget {
                                                   ? "Image"
                                                   : message.type == Type.video
                                                       ? "Video"
-                                                      : message.message
+                                                      : message.type ==
+                                                              Type.videoCallLink
+                                                          ? "Video Call"
+                                                          : message.type ==
+                                                                  Type.voiceCallLink
+                                                              ? "Voice Call"
+                                                              : message.message
                                               : "No message",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,

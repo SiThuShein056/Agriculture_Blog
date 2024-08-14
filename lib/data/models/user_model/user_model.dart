@@ -5,7 +5,8 @@ class UserModel {
   final String profielUrl;
   final String coverUrl;
   final String role;
-  bool postStatus, commentStatus, messageStatus, commentPermission;
+  final String lastActive;
+  bool postStatus, commentStatus, messageStatus, commentPermission, isOnline;
 
   UserModel({
     required this.id,
@@ -15,6 +16,8 @@ class UserModel {
     required this.coverUrl,
     this.role = "user",
     required this.messageStatus,
+    required this.isOnline,
+    required this.lastActive,
     required this.postStatus,
     required this.commentStatus,
     required this.commentPermission,
@@ -40,6 +43,8 @@ class UserModel {
         "commentStatus": commentStatus,
         "messageStatus": messageStatus,
         "commentPermission": commentPermission,
+        "last_Active": lastActive,
+        "is_Online": isOnline,
         "role": role,
       };
 
@@ -51,6 +56,8 @@ class UserModel {
       profielUrl: data["profileUrl"],
       coverUrl: data["coverUrl"],
       role: data["role"],
+      isOnline: data["is_Online"],
+      lastActive: data["last_Active"],
       postStatus: data["postStatus"],
       commentStatus: data["commentStatus"],
       commentPermission: data["commentPermission"],

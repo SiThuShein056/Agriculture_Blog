@@ -8,6 +8,7 @@ import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/data/models/savedPost_model/save_post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
@@ -38,6 +39,10 @@ class FirebaseStoreDb {
       StreamController<List<UserModel>>.broadcast();
   final StreamController<List<LikeModel>> _likeStream =
       StreamController<List<LikeModel>>.broadcast();
+  final StreamController<List<SavePostModel>> _savePostStream =
+      StreamController<List<SavePostModel>>.broadcast();
+  final StreamController<List<SavePostModel>> _mySavePostStream =
+      StreamController<List<SavePostModel>>.broadcast();
   final StreamController<List<PostImageModel>> _postImagesStream =
       StreamController<List<PostImageModel>>.broadcast();
 
@@ -95,6 +100,7 @@ class FirebaseStoreDb {
     final doc = FirebaseFirestore.instance
         .collection("users")
         .doc(_auth.currentUser!.uid);
+    String time = DateTime.now().millisecondsSinceEpoch.toString();
 
     final user = UserModel(
       id: id,
@@ -102,6 +108,8 @@ class FirebaseStoreDb {
       email: email,
       profielUrl: profileUrl,
       coverUrl: coverUrl,
+      isOnline: true,
+      lastActive: time,
       postStatus: true,
       commentStatus: true,
       messageStatus: true,
@@ -508,6 +516,67 @@ class FirebaseStoreDb {
     }
     _likeStreamSetup(postId);
     return _likeStream.stream;
+  }
+
+  ///SAVEDPOSTS
+  final List<SavePostModel> _savedPosts = [];
+  void savePostParser(QuerySnapshot event) {
+    _savedPosts.clear();
+
+    _savedPosts.addAll(event.docs.map((e) => SavePostModel.fromJson(e.data())));
+    _savePostStream.add(_savedPosts);
+  }
+
+  final Map<String, StreamSubscription> _savePostsStreams = {};
+  void _savePostsStreamsSetup(String postId) {
+    _likesStream[postId] = _db
+        .collection("savePosts")
+        .where("post_id", isEqualTo: postId)
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) {
+      return savePostParser(event);
+    });
+  }
+
+  Stream<List<SavePostModel>> savedPosts(String postId) {
+    var stream = _savePostsStreams[postId];
+    if (stream != null) {
+      stream.cancel();
+      _savePostsStreams.remove(postId);
+    }
+    _savePostsStreamsSetup(postId);
+    return _savePostStream.stream;
+  }
+
+  ///MY SAVED POSTS
+  final List<SavePostModel> _mySavedPosts = [];
+  void mySavePostParser(QuerySnapshot event) {
+    _mySavedPosts.clear();
+
+    _mySavedPosts
+        .addAll(event.docs.map((e) => SavePostModel.fromJson(e.data())));
+    _mySavePostStream.add(_mySavedPosts);
+  }
+
+  final Map<String, StreamSubscription> _mySavePostsStreams = {};
+  void _mySavePostsStreamsSetup(String userId) {
+    _likesStream[userId] = _db
+        .collection("savePosts")
+        .where("user_id", isEqualTo: userId)
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) {
+      return mySavePostParser(event);
+    });
+  }
+
+  Stream<List<SavePostModel>> mySavedPosts(String userId) {
+    var stream = _mySavePostsStreams[userId];
+    if (stream != null) {
+      stream.cancel();
+      _mySavePostsStreams.remove(userId);
+    }
+    _mySavePostsStreamsSetup(userId);
+    return _mySavePostStream.stream;
   }
 
   ///POSTIMAGES

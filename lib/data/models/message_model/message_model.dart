@@ -7,6 +7,7 @@ class MessageModel {
   final String sentTime;
   final Type type;
   final String message;
+  final bool isPostID;
 
   const MessageModel({
     required this.fromId,
@@ -17,6 +18,7 @@ class MessageModel {
     required this.sentTime,
     required this.type,
     required this.message,
+    required this.isPostID,
   });
 
   Map<String, dynamic> toJson() => {
@@ -28,6 +30,7 @@ class MessageModel {
         "sent_time": sentTime,
         "type": type.name,
         "message": message,
+        "isPostID": isPostID,
       };
 
   factory MessageModel.fromJson(dynamic data) {
@@ -42,10 +45,15 @@ class MessageModel {
           ? Type.image
           : data["type"].toString() == Type.video.name
               ? Type.video
-              : Type.text,
+              : data["type"].toString() == Type.videoCallLink.name
+                  ? Type.videoCallLink
+                  : data["type"].toString() == Type.voiceCallLink.name
+                      ? Type.voiceCallLink
+                      : Type.text,
       message: data["message"],
+      isPostID: data["isPostID"],
     );
   }
 }
 
-enum Type { text, image, video }
+enum Type { text, image, video, videoCallLink, voiceCallLink }

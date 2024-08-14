@@ -1,7 +1,39 @@
 part of 'home_import.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    DatabaseUpdateService().updateUserData(
+        id: Injection<AuthService>().currentUser!.uid,
+        isOnline: true,
+        lastActive: DateTime.now().millisecondsSinceEpoch.toString());
+
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      log("Message : $message");
+      if (message.toString().contains("pause")) {
+        DatabaseUpdateService().updateUserData(
+            id: Injection<AuthService>().currentUser!.uid,
+            isOnline: false,
+            lastActive: DateTime.now().millisecondsSinceEpoch.toString());
+      }
+      if (message.toString().contains("resume")) {
+        DatabaseUpdateService().updateUserData(
+            id: Injection<AuthService>().currentUser!.uid,
+            isOnline: true,
+            lastActive: DateTime.now().millisecondsSinceEpoch.toString());
+      }
+
+      return Future.value(message);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -32,6 +32,15 @@ class ChatCreateService {
     return false;
   }
 
+  Future<bool> isPostID({required String postID}) async {
+    final doc = await _db.collection("posts").doc(postID).get();
+    if (doc.exists) {
+      return true;
+    }
+
+    return false;
+  }
+
   Future<void> createChat({required String toId}) async {
     String time = DateTime.now().millisecondsSinceEpoch.toString();
     String senderId = _auth.currentUser!.uid;
@@ -57,6 +66,7 @@ class ChatCreateService {
     String senderId = _auth.currentUser!.uid;
     String chatID = generateChatID(uid1: senderId, uid2: toId);
     final doc = _db.collection("messages").doc();
+    bool isPostID = await ChatCreateService().isPostID(postID: message);
 
     final chat = MessageModel(
       fromId: senderId,
@@ -67,6 +77,7 @@ class ChatCreateService {
       sentTime: time,
       type: type,
       message: message,
+      isPostID: isPostID,
     );
 
     await doc.set(
@@ -95,6 +106,20 @@ class ChatCreateService {
             .createMessage(message: imageUrl, toId: toId, type: Type.image);
       }
     }
+  }
+
+  Future<void> sentVideoCallLinkMessage({required String toId}) async {
+    String senderId = _auth.currentUser!.uid;
+    String chatID = generateChatID(uid1: senderId, uid2: toId);
+    await ChatCreateService()
+        .createMessage(message: chatID, toId: toId, type: Type.videoCallLink);
+  }
+
+  Future<void> sentVoiceCallLinkMessage({required String toId}) async {
+    String senderId = _auth.currentUser!.uid;
+    String chatID = generateChatID(uid1: senderId, uid2: toId);
+    await ChatCreateService()
+        .createMessage(message: chatID, toId: toId, type: Type.voiceCallLink);
   }
 
   Future<PersistentBottomSheetController> selectImageSession(
@@ -174,12 +199,20 @@ class ChatCreateService {
 
   Future<void> updateMessageReadStatus(MessageModel message) async {
     _db.collection("messages").doc(message.id).update(
-        {"read_time": DateTime.now().millisecondsSinceEpoch.toString()});
+        {"read_time": DateTime.now().microsecondsSinceEpoch.toString()});
+  }
+
+  Future<void> updateMessage(MessageModel message, String msg) async {
+    _db.collection("messages").doc(message.id).update({"message": msg});
   }
 
   Future<void> updateChatListCreatedTime(String chatID) async {
     _db.collection("chats").doc(chatID).update(
         {"created_time": DateTime.now().millisecondsSinceEpoch.toString()});
+  }
+
+  Future<void> updateIsPostID(String chatID) async {
+    _db.collection("chats").doc(chatID).update({"isPostID": true});
   }
   // String getConservation(String id) {
   //   return _auth.currentUser!.uid.hashCode <= id.hashCode

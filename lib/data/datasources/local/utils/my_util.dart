@@ -17,6 +17,28 @@ class MyUtil {
     return "${postedTime.day} ${_getMonth(postedTime)} , ${postedTime.year}";
   }
 
+  String getLastActiveTime(
+      {required BuildContext context, required String lastActive}) {
+    final int i = int.tryParse(lastActive) ?? -1;
+    if (i == -1) return 'Last seen not available';
+
+    DateTime time = DateTime.fromMillisecondsSinceEpoch(i);
+    DateTime now = DateTime.now();
+
+    String formattedTime = TimeOfDay.fromDateTime(time).format(context);
+    if (time.day == now.day &&
+        time.month == now.month &&
+        time.year == now.year) {
+      return "Today at $formattedTime";
+    }
+
+    if ((now.difference(time).inHours / 24).round() == 1) {
+      return "Yesterday at $formattedTime";
+    }
+    String month = _getMonth(time);
+    return "${time.day} $month on $formattedTime";
+  }
+
   static String _getMonth(DateTime date) {
     switch (date.month) {
       case 1:
