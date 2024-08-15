@@ -161,5 +161,6 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
     messageController.dispose();
     commentScrollController.dispose();
     isShowEmoji.dispose();
+    saving.dispose();
   }
 }

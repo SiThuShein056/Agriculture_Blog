@@ -188,3 +188,43 @@
   //                         ScaffoldMessenger.of(context).showSnackBar(
   //                             SnackBar(content: Text("Otp sent fail")));
   //                       }
+//////////////////////////
+// stream: ChatReadService().singleChat(chatID),
+//                             builder: (_, snap) {
+//                               switch (snap.connectionState) {
+//                                 case ConnectionState.waiting:
+//                                 case ConnectionState.none:
+//                                   return const Center(
+//                                     child: CupertinoActivityIndicator(),
+//                                   );
+//                                 case ConnectionState.active:
+//                                 case ConnectionState.done:
+//                                   if (snap.data == null) {
+//                                     return const Center(
+//                                       child: Text("Data is null value"),
+//                                     );
+//                                   } else {
+//                                     // List<ChatModel> chats = snap.data!.reversed.toList();
+//                                     final data = snap.data!.docs;
+//                                     ChatModel chats =
+//                                         ChatModel.fromJson(data[0].data());
+//                                     bool blocker = false;
+//                                     if (chats.isBlocked) {
+//                                       blocker = chats.blockerId ==
+//                                           Injection<AuthService>()
+//                                               .currentUser!
+//                                               .uid;
+//                                     }
+ // IconButton(
+            //     onPressed: () {
+            //       bloc.add(SentVideoCallLinkEvent(user.id));
+            //       StarlightUtils.push(VideoCallScreen(callID: chatID));
+            //     },
+            //     icon: const Icon(Icons.video_call_outlined)),
+            // IconButton(
+            //     onPressed: () {
+            //       bloc.add(SentVoiceCallLinkEvent(user.id));
+            //       StarlightUtils.push(VoiceCallScreen(callID: chatID));
+            //     },
+            //     icon: const Icon(Icons.call_outlined))
+///

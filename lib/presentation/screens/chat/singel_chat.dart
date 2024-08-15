@@ -7,6 +7,7 @@ import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_cr
 import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_read_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_update_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/models/chat_model/chat_model.dart';
 import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
@@ -29,6 +30,7 @@ class SingleChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<ChatBloc>();
+    bool blocker = false;
 
     final user = ModalRoute.of(context)!.settings.arguments as UserModel;
     var chatID = ChatCreateService().generateChatID(
@@ -39,18 +41,112 @@ class SingleChat extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-                onPressed: () {
-                  bloc.add(SentVideoCallLinkEvent(user.id));
-                  StarlightUtils.push(VideoCallScreen(callID: chatID));
-                },
-                icon: const Icon(Icons.video_call_outlined)),
-            IconButton(
-                onPressed: () {
-                  bloc.add(SentVoiceCallLinkEvent(user.id));
-                  StarlightUtils.push(VoiceCallScreen(callID: chatID));
-                },
-                icon: const Icon(Icons.call_outlined))
+            StreamBuilder(
+                stream: ChatReadService().singleChat(chatID),
+                builder: (_, snap) {
+                  switch (snap.connectionState) {
+                    case ConnectionState.waiting:
+                    case ConnectionState.none:
+                      return const Center(
+                        child: CupertinoActivityIndicator(),
+                      );
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      if (snap.data == null) {
+                        return const Center(
+                          child: Text("Data is null value"),
+                        );
+                      } else {
+                        final data = snap.data!.docs;
+                        ChatModel chats = ChatModel.fromJson(data[0].data());
+                        if (chats.isBlocked) {
+                          blocker = chats.blockerId ==
+                              Injection<AuthService>().currentUser!.uid;
+                        }
+
+                        return PopupMenuButton<int>(
+                            color: Theme.of(context).cardColor,
+                            itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                      value: 0,
+                                      child: ListTile(
+                                        onTap: () async {
+                                          if (chats.isBlocked) {
+                                            StarlightUtils.snackbar(
+                                                const SnackBar(
+                                                    content: Text(
+                                                        "Unavailable now")));
+                                          } else {
+                                            bloc.add(SentVoiceCallLinkEvent(
+                                                user.id));
+                                            StarlightUtils.push(VideoCallScreen(
+                                                callID: chatID));
+                                          }
+                                        },
+                                        leading: const Icon(
+                                            Icons.video_call_outlined),
+                                        title: Text(chats.isBlocked
+                                            ? "Unavailable now"
+                                            : "Voice Call"),
+                                      )),
+                                  PopupMenuItem(
+                                    value: 1,
+                                    child: ListTile(
+                                      onTap: () async {
+                                        if (chats.isBlocked) {
+                                          StarlightUtils.snackbar(
+                                              const SnackBar(
+                                                  content:
+                                                      Text("Unavailable now")));
+                                        } else {
+                                          bloc.add(
+                                              SentVoiceCallLinkEvent(user.id));
+                                          StarlightUtils.push(
+                                              VoiceCallScreen(callID: chatID));
+                                        }
+                                      },
+                                      leading: const Icon(Icons.call_outlined),
+                                      title: Text(chats.isBlocked
+                                          ? "Unavailable now"
+                                          : "Voice Call"),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    value: 2,
+                                    child: ListTile(
+                                      onTap: () {
+                                        if (chats.isBlocked) {
+                                          if (blocker) {
+                                            ChatUpdateService().updateChatData(
+                                                id: chatID,
+                                                isBlocked: false,
+                                                blockerId: "");
+                                          } else {
+                                            StarlightUtils.snackbar(const SnackBar(
+                                                content: Text(
+                                                    "You are blocked by this user")));
+                                          }
+                                        } else {
+                                          ChatUpdateService().updateChatData(
+                                              id: chatID,
+                                              isBlocked: true,
+                                              blockerId:
+                                                  Injection<AuthService>()
+                                                      .currentUser!
+                                                      .uid);
+                                        }
+                                        StarlightUtils.pop();
+                                      },
+                                      leading: const Icon(Icons.block_outlined),
+                                      title: Text(blocker
+                                          ? "UnBlock This user"
+                                          : "Block This User"),
+                                    ),
+                                  )
+                                ]);
+                      }
+                  }
+                })
           ],
           automaticallyImplyLeading: false,
           title: StreamBuilder(
@@ -186,90 +282,109 @@ class SingleChat extends StatelessWidget {
           horizontal: MediaQuery.of(context).size.width * 0.03,
           vertical: MediaQuery.of(context).size.height * 0.01),
       child: Form(
-        key: bloc.formKey,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            IconButton(
-              padding: const EdgeInsets.all(0),
-              onPressed: () {
-                FocusScope.of(context).unfocus();
+          key: bloc.formKey,
+          child: StreamBuilder(
+              stream: ChatReadService().singleChat(chatID),
+              builder: (_, snap) {
+                if (snap.data == null) {
+                  return const Center(
+                    child: Text("Data is null value"),
+                  );
+                } else {
+                  final data = snap.data!.docs;
+                  ChatModel chats = ChatModel.fromJson(data[0].data());
 
-                bloc.toggle();
-              },
-              icon: const Icon(Icons.emoji_emotions_outlined),
-            ),
-            IconButton(
-                onPressed: () {
-                  _messageType(context, bloc, user, chatID);
-                },
-                icon: const Icon(Icons.link_outlined)),
-            Expanded(
-              child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      onTap: () {
-                        if (bloc.isShowEmoji.value) {
-                          bloc.toggle();
-                        }
-                      },
-                      controller: bloc.messageController,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                      decoration: const InputDecoration(
-                          hintText: "Type Here", border: InputBorder.none),
-                    ),
-                  )),
-            ),
-            BlocBuilder<ChatBloc, ChatBaseState>(builder: (context, state) {
-              if (state is ChatLoadingState) {
-                log("Loading ${state is ChatLoadingState}");
+                  return chats.isBlocked
+                      ? const Text("Unavailabel to send message.......")
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              padding: const EdgeInsets.all(0),
+                              onPressed: () {
+                                FocusScope.of(context).unfocus();
 
-                return const Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2.0,
-                      ),
-                    ));
-              }
-              if (state is SuccessState) {
-                log("Loading ${state is ChatLoadingState}");
-              }
-              return MaterialButton(
-                minWidth: 0,
-                padding: const EdgeInsets.only(
-                    top: 10, bottom: 10, left: 10, right: 5),
-                shape: const CircleBorder(),
-                onPressed: () async {
-                  bool enable = await FirebaseStoreDb().checkMessageStatus();
+                                bloc.toggle();
+                              },
+                              icon: const Icon(Icons.emoji_emotions_outlined),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  _messageType(context, bloc, user, chatID);
+                                },
+                                icon: const Icon(Icons.link_outlined)),
+                            Expanded(
+                              child: Card(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: TextField(
+                                      onTap: () {
+                                        if (bloc.isShowEmoji.value) {
+                                          bloc.toggle();
+                                        }
+                                      },
+                                      controller: bloc.messageController,
+                                      keyboardType: TextInputType.multiline,
+                                      maxLines: null,
+                                      decoration: const InputDecoration(
+                                          hintText: "Type Here",
+                                          border: InputBorder.none),
+                                    ),
+                                  )),
+                            ),
+                            BlocBuilder<ChatBloc, ChatBaseState>(
+                                builder: (context, state) {
+                              if (state is ChatLoadingState) {
+                                log("Loading ${state is ChatLoadingState}");
 
-                  if (enable) {
-                    bloc.add(SentTextMessageEvent(user.id));
+                                return const Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                      ),
+                                    ));
+                              }
+                              if (state is SuccessState) {
+                                log("Loading ${state is ChatLoadingState}");
+                              }
+                              return MaterialButton(
+                                minWidth: 0,
+                                padding: const EdgeInsets.only(
+                                    top: 10, bottom: 10, left: 10, right: 5),
+                                shape: const CircleBorder(),
+                                onPressed: () async {
+                                  bool enable = await FirebaseStoreDb()
+                                      .checkMessageStatus();
 
-                    ChatUpdateService().updateChatData(
-                        id: chatID,
-                        createdTime:
-                            DateTime.now().millisecondsSinceEpoch.toString());
-                  } else {
-                    StarlightUtils.snackbar(const SnackBar(
-                        content: Text("Your account has been blocked")));
-                  }
-                },
-                color: const Color.fromARGB(255, 120, 240, 164),
-                child: const Icon(
-                  Icons.send_outlined,
-                ),
-              );
-            }),
-          ],
-        ),
-      ),
+                                  if (enable) {
+                                    bloc.add(SentTextMessageEvent(user.id));
+
+                                    ChatUpdateService().updateChatData(
+                                        id: chatID,
+                                        createdTime: DateTime.now()
+                                            .millisecondsSinceEpoch
+                                            .toString());
+                                  } else {
+                                    StarlightUtils.snackbar(const SnackBar(
+                                        content: Text(
+                                            "Your account has been blocked")));
+                                  }
+                                },
+                                color: const Color.fromARGB(255, 120, 240, 164),
+                                child: const Icon(
+                                  Icons.send_outlined,
+                                ),
+                              );
+                            }),
+                          ],
+                        );
+                }
+              })),
     );
   }
 

@@ -49,7 +49,11 @@ class ChatCreateService {
     log(userExist.toString());
 
     final chat = ChatModel(
-        id: doc.id, createdTime: time, participants: [senderId, toId]);
+        id: doc.id,
+        createdTime: time,
+        participants: [senderId, toId],
+        isBlocked: false,
+        blockerId: "");
     if (!userExist) {
       await doc.set(
         chat.toJson(),

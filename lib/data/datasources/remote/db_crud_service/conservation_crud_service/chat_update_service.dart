@@ -24,14 +24,17 @@ class ChatUpdateService {
   Future<void> updateChatData({
     required String id,
     String? createdTime,
+    String? blockerId,
+    bool? isBlocked,
 
     // bool? commentPermission,
   }) async {
     Map<String, dynamic> payload = {};
     if (createdTime != null) payload["created_time"] = createdTime;
-    //  if (commentPermission != null) {
-    //     payload["commentPermission"] = commentPermission;
-    //   }
+    if (blockerId != null) payload["blocker_id"] = blockerId;
+    if (isBlocked != null) {
+      payload["is_blocked"] = isBlocked;
+    }
 
     await _db.collection("chats").doc(id).update(payload);
   }

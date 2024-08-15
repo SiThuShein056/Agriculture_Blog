@@ -32,6 +32,12 @@ class ChatReadService {
     return msg;
   }
 
+  Stream<QuerySnapshot<Map<String, dynamic>>> singleChat(String chatID) {
+    Stream<QuerySnapshot<Map<String, dynamic>>> chat =
+        _db.collection("chats").where("id", isEqualTo: chatID).snapshots();
+    return chat;
+  }
+
   ///
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(String chatID) {
     Stream<QuerySnapshot<Map<String, dynamic>>> msg = _db
