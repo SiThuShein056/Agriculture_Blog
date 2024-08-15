@@ -24,13 +24,19 @@ class _HomeScreenState extends State<HomeScreen> {
             isOnline: false,
             lastActive: DateTime.now().millisecondsSinceEpoch.toString());
       }
+
       if (message.toString().contains("resume")) {
         DatabaseUpdateService().updateUserData(
             id: Injection<AuthService>().currentUser!.uid,
             isOnline: true,
             lastActive: DateTime.now().millisecondsSinceEpoch.toString());
       }
-
+      if (message.toString().contains("detached")) {
+        DatabaseUpdateService().updateUserData(
+            id: Injection<AuthService>().currentUser!.uid,
+            isOnline: false,
+            lastActive: DateTime.now().millisecondsSinceEpoch.toString());
+      }
       return Future.value(message);
     });
   }

@@ -1,13 +1,12 @@
-import 'dart:developer';
-
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/db_create_service/chat_create_service/chat_create_service.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/db_delete_service.dart/chat_delete_service.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/db_read_service/chat_read_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_delete_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_read_service.dart';
 import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/injection.dart';
+import 'package:blog_app/presentation/blocs/chat_bloc/chat_bloc.dart';
+import 'package:blog_app/presentation/blocs/chat_bloc/chat_event.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:blog_app/presentation/screens/chat/video_call.dart';
 import 'package:blog_app/presentation/screens/chat/video_player.dart';
@@ -16,11 +15,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gallery_saver/gallery_saver.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class MessageCard extends StatefulWidget {
+import '../../../data/datasources/remote/db_crud_service/conservation_crud_service/chat_update_service.dart';
+
+class MessageCard extends StatelessWidget {
   const MessageCard({
     super.key,
     required this.message,
@@ -29,14 +30,8 @@ class MessageCard extends StatefulWidget {
   final MessageModel message;
 
   @override
-  State<MessageCard> createState() => _MessageCardState();
-}
-
-class _MessageCardState extends State<MessageCard> {
-  @override
   Widget build(BuildContext context) {
-    bool isMe =
-        Injection<AuthService>().currentUser!.uid == widget.message.fromId;
+    bool isMe = Injection<AuthService>().currentUser!.uid == message.fromId;
     return GestureDetector(
       onLongPress: () {
         _showBottomSheet(context, isMe);
@@ -46,14 +41,17 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   Widget _blueMessage(BuildContext context) {
-    if (widget.message.readTime.isEmpty) {
-      ChatCreateService().updateMessageReadStatus(widget.message);
+    if (message.readTime.isEmpty) {
+      // ChatCreateService().updateMessageReadStatus(message);
+      ChatUpdateService().updateMessageData(
+          id: message.id,
+          readTime: DateTime.now().microsecondsSinceEpoch.toString());
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: EdgeInsets.all(widget.message.type == Type.image
+          padding: EdgeInsets.all(message.type == Type.image
               ? MediaQuery.of(context).size.width * .01
               : MediaQuery.of(context).size.width * .04),
           margin: EdgeInsets.symmetric(
@@ -69,12 +67,12 @@ class _MessageCardState extends State<MessageCard> {
                 topRight: Radius.circular(15),
                 bottomRight: Radius.circular(15),
               )),
-          child: widget.message.type == Type.image
+          child: message.type == Type.image
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(
                       MediaQuery.of(context).size.width * 0.03),
                   child: CachedNetworkImage(
-                    imageUrl: widget.message.message,
+                    imageUrl: message.message,
                     imageBuilder: (context, imageProvider) => Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -91,36 +89,36 @@ class _MessageCardState extends State<MessageCard> {
                     width: MediaQuery.of(context).size.height * .35,
                   ),
                 )
-              : widget.message.type == Type.video
+              : message.type == Type.video
                   ? IconButton(
                       onPressed: () {
                         StarlightUtils.push(VideoPlayerWidget(
-                          uri: widget.message.message,
+                          uri: message.message,
                         ));
                       },
                       icon: const Icon(Icons.video_file_outlined))
-                  : widget.message.type == Type.videoCallLink
+                  : message.type == Type.videoCallLink
                       ? InkWell(
                           onTap: () {
                             StarlightUtils.push(
-                                VideoCallScreen(callID: widget.message.chatId));
+                                VideoCallScreen(callID: message.chatId));
                           },
                           child: Text(
-                            "Tap here to join Video call  with me ${widget.message.message}",
+                            "Tap here to join Video call  with me ${message.message}",
                             style: const TextStyle(
                                 fontSize: 15,
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline),
                           ),
                         )
-                      : widget.message.type == Type.voiceCallLink
+                      : message.type == Type.voiceCallLink
                           ? InkWell(
                               onTap: () {
-                                StarlightUtils.push(VoiceCallScreen(
-                                    callID: widget.message.chatId));
+                                StarlightUtils.push(
+                                    VoiceCallScreen(callID: message.chatId));
                               },
                               child: Text(
-                                "Tap here to join Voice call  with me ${widget.message.message}",
+                                "Tap here to join Voice call  with me ${message.message}",
                                 style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.blue,
@@ -128,7 +126,7 @@ class _MessageCardState extends State<MessageCard> {
                               ),
                             )
                           : Text(
-                              widget.message.message,
+                              message.message,
                               style: const TextStyle(
                                   fontSize: 15, color: Colors.black),
                             ),
@@ -137,8 +135,7 @@ class _MessageCardState extends State<MessageCard> {
           padding:
               EdgeInsets.only(left: MediaQuery.of(context).size.width * .04),
           child: Text(
-            MyUtil.getPostedTime(
-                context: context, time: widget.message.sentTime),
+            MyUtil.getPostedTime(context: context, time: message.sentTime),
             style: const TextStyle(
               fontSize: 12,
             ),
@@ -152,7 +149,7 @@ class _MessageCardState extends State<MessageCard> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Container(
-            padding: EdgeInsets.all(widget.message.type == Type.image
+            padding: EdgeInsets.all(message.type == Type.image
                 ? MediaQuery.of(context).size.width * .01
                 : MediaQuery.of(context).size.width * .04),
             margin: EdgeInsets.symmetric(
@@ -167,12 +164,12 @@ class _MessageCardState extends State<MessageCard> {
                   topRight: Radius.circular(15),
                   bottomLeft: Radius.circular(15),
                 )),
-            child: widget.message.type == Type.image
+            child: message.type == Type.image
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(
                         MediaQuery.of(context).size.width * 0.03),
                     child: CachedNetworkImage(
-                      imageUrl: widget.message.message,
+                      imageUrl: message.message,
                       imageBuilder: (context, imageProvider) => Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
@@ -189,34 +186,34 @@ class _MessageCardState extends State<MessageCard> {
                       width: MediaQuery.of(context).size.height * .35,
                     ),
                   )
-                : widget.message.type == Type.video
+                : message.type == Type.video
                     ? IconButton(
                         onPressed: () {
                           StarlightUtils.push(VideoPlayerWidget(
-                            uri: widget.message.message,
+                            uri: message.message,
                           ));
                         },
                         icon: const Icon(Icons.video_file_outlined))
-                    : widget.message.type == Type.videoCallLink
+                    : message.type == Type.videoCallLink
                         ? Text(
-                            "Video Call ID : ${widget.message.message}",
+                            "Video Call ID : ${message.message}",
                             style: const TextStyle(
                                 decoration: TextDecoration.underline,
                                 fontSize: 15,
                                 color: Colors.blue),
                           )
-                        : widget.message.type == Type.voiceCallLink
+                        : message.type == Type.voiceCallLink
                             ? Text(
-                                "Voice Call ID : ${widget.message.message}",
+                                "Voice Call ID : ${message.message}",
                                 style: const TextStyle(
                                     decoration: TextDecoration.underline,
                                     fontSize: 15,
                                     color: Colors.blue),
                               )
-                            : widget.message.isPostID
-                                ? IsPostID(postID: widget.message.message)
+                            : message.isPostID
+                                ? IsPostID(postID: message.message)
                                 : Text(
-                                    widget.message.message,
+                                    message.message,
                                     style: const TextStyle(
                                         fontSize: 15, color: Colors.black),
                                   ),
@@ -227,7 +224,7 @@ class _MessageCardState extends State<MessageCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                if (widget.message.readTime.isNotEmpty)
+                if (message.readTime.isNotEmpty)
                   const Icon(
                     Icons.done_all_rounded,
                     size: 15,
@@ -238,7 +235,7 @@ class _MessageCardState extends State<MessageCard> {
                 ),
                 Text(
                   MyUtil.getPostedTime(
-                      context: context, time: widget.message.sentTime),
+                      context: context, time: message.sentTime),
                   style: const TextStyle(
                     fontSize: 12,
                   ),
@@ -250,6 +247,8 @@ class _MessageCardState extends State<MessageCard> {
       );
 
   Future<dynamic> _showBottomSheet(BuildContext context, bool isMe) {
+    final bloc = context.read<ChatBloc>();
+
     return showModalBottomSheet(
         context: context,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -273,7 +272,7 @@ class _MessageCardState extends State<MessageCard> {
                     vertical: MediaQuery.of(context).size.height * 0.015,
                     horizontal: MediaQuery.of(context).size.width * 0.4),
               ),
-              widget.message.type == Type.text
+              message.type == Type.text
                   ? OptionItem(
                       name: "Copy Text",
                       icon: const Icon(
@@ -281,82 +280,54 @@ class _MessageCardState extends State<MessageCard> {
                         color: Colors.blue,
                       ),
                       onTap: () {
-                        FlutterClipboard.copy(widget.message.message)
-                            .then((value) {
+                        FlutterClipboard.copy(message.message).then((value) {
                           StarlightUtils.pop();
                           StarlightUtils.snackbar(
                               const SnackBar(content: Text("Copied")));
                         });
                       })
-                  : widget.message.type == Type.image
-                      ? OptionItem(
-                          name: "Save Image",
-                          icon: const Icon(
-                            Icons.download_outlined,
-                            color: Colors.blue,
-                          ),
-                          onTap: () async {
-                            try {
-                              log(widget.message.message);
-                              await GallerySaver.saveImage(
-                                      "${widget.message.message}.jpg",
-                                      albumName: "Farmer Hub")
-                                  .then((success) {
-                                if (success != null && success) {
-                                  StarlightUtils.snackbar(const SnackBar(
-                                      content: Text("Saved Image")));
-                                }
-                              });
-
-                              StarlightUtils.pop();
-                            } catch (e) {
-                              StarlightUtils.pop();
-                              log("Error is : ${e.toString()}");
-                              StarlightUtils.snackbar(SnackBar(
-                                  content: Text("Error is : ${e.toString()}")));
-                            }
+                  : message.type == Type.image
+                      ? ValueListenableBuilder(
+                          valueListenable: bloc.saving,
+                          builder: (context, value, child) {
+                            return OptionItem(
+                                name: value ? "Saving..." : "Save Image",
+                                icon: const Icon(
+                                  Icons.download_outlined,
+                                  color: Colors.blue,
+                                ),
+                                onTap: () async {
+                                  bloc.add(SaveImageEvent(message.message));
+                                });
                           })
-                      : widget.message.type == Type.video
-                          ? OptionItem(
-                              name: "Save Video",
-                              icon: const Icon(
-                                Icons.download_outlined,
-                                color: Colors.blue,
-                              ),
-                              onTap: () async {
-                                try {
-                                  log(widget.message.message);
-                                  await GallerySaver.saveVideo(
-                                          "${widget.message.message}.mp4",
-                                          albumName: "Farmer Hub")
-                                      .then((success) {
-                                    if (success != null && success) {
-                                      StarlightUtils.snackbar(const SnackBar(
-                                          content: Text("Saved Video")));
-                                    }
-                                  });
-
-                                  StarlightUtils.pop();
-                                } catch (e) {
-                                  StarlightUtils.pop();
-                                  log("Error is : ${e.toString()}");
-                                  StarlightUtils.snackbar(SnackBar(
-                                      content:
-                                          Text("Error is : ${e.toString()}")));
-                                }
+                      : message.type == Type.video
+                          ? ValueListenableBuilder(
+                              valueListenable: bloc.saving,
+                              builder: (context, value, child) {
+                                return OptionItem(
+                                    name: value
+                                        ? "Saving..........."
+                                        : "Save Video",
+                                    icon: const Icon(
+                                      Icons.download_outlined,
+                                      color: Colors.blue,
+                                    ),
+                                    onTap: () {
+                                      bloc.add(SaveVideoEvent(message.message));
+                                    });
                               })
                           : const SizedBox(),
-              if (widget.message.type == Type.text ||
-                  widget.message.type == Type.image ||
-                  widget.message.type == Type.video)
+              if (message.type == Type.text ||
+                  message.type == Type.image ||
+                  message.type == Type.video)
                 Divider(
                   color: Colors.black54,
                   endIndent: MediaQuery.of(context).size.width * 0.04,
                   indent: MediaQuery.of(context).size.width * 0.04,
                 ),
               if (isMe &&
-                  widget.message.type == Type.text &&
-                  (widget.message.isPostID == false))
+                  message.type == Type.text &&
+                  (message.isPostID == false))
                 OptionItem(
                     name: "Edit Message",
                     icon: const Icon(
@@ -375,14 +346,14 @@ class _MessageCardState extends State<MessageCard> {
                       color: Colors.red,
                     ),
                     onTap: () async {
-                      ChatDeleteService().deleteMessage(widget.message);
+                      ChatDeleteService().deleteMessage(message);
 
                       StarlightUtils.pop();
                     }),
               if (isMe &&
-                  (widget.message.type == Type.text ||
-                      widget.message.type == Type.image ||
-                      widget.message.type == Type.video))
+                  (message.type == Type.text ||
+                      message.type == Type.image ||
+                      message.type == Type.video))
                 Divider(
                   color: Colors.black54,
                   endIndent: MediaQuery.of(context).size.width * 0.04,
@@ -390,18 +361,18 @@ class _MessageCardState extends State<MessageCard> {
                 ),
               OptionItem(
                   name:
-                      "Sent At :${MyUtil.getPostedTime(context: context, time: widget.message.sentTime)} ",
+                      "Sent At :${MyUtil.getPostedTime(context: context, time: message.sentTime)} ",
                   icon: const Icon(
                     Icons.remove_red_eye_outlined,
                     color: Colors.blue,
                   ),
                   onTap: () {}),
               OptionItem(
-                  name: widget.message.readTime.isEmpty
+                  name: message.readTime.isEmpty
                       ? "Read At : Not seen yet"
                       : "Read At : ${MyUtil.getPostedTime(
                           context: context,
-                          time: widget.message.readTime,
+                          time: message.readTime,
                         )}",
                   icon: const Icon(
                     Icons.remove_red_eye_outlined,
@@ -417,7 +388,7 @@ class _MessageCardState extends State<MessageCard> {
   }
 
   Future<dynamic> _updateMessageDialog() {
-    String updateMessage = widget.message.message;
+    String updateMessage = message.message;
     return StarlightUtils.dialog(AlertDialog(
       title: const Row(
         children: [
@@ -449,7 +420,9 @@ class _MessageCardState extends State<MessageCard> {
         ),
         MaterialButton(
           onPressed: () {
-            ChatCreateService().updateMessage(widget.message, updateMessage);
+            // ChatCreateService().updateMessage(message, updateMessage);
+            ChatUpdateService()
+                .updateMessageData(id: message.id, message: updateMessage);
             StarlightUtils.pop();
           },
           child: const Text(

@@ -35,6 +35,7 @@ class RouteNames {
       adminDashBoard = "/admin-dash-board",
       noti = "/notification-screen",
       singleChat = "/single-chat",
+      messageCard = "/message-card",
       readPosts = "/read-post",
       readUsers = "/read-user",
       readCategories = "/read-category",
@@ -366,6 +367,17 @@ Route? router(RouteSettings settings) {
         ),
         settings,
       );
+    // case RouteNames.messageCard:
+    //   return _protectedRoute(
+    //     incomingRoute,
+    //     MultiBlocProvider(
+    //       providers: [
+    //         BlocProvider<ChatBloc>(create: (_) => ChatBloc()),
+    //       ],
+    //       child: const MessageCard(),
+    //     ),
+    //     settings,
+    //   );
 
     case RouteNames.createPostScreen:
       final value = settings.arguments;

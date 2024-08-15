@@ -99,7 +99,7 @@ class ChatReadService {
     _messageStreams[id] = _db
         .collection("messages")
         .where("chatId", isEqualTo: id)
-        .orderBy("sent_time", descending: false)
+        .orderBy("sent_time", descending: true)
         .snapshots()
         .listen((e) {
       return messageParser(e);

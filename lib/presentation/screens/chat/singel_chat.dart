@@ -3,14 +3,17 @@ import 'dart:io';
 
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/db_create_service/chat_create_service/chat_create_service.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/db_read_service/chat_read_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_create_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_read_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_update_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/chat_bloc/chat_bloc.dart';
 import 'package:blog_app/presentation/blocs/chat_bloc/chat_event.dart';
+import 'package:blog_app/presentation/blocs/chat_bloc/chat_state.dart';
+import 'package:blog_app/presentation/blocs/user_image_bloc/user_image_state.dart';
 import 'package:blog_app/presentation/screens/chat/message_card.dart';
 import 'package:blog_app/presentation/screens/chat/video_call.dart';
 import 'package:blog_app/presentation/screens/chat/voice_call.dart';
@@ -159,8 +162,7 @@ class SingleChat extends StatelessWidget {
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.34,
               child: EmojiPicker(
-                textEditingController: bloc
-                    .messageController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]
+                textEditingController: bloc.messageController,
                 config: Config(
                   height: 256,
                   checkPlatformCompatibility: true,
@@ -169,62 +171,10 @@ class SingleChat extends StatelessWidget {
                     emojiSizeMax: 28 *
                         (Platform.isAndroid == TargetPlatform.iOS ? 1.20 : 1.0),
                   ),
-                  // swapCategoryAndBottomBar: false,
-                  // skinToneConfig: const SkinToneConfig(),
-                  // categoryViewConfig: const CategoryViewConfig(),
-                  // bottomActionBarConfig: const BottomActionBarConfig(),
-                  // searchViewConfig: const SearchViewConfig(),
                 ),
               ),
             )
         ]),
-        // bottomSheet: Padding(
-        //   padding: const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
-        //   child: Container(
-        //     height: MediaQuery.of(context).size.height * .07,
-        //     decoration: BoxDecoration(
-        //         borderRadius: BorderRadius.circular(20),
-        //         color: const Color.fromRGBO(221, 225, 228, 1),
-        //         boxShadow: [
-        //           BoxShadow(
-        //             color: Colors.grey.withOpacity(0.5),
-        //             spreadRadius: 2,
-        //             offset: const Offset(0, 3),
-        //           )
-        //         ]),
-        //     child: Padding(
-        //       padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        //       child: Row(
-        //         children: [
-        //           Expanded(
-        //             child: TextFormField(
-        //               controller: textController,
-        //               maxLines: 3,
-        //               minLines: 1,
-        //               decoration: const InputDecoration(
-        //                   hintText: "type something", border: InputBorder.none),
-        //             ),
-        //           ),
-        //           const Padding(
-        //             padding: EdgeInsets.symmetric(horizontal: 8.0),
-        //             child: Icon(
-        //               Icons.image_outlined,
-        //               size: 30,
-        //               color: Color.fromARGB(255, 39, 126, 197),
-        //             ),
-        //           ),
-        //           IconButton(
-        //             onPressed: () {},
-        //             icon: const Icon(
-        //               Icons.send,
-        //               color: Color.fromARGB(255, 39, 126, 197),
-        //             ),
-        //           )
-        //         ],
-        //       ),
-        //     ),
-        //   ),
-        // ),
       ),
     );
   }
@@ -274,28 +224,49 @@ class SingleChat extends StatelessWidget {
                     ),
                   )),
             ),
-            MaterialButton(
-              minWidth: 0,
-              padding: const EdgeInsets.only(
-                  top: 10, bottom: 10, left: 10, right: 5),
-              shape: const CircleBorder(),
-              onPressed: () async {
-                bool enable = await FirebaseStoreDb().checkMessageStatus();
+            BlocBuilder<ChatBloc, ChatBaseState>(builder: (context, state) {
+              if (state is ChatLoadingState) {
+                log("Loading ${state is ChatLoadingState}");
 
-                if (enable) {
-                  bloc.add(SentTextMessageEvent(user.id));
+                return const Align(
+                    alignment: Alignment.bottomRight,
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.0,
+                      ),
+                    ));
+              }
+              if (state is SuccessState) {
+                log("Loading ${state is ChatLoadingState}");
+              }
+              return MaterialButton(
+                minWidth: 0,
+                padding: const EdgeInsets.only(
+                    top: 10, bottom: 10, left: 10, right: 5),
+                shape: const CircleBorder(),
+                onPressed: () async {
+                  bool enable = await FirebaseStoreDb().checkMessageStatus();
 
-                  ChatCreateService().updateChatListCreatedTime(chatID);
-                } else {
-                  StarlightUtils.snackbar(const SnackBar(
-                      content: Text("Your account has been blocked")));
-                }
-              },
-              color: const Color.fromARGB(255, 120, 240, 164),
-              child: const Icon(
-                Icons.send_outlined,
-              ),
-            ),
+                  if (enable) {
+                    bloc.add(SentTextMessageEvent(user.id));
+
+                    ChatUpdateService().updateChatData(
+                        id: chatID,
+                        createdTime:
+                            DateTime.now().millisecondsSinceEpoch.toString());
+                  } else {
+                    StarlightUtils.snackbar(const SnackBar(
+                        content: Text("Your account has been blocked")));
+                  }
+                },
+                color: const Color.fromARGB(255, 120, 240, 164),
+                child: const Icon(
+                  Icons.send_outlined,
+                ),
+              );
+            }),
           ],
         ),
       ),
@@ -331,8 +302,11 @@ class SingleChat extends StatelessWidget {
 
                             if (enable) {
                               bloc.add(SentCameraImageMessageEvent(user.id));
-                              ChatCreateService()
-                                  .updateChatListCreatedTime(chatID);
+                              ChatUpdateService().updateChatData(
+                                  id: chatID,
+                                  createdTime: DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString());
                             } else {
                               StarlightUtils.snackbar(const SnackBar(
                                   content:
@@ -357,8 +331,12 @@ class SingleChat extends StatelessWidget {
 
                             if (enable) {
                               bloc.add(SentFileImageMessageEvent(user.id));
-                              ChatCreateService()
-                                  .updateChatListCreatedTime(chatID);
+
+                              ChatUpdateService().updateChatData(
+                                  id: chatID,
+                                  createdTime: DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString());
                             } else {
                               StarlightUtils.snackbar(const SnackBar(
                                   content:
@@ -382,8 +360,11 @@ class SingleChat extends StatelessWidget {
 
                             if (enable) {
                               bloc.add(SentVideoMessageEvent(user.id));
-                              ChatCreateService()
-                                  .updateChatListCreatedTime(chatID);
+                              ChatUpdateService().updateChatData(
+                                  id: chatID,
+                                  createdTime: DateTime.now()
+                                      .millisecondsSinceEpoch
+                                      .toString());
                             } else {
                               StarlightUtils.snackbar(const SnackBar(
                                   content:

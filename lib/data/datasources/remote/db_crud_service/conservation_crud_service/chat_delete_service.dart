@@ -7,19 +7,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 class ChatDeleteService {
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
   final FirebaseStorage _storage = Injection<FirebaseStorage>();
-  final AuthService _auth = Injection<AuthService>();
-
-  // String generateChatID({required String uid1, required String uid2}) {
-  //   List uids = [uid1, uid2];
-  //   uids.sort();
-  //   String chatID = uids.fold("", (id, uid) => "$id$uid");
-  //   return chatID;
-  // }
-
-  // Future<void> updateMessageReadStatus(MessageModel message) async {
-  //   _db.collection("messages").doc(message.id).update(
-  //       {"read_time": DateTime.now().microsecondsSinceEpoch.toString()});
-  // }
+  final AuthService auth = Injection<AuthService>();
 
   Future<void> deleteMessage(MessageModel message) async {
     await _db.collection("messages").doc(message.id).delete();
@@ -27,9 +15,4 @@ class ChatDeleteService {
       _storage.refFromURL(message.message);
     }
   }
-
-  // Future<void> updateChatListCreatedTime(String chatID) async {
-  //   _db.collection("chats").doc(chatID).update(
-  //       {"created_time": DateTime.now().millisecondsSinceEpoch.toString()});
-  // }
 }

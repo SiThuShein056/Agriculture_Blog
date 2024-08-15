@@ -6,20 +6,20 @@ class ChatLoadingState extends ChatBaseState {
   const ChatLoadingState();
 }
 
-class DataSendingState extends ChatBaseState {
-  const DataSendingState();
-}
-
 class ChatInitialState extends ChatBaseState {
   const ChatInitialState();
 }
 
-class DataSentSuccessState extends ChatBaseState {
-  const DataSentSuccessState();
-}
-
 class ChatSuccessState extends ChatBaseState {
   const ChatSuccessState();
+}
+
+class SaveLoadingState extends ChatBaseState {
+  const SaveLoadingState();
+}
+
+class SaveSuccessState extends ChatBaseState {
+  const SaveSuccessState();
 }
 
 class ChatFailState extends ChatBaseState {

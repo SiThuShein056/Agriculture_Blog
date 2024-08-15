@@ -1,4 +1,4 @@
-import 'package:blog_app/data/datasources/local/constants/my_const.dart';
+import 'package:blog_app/core/constants/my_strings.dart';
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/injection.dart';
 import 'package:flutter/material.dart';

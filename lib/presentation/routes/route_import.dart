@@ -16,6 +16,7 @@ import 'package:blog_app/presentation/screens/admin/read/user_control.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_category.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_post.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_sub_category.dart';
+import 'package:blog_app/presentation/screens/chat/message_card.dart';
 import 'package:blog_app/presentation/screens/chat/singel_chat.dart';
 import 'package:blog_app/presentation/screens/create_post/create_post_import.dart';
 import 'package:blog_app/presentation/screens/noti/notification_screen.dart';

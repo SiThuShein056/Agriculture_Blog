@@ -6,7 +6,6 @@ import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
@@ -66,8 +65,10 @@ class ChatCreateService {
     String senderId = _auth.currentUser!.uid;
     String chatID = generateChatID(uid1: senderId, uid2: toId);
     final doc = _db.collection("messages").doc();
-    bool isPostID = await ChatCreateService().isPostID(postID: message);
-
+    bool checkPostID = false;
+    if (type.name == Type.text.name) {
+      checkPostID = await isPostID(postID: message);
+    }
     final chat = MessageModel(
       fromId: senderId,
       id: doc.id,
@@ -77,7 +78,7 @@ class ChatCreateService {
       sentTime: time,
       type: type,
       message: message,
-      isPostID: isPostID,
+      isPostID: checkPostID,
     );
 
     await doc.set(
@@ -95,7 +96,9 @@ class ChatCreateService {
         final point = Injection<FirebaseStorage>().ref(
             "chatImages/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${i.name.split(".").last}");
 
-        final uploaded = await point.putFile(i.path.file);
+        final uploaded = await point.putFile(i.path.file).whenComplete(() {
+          log("Images has been uploaded to firestore");
+        });
 
         final imageUrl = await Injection<FirebaseStorage>()
             .ref(uploaded.ref.fullPath)
@@ -105,73 +108,6 @@ class ChatCreateService {
         await ChatCreateService()
             .createMessage(message: imageUrl, toId: toId, type: Type.image);
       }
-    }
-  }
-
-  Future<void> sentVideoCallLinkMessage({required String toId}) async {
-    String senderId = _auth.currentUser!.uid;
-    String chatID = generateChatID(uid1: senderId, uid2: toId);
-    await ChatCreateService()
-        .createMessage(message: chatID, toId: toId, type: Type.videoCallLink);
-  }
-
-  Future<void> sentVoiceCallLinkMessage({required String toId}) async {
-    String senderId = _auth.currentUser!.uid;
-    String chatID = generateChatID(uid1: senderId, uid2: toId);
-    await ChatCreateService()
-        .createMessage(message: chatID, toId: toId, type: Type.voiceCallLink);
-  }
-
-  Future<PersistentBottomSheetController> selectImageSession(
-      {required BuildContext context}) async {
-    return showBottomSheet(
-      context: context,
-      builder: (_) => Container(
-        padding: const EdgeInsets.only(top: 10),
-        child: Column(
-          children: [
-            ///အတုံးလေးလုပ်တာ///
-            Container(
-              width: 100,
-              height: 8,
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(102, 184, 181, 211),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              margin: const EdgeInsets.only(bottom: 20),
-            ),
-            const Expanded(
-              child: Row(
-                children: [
-                  Text("data"),
-                  Text("data"),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> sentCameraImageMessage({
-    required String toId,
-  }) async {
-    final XFile? image =
-        await Injection<ImagePicker>().pickImage(source: ImageSource.camera);
-
-    if (image != null) {
-      final point = Injection<FirebaseStorage>().ref(
-          "chatImages/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
-
-      final uploaded = await point.putFile(image.path.file);
-
-      final imageUrl = await Injection<FirebaseStorage>()
-          .ref(uploaded.ref.fullPath)
-          .getDownloadURL();
-
-      await ChatCreateService()
-          .createMessage(message: imageUrl, toId: toId, type: Type.image);
     }
   }
 
@@ -197,23 +133,58 @@ class ChatCreateService {
     }
   }
 
-  Future<void> updateMessageReadStatus(MessageModel message) async {
-    _db.collection("messages").doc(message.id).update(
-        {"read_time": DateTime.now().microsecondsSinceEpoch.toString()});
+  Future<void> sentVideoCallLinkMessage({required String toId}) async {
+    String senderId = _auth.currentUser!.uid;
+    String chatID = generateChatID(uid1: senderId, uid2: toId);
+    await ChatCreateService()
+        .createMessage(message: chatID, toId: toId, type: Type.videoCallLink);
   }
 
-  Future<void> updateMessage(MessageModel message, String msg) async {
-    _db.collection("messages").doc(message.id).update({"message": msg});
+  Future<void> sentVoiceCallLinkMessage({required String toId}) async {
+    String senderId = _auth.currentUser!.uid;
+    String chatID = generateChatID(uid1: senderId, uid2: toId);
+    await ChatCreateService()
+        .createMessage(message: chatID, toId: toId, type: Type.voiceCallLink);
   }
 
-  Future<void> updateChatListCreatedTime(String chatID) async {
-    _db.collection("chats").doc(chatID).update(
-        {"created_time": DateTime.now().millisecondsSinceEpoch.toString()});
+  Future<void> sentCameraImageMessage({
+    required String toId,
+  }) async {
+    final XFile? image =
+        await Injection<ImagePicker>().pickImage(source: ImageSource.camera);
+
+    if (image != null) {
+      final point = Injection<FirebaseStorage>().ref(
+          "chatImages/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
+
+      final uploaded = await point.putFile(image.path.file);
+
+      final imageUrl = await Injection<FirebaseStorage>()
+          .ref(uploaded.ref.fullPath)
+          .getDownloadURL();
+
+      await ChatCreateService()
+          .createMessage(message: imageUrl, toId: toId, type: Type.image);
+    }
   }
 
-  Future<void> updateIsPostID(String chatID) async {
-    _db.collection("chats").doc(chatID).update({"isPostID": true});
-  }
+  // Future<void> updateMessageReadStatus(MessageModel message) async {
+  //   _db.collection("messages").doc(message.id).update(
+  //       {"read_time": DateTime.now().microsecondsSinceEpoch.toString()});
+  // }
+
+  // Future<void> updateMessage(MessageModel message, String msg) async {
+  //   _db.collection("messages").doc(message.id).update({"message": msg});
+  // }
+
+  // Future<void> updateChatListCreatedTime(String chatID) async {
+  //   _db.collection("chats").doc(chatID).update(
+  //       {"created_time": DateTime.now().millisecondsSinceEpoch.toString()});
+  // }
+
+  // Future<void> updateIsPostID(String chatID) async {
+  //   _db.collection("chats").doc(chatID).update({"isPostID": true});
+  // }
   // String getConservation(String id) {
   //   return _auth.currentUser!.uid.hashCode <= id.hashCode
   //       ? '${_auth.currentUser!.uid}_$id'

@@ -44,6 +44,13 @@ class SentCameraImageMessageEvent extends ChatBaseEvent {
   );
 }
 
-class ReadMessageEvent extends ChatBaseEvent {
-  ReadMessageEvent();
+class SaveImageEvent extends ChatBaseEvent {
+  final url;
+
+  const SaveImageEvent(this.url);
+}
+
+class SaveVideoEvent extends ChatBaseEvent {
+  final url;
+  const SaveVideoEvent(this.url);
 }
