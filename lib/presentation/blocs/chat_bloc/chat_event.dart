@@ -18,15 +18,19 @@ class SentFileImageMessageEvent extends ChatBaseEvent {
 
 class SentVideoCallLinkEvent extends ChatBaseEvent {
   final toId;
+  final callID;
   SentVideoCallLinkEvent(
     this.toId,
+    this.callID,
   );
 }
 
 class SentVoiceCallLinkEvent extends ChatBaseEvent {
   final toId;
+  final callID;
   SentVoiceCallLinkEvent(
     this.toId,
+    this.callID,
   );
 }
 

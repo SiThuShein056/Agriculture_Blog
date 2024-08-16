@@ -97,11 +97,12 @@ class MessageCard extends StatelessWidget {
                         ));
                       },
                       icon: const Icon(Icons.video_file_outlined))
-                  : message.type == Type.videoCallLink
+                  : (message.type == Type.videoCallLink &&
+                          message.expiredTime == true)
                       ? InkWell(
                           onTap: () {
                             StarlightUtils.push(
-                                VideoCallScreen(callID: message.chatId));
+                                VideoCallScreen(callID: message.message));
                           },
                           child: Text(
                             "Tap here to join Video call  with me ${message.message}",
@@ -111,25 +112,51 @@ class MessageCard extends StatelessWidget {
                                 decoration: TextDecoration.underline),
                           ),
                         )
-                      : message.type == Type.voiceCallLink
+                      : (message.type == Type.videoCallLink &&
+                              message.expiredTime == false)
                           ? InkWell(
-                              onTap: () {
-                                StarlightUtils.push(
-                                    VoiceCallScreen(callID: message.chatId));
-                              },
+                              onTap: null,
                               child: Text(
-                                "Tap here to join Voice call  with me ${message.message}",
+                                "Expired Video Call ID ${message.message}",
                                 style: const TextStyle(
                                     fontSize: 15,
-                                    color: Colors.blue,
+                                    color: Colors.red,
                                     decoration: TextDecoration.underline),
                               ),
                             )
-                          : Text(
-                              message.message,
-                              style: const TextStyle(
-                                  fontSize: 15, color: Colors.black),
-                            ),
+                          : (message.type == Type.voiceCallLink &&
+                                  message.expiredTime == true)
+                              ? InkWell(
+                                  onTap: () {
+                                    StarlightUtils.push(VoiceCallScreen(
+                                        callID: message.message));
+                                  },
+                                  child: Text(
+                                    "Tap here to join Voice call  with me ${message.message}",
+                                    style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.blue,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                )
+                              : (message.type == Type.voiceCallLink &&
+                                      message.expiredTime == false)
+                                  ? InkWell(
+                                      onTap: null,
+                                      child: Text(
+                                        "Expired Voice call  ID ${message.message}",
+                                        style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.red,
+                                            decoration:
+                                                TextDecoration.underline),
+                                      ),
+                                    )
+                                  : Text(
+                                      message.message,
+                                      style: const TextStyle(
+                                          fontSize: 15, color: Colors.black),
+                                    ),
         ),
         Padding(
           padding:
@@ -194,7 +221,8 @@ class MessageCard extends StatelessWidget {
                           ));
                         },
                         icon: const Icon(Icons.video_file_outlined))
-                    : message.type == Type.videoCallLink
+                    : (message.type == Type.videoCallLink &&
+                            message.expiredTime == true)
                         ? Text(
                             "Video Call ID : ${message.message}",
                             style: const TextStyle(
@@ -202,21 +230,42 @@ class MessageCard extends StatelessWidget {
                                 fontSize: 15,
                                 color: Colors.blue),
                           )
-                        : message.type == Type.voiceCallLink
+                        : (message.type == Type.videoCallLink &&
+                                message.expiredTime == false)
                             ? Text(
-                                "Voice Call ID : ${message.message}",
+                                "Expired Video Call ID : ${message.message}",
                                 style: const TextStyle(
                                     decoration: TextDecoration.underline,
                                     fontSize: 15,
-                                    color: Colors.blue),
+                                    color: Colors.red),
                               )
-                            : message.isPostID
-                                ? IsPostID(postID: message.message)
-                                : Text(
-                                    message.message,
+                            : (message.type == Type.voiceCallLink &&
+                                    message.expiredTime == true)
+                                ? Text(
+                                    "Voice Call ID : ${message.message}",
                                     style: const TextStyle(
-                                        fontSize: 15, color: Colors.black),
-                                  ),
+                                        decoration: TextDecoration.underline,
+                                        fontSize: 15,
+                                        color: Colors.blue),
+                                  )
+                                : (message.type == Type.voiceCallLink &&
+                                        message.expiredTime == false)
+                                    ? Text(
+                                        "Expired Voice Call ID : ${message.message}",
+                                        style: const TextStyle(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontSize: 15,
+                                            color: Colors.red),
+                                      )
+                                    : message.isPostID
+                                        ? IsPostID(postID: message.message)
+                                        : Text(
+                                            message.message,
+                                            style: const TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black),
+                                          ),
           ),
           Padding(
             padding:

@@ -83,6 +83,7 @@ class ChatCreateService {
       type: type,
       message: message,
       isPostID: checkPostID,
+      expiredTime: true,
     );
 
     await doc.set(
@@ -137,18 +138,16 @@ class ChatCreateService {
     }
   }
 
-  Future<void> sentVideoCallLinkMessage({required String toId}) async {
-    String senderId = _auth.currentUser!.uid;
-    String chatID = generateChatID(uid1: senderId, uid2: toId);
+  Future<void> sentVideoCallLinkMessage(
+      {required String toId, required String callID}) async {
     await ChatCreateService()
-        .createMessage(message: chatID, toId: toId, type: Type.videoCallLink);
+        .createMessage(message: callID, toId: toId, type: Type.videoCallLink);
   }
 
-  Future<void> sentVoiceCallLinkMessage({required String toId}) async {
-    String senderId = _auth.currentUser!.uid;
-    String chatID = generateChatID(uid1: senderId, uid2: toId);
+  Future<void> sentVoiceCallLinkMessage(
+      {required String toId, required String callID}) async {
     await ChatCreateService()
-        .createMessage(message: chatID, toId: toId, type: Type.voiceCallLink);
+        .createMessage(message: callID, toId: toId, type: Type.voiceCallLink);
   }
 
   Future<void> sentCameraImageMessage({

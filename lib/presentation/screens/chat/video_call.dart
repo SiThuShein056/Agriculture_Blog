@@ -20,6 +20,15 @@ class VideoCallScreen extends StatelessWidget {
       userName: name,
       callID: callID,
       config: ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall(),
+
+      // events: ZegoUIKitPrebuiltCallEvents(onCallEnd: (e, v) {
+      //   StarlightUtils.pop();
+      //   log('Video Call Ended');
+      // }),
+
+      // onDispose: () {
+      //   log('Video Call disposed');
+      // },
     );
   }
 }

@@ -8,6 +8,7 @@ class MessageModel {
   final Type type;
   final String message;
   final bool isPostID;
+  final bool expiredTime;
 
   const MessageModel({
     required this.fromId,
@@ -19,6 +20,7 @@ class MessageModel {
     required this.type,
     required this.message,
     required this.isPostID,
+    required this.expiredTime,
   });
 
   Map<String, dynamic> toJson() => {
@@ -31,6 +33,7 @@ class MessageModel {
         "type": type.name,
         "message": message,
         "isPostID": isPostID,
+        "expired_time": expiredTime,
       };
 
   factory MessageModel.fromJson(dynamic data) {
@@ -52,6 +55,7 @@ class MessageModel {
                       : Type.text,
       message: data["message"],
       isPostID: data["isPostID"],
+      expiredTime: data["expired_time"],
     );
   }
 }

@@ -65,7 +65,8 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       if (state is ChatLoadingState) return;
       emit(const ChatLoadingState());
       try {
-        await ChatCreateService().sentVideoCallLinkMessage(toId: event.toId);
+        await ChatCreateService()
+            .sentVideoCallLinkMessage(toId: event.toId, callID: event.callID);
         emit(const ChatSuccessState());
       } catch (e) {
         emit(ChatFailState(e));
@@ -75,7 +76,8 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       if (state is ChatLoadingState) return;
       emit(const ChatLoadingState());
       try {
-        await ChatCreateService().sentVoiceCallLinkMessage(toId: event.toId);
+        await ChatCreateService()
+            .sentVoiceCallLinkMessage(toId: event.toId, callID: event.callID);
         messageController.text = "";
         emit(const ChatSuccessState());
       } catch (e) {

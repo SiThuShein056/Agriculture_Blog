@@ -35,6 +35,7 @@ class SingleChat extends StatelessWidget {
     final user = ModalRoute.of(context)!.settings.arguments as UserModel;
     var chatID = ChatCreateService().generateChatID(
         uid1: Injection<AuthService>().currentUser!.uid, uid2: user.id);
+    var callID = DateTime.now().microsecondsSinceEpoch.toString();
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -77,17 +78,21 @@ class SingleChat extends StatelessWidget {
                                                     content: Text(
                                                         "Unavailable now")));
                                           } else {
-                                            bloc.add(SentVoiceCallLinkEvent(
-                                                user.id));
+                                            bloc.add(SentVideoCallLinkEvent(
+                                                user.id, callID));
                                             StarlightUtils.push(VideoCallScreen(
-                                                callID: chatID));
+                                                    callID: callID))
+                                                .then((v) {
+                                              ChatUpdateService()
+                                                  .updateMessageExpired(callID);
+                                            });
                                           }
                                         },
                                         leading: const Icon(
                                             Icons.video_call_outlined),
                                         title: Text(chats.isBlocked
                                             ? "Unavailable now"
-                                            : "Voice Call"),
+                                            : "Video Call"),
                                       )),
                                   PopupMenuItem(
                                     value: 1,
@@ -99,10 +104,14 @@ class SingleChat extends StatelessWidget {
                                                   content:
                                                       Text("Unavailable now")));
                                         } else {
-                                          bloc.add(
-                                              SentVoiceCallLinkEvent(user.id));
-                                          StarlightUtils.push(
-                                              VoiceCallScreen(callID: chatID));
+                                          bloc.add(SentVoiceCallLinkEvent(
+                                              user.id, callID));
+                                          StarlightUtils.push(VoiceCallScreen(
+                                                  callID: callID))
+                                              .then((v) {
+                                            ChatUpdateService()
+                                                .updateMessageExpired(callID);
+                                          });
                                         }
                                       },
                                       leading: const Icon(Icons.call_outlined),
@@ -236,8 +245,13 @@ class SingleChat extends StatelessWidget {
                             data.map((e) => MessageModel.fromJson(e)).toList();
 
                         if (messages.isEmpty) {
-                          return const Center(
-                            child: Text("Say hi 👋"),
+                          return Center(
+                            child: TextButton(
+                                onPressed: () {
+                                  bloc.messageController.text = "Hi 👋";
+                                  bloc.add(SentTextMessageEvent(user.id));
+                                },
+                                child: const Text("Say hi 👋")),
                           );
                         }
 
