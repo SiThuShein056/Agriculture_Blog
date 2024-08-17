@@ -79,7 +79,7 @@ class SingleChat extends StatelessWidget {
                                                         "Unavailable now")));
                                           } else {
                                             bloc.add(SentVideoCallLinkEvent(
-                                                user.id, callID));
+                                                user, callID));
                                             StarlightUtils.push(VideoCallScreen(
                                                     callID: callID))
                                                 .then((v) {
@@ -105,7 +105,7 @@ class SingleChat extends StatelessWidget {
                                                       Text("Unavailable now")));
                                         } else {
                                           bloc.add(SentVoiceCallLinkEvent(
-                                              user.id, callID));
+                                              user, callID));
                                           StarlightUtils.push(VoiceCallScreen(
                                                   callID: callID))
                                               .then((v) {
@@ -249,7 +249,7 @@ class SingleChat extends StatelessWidget {
                             child: TextButton(
                                 onPressed: () {
                                   bloc.messageController.text = "Hi 👋";
-                                  bloc.add(SentTextMessageEvent(user.id));
+                                  bloc.add(SentTextMessageEvent(user));
                                 },
                                 child: const Text("Say hi 👋")),
                           );
@@ -376,7 +376,7 @@ class SingleChat extends StatelessWidget {
                                       .checkMessageStatus();
 
                                   if (enable) {
-                                    bloc.add(SentTextMessageEvent(user.id));
+                                    bloc.add(SentTextMessageEvent(user));
 
                                     ChatUpdateService().updateChatData(
                                         id: chatID,
@@ -430,7 +430,7 @@ class SingleChat extends StatelessWidget {
                                 await FirebaseStoreDb().checkMessageStatus();
 
                             if (enable) {
-                              bloc.add(SentCameraImageMessageEvent(user.id));
+                              bloc.add(SentCameraImageMessageEvent(user));
                               ChatUpdateService().updateChatData(
                                   id: chatID,
                                   createdTime: DateTime.now()
@@ -459,7 +459,7 @@ class SingleChat extends StatelessWidget {
                                 await FirebaseStoreDb().checkMessageStatus();
 
                             if (enable) {
-                              bloc.add(SentFileImageMessageEvent(user.id));
+                              bloc.add(SentFileImageMessageEvent(user));
 
                               ChatUpdateService().updateChatData(
                                   id: chatID,
@@ -488,7 +488,7 @@ class SingleChat extends StatelessWidget {
                                 await FirebaseStoreDb().checkMessageStatus();
 
                             if (enable) {
-                              bloc.add(SentVideoMessageEvent(user.id));
+                              bloc.add(SentVideoMessageEvent(user));
                               ChatUpdateService().updateChatData(
                                   id: chatID,
                                   createdTime: DateTime.now()

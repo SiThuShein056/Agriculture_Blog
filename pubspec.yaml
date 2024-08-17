@@ -57,23 +57,21 @@ dependencies:
   # google_maps_flutter:
   # geocoding:
   shared_preferences:
-  # logger: ^2.0.2+1
   # socket_io_client: ^2.0.3+1
   google_nav_bar:
+  http:
+  googleapis_auth:
   cached_network_image:
   loading_animation_widget:
   starlight_utils:
   email_otp:
   emoji_picker_flutter:
+  flutter_notification_channel:
   pinput:
   flutter_slidable:
   clipboard:
   gallery_saver: ^2.3.2
-  # image_gallery_saver: ^2.0.3
-  # services: ^0.0.1
-  # starlight_utils:
-  #   git:
-  #     url: https://github.com/YeMyoAung/starlight_utils.git
+  firebase_messaging: ^15.0.4
   firebase_app_check:
   flutter_phone_direct_caller:
   animated_toggle_switch:

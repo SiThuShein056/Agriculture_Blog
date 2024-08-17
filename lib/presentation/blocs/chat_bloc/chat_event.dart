@@ -1,50 +1,52 @@
+import 'package:blog_app/data/models/user_model/user_model.dart';
+
 abstract class ChatBaseEvent {
   const ChatBaseEvent();
 }
 
 class SentTextMessageEvent extends ChatBaseEvent {
-  final toId;
+  final UserModel user;
   SentTextMessageEvent(
-    this.toId,
+    this.user,
   );
 }
 
 class SentFileImageMessageEvent extends ChatBaseEvent {
-  final toId;
+  final UserModel user;
   SentFileImageMessageEvent(
-    this.toId,
+    this.user,
   );
 }
 
 class SentVideoCallLinkEvent extends ChatBaseEvent {
-  final toId;
+  final UserModel user;
   final callID;
   SentVideoCallLinkEvent(
-    this.toId,
+    this.user,
     this.callID,
   );
 }
 
 class SentVoiceCallLinkEvent extends ChatBaseEvent {
-  final toId;
+  final UserModel user;
   final callID;
   SentVoiceCallLinkEvent(
-    this.toId,
+    this.user,
     this.callID,
   );
 }
 
 class SentVideoMessageEvent extends ChatBaseEvent {
-  final toId;
+  final UserModel user;
   SentVideoMessageEvent(
-    this.toId,
+    this.user,
   );
 }
 
 class SentCameraImageMessageEvent extends ChatBaseEvent {
-  final toId;
+  final UserModel user;
   SentCameraImageMessageEvent(
-    this.toId,
+    this.user,
   );
 }
 

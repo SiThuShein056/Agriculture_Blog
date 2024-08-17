@@ -16,6 +16,7 @@ class DatabaseUpdateService {
     bool? isOnline,
     String? lastActive,
     bool? commentPermission,
+    String? chatMessageToken,
   }) async {
     Map<String, dynamic> payload = {};
     if (name != null) payload["name"] = name;
@@ -30,6 +31,8 @@ class DatabaseUpdateService {
       payload["commentPermission"] = commentPermission;
     }
     if (messageStatus != null) payload["messageStatus"] = messageStatus;
+    if (chatMessageToken != null)
+      payload["chat_message_token"] = chatMessageToken;
 
     await _db.collection("users").doc(id).update(payload);
   }

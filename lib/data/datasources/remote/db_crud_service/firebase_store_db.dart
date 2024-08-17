@@ -114,6 +114,7 @@ class FirebaseStoreDb {
       commentStatus: true,
       messageStatus: true,
       commentPermission: true,
+      chatMessageToken: "",
     );
 
     var data = await FirebaseFirestore.instance.collection("users").get();

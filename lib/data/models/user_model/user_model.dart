@@ -6,6 +6,7 @@ class UserModel {
   final String coverUrl;
   final String role;
   final String lastActive;
+  final String chatMessageToken;
   bool postStatus, commentStatus, messageStatus, commentPermission, isOnline;
 
   UserModel({
@@ -21,6 +22,7 @@ class UserModel {
     required this.postStatus,
     required this.commentStatus,
     required this.commentPermission,
+    required this.chatMessageToken,
   });
 
   @override
@@ -46,6 +48,7 @@ class UserModel {
         "last_Active": lastActive,
         "is_Online": isOnline,
         "role": role,
+        "chat_message_token": chatMessageToken,
       };
 
   factory UserModel.fromJson(dynamic data) {
@@ -62,6 +65,7 @@ class UserModel {
       commentStatus: data["commentStatus"],
       commentPermission: data["commentPermission"],
       messageStatus: data["messageStatus"],
+      chatMessageToken: data["chat_message_token"],
     );
   }
 }

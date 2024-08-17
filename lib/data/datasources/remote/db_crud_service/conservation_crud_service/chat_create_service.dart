@@ -1,12 +1,15 @@
 import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
+import 'package:blog_app/data/datasources/remote/messaging_service/messaging_service.dart';
 import 'package:blog_app/data/models/chat_model/chat_model.dart';
 import 'package:blog_app/data/models/message_model/message_model.dart';
+import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logger/logger.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
 class ChatCreateService {
@@ -63,8 +66,9 @@ class ChatCreateService {
 
   Future<void> createMessage(
       {required String message,
-      required String toId,
+      required UserModel user,
       required Type type}) async {
+    String toId = user.id;
     String time = DateTime.now().microsecondsSinceEpoch.toString();
     String senderId = _auth.currentUser!.uid;
     String chatID = generateChatID(uid1: senderId, uid2: toId);
@@ -86,13 +90,29 @@ class ChatCreateService {
       expiredTime: true,
     );
 
-    await doc.set(
+    await doc
+        .set(
       chat.toJson(),
-    );
+    )
+        .then((onValue) {
+      Logger logger = Logger();
+      MessagingService msg = MessagingService();
+      msg.sendNotificationToSelectedDevice(
+          type.name == Type.text.name
+              ? message
+              : type.name == Type.image.name
+                  ? "Send Image"
+                  : type.name == Type.video.name
+                      ? "Send Video"
+                      : type.name == Type.videoCallLink.name
+                          ? "Calling You Video Call"
+                          : "Calling you Voice call",
+          user.chatMessageToken);
+    });
   }
 
   Future<void> sentFileImageMessage({
-    required String toId,
+    required UserModel user,
   }) async {
     final List<XFile> images = await Injection<ImagePicker>().pickMultiImage();
 
@@ -111,13 +131,13 @@ class ChatCreateService {
         log("image is $imageUrl");
 
         await ChatCreateService()
-            .createMessage(message: imageUrl, toId: toId, type: Type.image);
+            .createMessage(message: imageUrl, user: user, type: Type.image);
       }
     }
   }
 
   Future<void> sentVideoMessage({
-    required String toId,
+    required UserModel user,
   }) async {
     final XFile? image =
         await Injection<ImagePicker>().pickVideo(source: ImageSource.gallery);
@@ -134,24 +154,24 @@ class ChatCreateService {
       log("Video Url is $videoUrl");
 
       await ChatCreateService()
-          .createMessage(message: videoUrl, toId: toId, type: Type.video);
+          .createMessage(message: videoUrl, user: user, type: Type.video);
     }
   }
 
   Future<void> sentVideoCallLinkMessage(
-      {required String toId, required String callID}) async {
+      {required UserModel user, required String callID}) async {
     await ChatCreateService()
-        .createMessage(message: callID, toId: toId, type: Type.videoCallLink);
+        .createMessage(message: callID, user: user, type: Type.videoCallLink);
   }
 
   Future<void> sentVoiceCallLinkMessage(
-      {required String toId, required String callID}) async {
+      {required UserModel user, required String callID}) async {
     await ChatCreateService()
-        .createMessage(message: callID, toId: toId, type: Type.voiceCallLink);
+        .createMessage(message: callID, user: user, type: Type.voiceCallLink);
   }
 
   Future<void> sentCameraImageMessage({
-    required String toId,
+    required UserModel user,
   }) async {
     final XFile? image =
         await Injection<ImagePicker>().pickImage(source: ImageSource.camera);
@@ -167,7 +187,7 @@ class ChatCreateService {
           .getDownloadURL();
 
       await ChatCreateService()
-          .createMessage(message: imageUrl, toId: toId, type: Type.image);
+          .createMessage(message: imageUrl, user: user, type: Type.image);
     }
   }
 

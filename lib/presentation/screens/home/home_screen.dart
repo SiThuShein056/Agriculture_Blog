@@ -11,6 +11,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    MessagingService().getFirebaseMessagingToken();
     DatabaseUpdateService().updateUserData(
         id: Injection<AuthService>().currentUser!.uid,
         isOnline: true,

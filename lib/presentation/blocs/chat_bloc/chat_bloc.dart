@@ -20,7 +20,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       emit(const ChatLoadingState());
       try {
         await ChatCreateService().createMessage(
-            message: messageController.text, toId: event.toId, type: Type.text);
+            message: messageController.text, user: event.user, type: Type.text);
 
         messageController.text = "";
         emit(const ChatSuccessState());
@@ -32,7 +32,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       if (state is ChatLoadingState) return;
       emit(const ChatLoadingState());
       try {
-        await ChatCreateService().sentFileImageMessage(toId: event.toId);
+        await ChatCreateService().sentFileImageMessage(user: event.user);
 
         emit(const ChatSuccessState());
       } catch (e) {
@@ -44,7 +44,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       emit(const ChatLoadingState());
 
       try {
-        await ChatCreateService().sentVideoMessage(toId: event.toId);
+        await ChatCreateService().sentVideoMessage(user: event.user);
         emit(const ChatSuccessState());
       } catch (e) {
         emit(ChatFailState(e));
@@ -54,7 +54,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       if (state is ChatLoadingState) return;
       emit(const ChatLoadingState());
       try {
-        await ChatCreateService().sentCameraImageMessage(toId: event.toId);
+        await ChatCreateService().sentCameraImageMessage(user: event.user);
         emit(const ChatSuccessState());
       } catch (e) {
         emit(ChatFailState(e));
@@ -66,7 +66,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       emit(const ChatLoadingState());
       try {
         await ChatCreateService()
-            .sentVideoCallLinkMessage(toId: event.toId, callID: event.callID);
+            .sentVideoCallLinkMessage(user: event.user, callID: event.callID);
         emit(const ChatSuccessState());
       } catch (e) {
         emit(ChatFailState(e));
@@ -77,7 +77,7 @@ class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
       emit(const ChatLoadingState());
       try {
         await ChatCreateService()
-            .sentVoiceCallLinkMessage(toId: event.toId, callID: event.callID);
+            .sentVoiceCallLinkMessage(user: event.user, callID: event.callID);
         messageController.text = "";
         emit(const ChatSuccessState());
       } catch (e) {
