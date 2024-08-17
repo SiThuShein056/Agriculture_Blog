@@ -479,6 +479,7 @@ class ProfileScreen extends StatelessWidget {
                                       //         ),
                                       //       )),
                                       MultiPhotoShow(postId: myPosts[index].id),
+                                      PostVideoShow(postId: myPosts[index].id),
                                       const Divider(),
                                       SizedBox(
                                         height: 40,
@@ -628,6 +629,63 @@ class MultiPhotoShow extends StatelessWidget {
                               const Icon(Icons.error).centered(),
                         ),
                       ),
+                    ),
+                  );
+                }),
+          );
+        });
+  }
+}
+
+class PostVideoShow extends StatelessWidget {
+  const PostVideoShow({
+    super.key,
+    required this.postId,
+  });
+
+  final String postId;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+        stream: FirebaseStoreDb().postVideos(postId),
+        builder: (_, postVideoSnap) {
+          if (postVideoSnap.connectionState == ConnectionState.waiting) {
+            return const Center(child: CupertinoActivityIndicator());
+          }
+          if (postVideoSnap.data == null) {
+            return const Center(
+              child: Text("No Data"),
+            );
+          }
+          List<PostVideoModel> postVideos = postVideoSnap.data!.toList();
+          if (postVideos.isEmpty) {
+            return const SizedBox();
+          }
+          return SizedBox(
+            width: context.width,
+            height: 150,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: postVideos.length,
+                itemBuilder: (_, i) {
+                  return InkWell(
+                    onTap: () {
+                      StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
+                          arguments: postVideos[i].videoUrl);
+                    },
+                    child: SizedBox(
+                      height: 150,
+                      width: postVideos.length == 1
+                          ? context.width
+                          : context.width * 0.5,
+                      child: Card(
+                          child: IconButton(
+                              onPressed: () {
+                                StarlightUtils.push(VideoPlayerWidget(
+                                    uri: postVideos[i].videoUrl));
+                              },
+                              icon: const Icon(Icons.play_circle_outline))),
                     ),
                   );
                 }),

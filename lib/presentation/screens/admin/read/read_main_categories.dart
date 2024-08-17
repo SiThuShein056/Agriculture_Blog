@@ -1,6 +1,6 @@
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
-import 'package:blog_app/data/models/category_model/category_model.dart';
+import 'package:blog_app/data/models/main_category_model/main_cateory_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,9 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
-class ReadCategory extends StatelessWidget {
-  String id;
-  ReadCategory({super.key, required this.id});
+class ReadMainCategory extends StatelessWidget {
+  const ReadMainCategory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,24 +22,24 @@ class ReadCategory extends StatelessWidget {
             },
             icon: const Icon(Icons.chevron_left),
           ),
-          title: const Text("အမျိုးအစားများ"),
+          title: const Text("အဓိကအမျိုးအစားများ"),
           actions: [
             IconButton(
                 onPressed: () {
-                  showSearch(context: context, delegate: SearchScreen(id));
+                  showSearch(context: context, delegate: SearchScreen());
                 },
                 icon: const Icon(Icons.search))
           ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            StarlightUtils.pushNamed(RouteNames.createCategories);
+            StarlightUtils.pushNamed(RouteNames.createMainCategories);
             // .then((e) => StarlightUtils.pop);
           },
           child: const Icon(Icons.add),
         ),
         body: StreamBuilder(
-          stream: FirebaseStoreDb().categories(id),
+          stream: FirebaseStoreDb().mainCategories,
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -57,23 +56,23 @@ class ReadCategory extends StatelessWidget {
                 child: Text("Data is null value"),
               );
             }
-            List<CategoryModel> categories = snap.data!.toList();
+            List<MainCategoryModel> mainCategories = snap.data!.toList();
 
             return Padding(
               padding: const EdgeInsets.all(10.0),
               child: ListView.builder(
-                  itemCount: categories.length,
+                  itemCount: mainCategories.length,
                   itemBuilder: (_, i) {
                     return Card(
                         color: Theme.of(context).primaryColor,
                         child: ListTile(
                           onTap: () {
                             StarlightUtils.pushNamed(
-                              RouteNames.readSubCategories,
-                              arguments: categories[i].id,
+                              RouteNames.readCategories,
+                              arguments: mainCategories[i].id,
                             );
                           },
-                          title: Text(categories[i].name),
+                          title: Text(mainCategories[i].name),
                           trailing: IconButton(
                             onPressed: () {
                               showModalBottomSheet(
@@ -87,8 +86,8 @@ class ReadCategory extends StatelessWidget {
                                         ListTile(
                                           onTap: () {
                                             Injection<FirebaseFirestore>()
-                                                .collection("categories")
-                                                .doc(categories[i].id)
+                                                .collection("mainCategories")
+                                                .doc(mainCategories[i].id)
                                                 .delete()
                                                 .then((_) {
                                               StarlightUtils.pop();
@@ -101,7 +100,7 @@ class ReadCategory extends StatelessWidget {
                                           onTap: () {
                                             StarlightUtils.pushNamed(
                                                 RouteNames.updateCategoryScreen,
-                                                arguments: categories[i]);
+                                                arguments: mainCategories[i]);
                                           },
                                           title: const Text("Update"),
                                           trailing: const Icon(Icons.update),
@@ -121,8 +120,6 @@ class ReadCategory extends StatelessWidget {
 }
 
 class SearchScreen extends SearchDelegate {
-  String id;
-  SearchScreen(this.id);
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [const SizedBox()];
@@ -141,14 +138,14 @@ class SearchScreen extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     return const Center(
-      child: Text("Choose existed categories"),
+      child: Text("Choose existed Main categories"),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().categories(id),
+        stream: FirebaseStoreDb().mainCategories,
         builder: (_, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -165,9 +162,9 @@ class SearchScreen extends SearchDelegate {
               child: Text("Data is null value"),
             );
           }
-          List<CategoryModel> categories = snap.data!.toList();
+          List<MainCategoryModel> mainCategories = snap.data!.toList();
           final searchCategory =
-              categories.where((e) => e.name.contains(query)).toList();
+              mainCategories.where((e) => e.name.contains(query)).toList();
 
           if (searchCategory.isEmpty) {
             return const Center(
@@ -196,7 +193,7 @@ class SearchScreen extends SearchDelegate {
                                       onTap: () {
                                         Injection<FirebaseFirestore>()
                                             .collection("categories")
-                                            .doc(categories[i].id)
+                                            .doc(mainCategories[i].id)
                                             .delete()
                                             .then((_) {
                                           MyUtil.showToast(context);
@@ -210,7 +207,7 @@ class SearchScreen extends SearchDelegate {
                                       onTap: () {
                                         StarlightUtils.pushNamed(
                                             RouteNames.updateCategoryScreen,
-                                            arguments: categories[i]);
+                                            arguments: mainCategories[i]);
                                       },
                                       title: const Text("Update"),
                                       trailing: const Icon(Icons.update),
@@ -223,8 +220,8 @@ class SearchScreen extends SearchDelegate {
                       ),
                       onTap: () {
                         StarlightUtils.pushNamed(
-                          RouteNames.readSubCategories,
-                          arguments: categories[i].id,
+                          RouteNames.readCategories,
+                          arguments: mainCategories[i].id,
                         );
                       },
                     ),

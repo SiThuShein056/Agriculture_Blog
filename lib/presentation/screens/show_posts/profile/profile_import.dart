@@ -6,12 +6,14 @@ import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_cr
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/post_action_button.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:blog_app/presentation/screens/chat/video_player.dart';
 import 'package:blog_app/presentation/screens/show_posts/comment_part.dart';
 import 'package:blog_app/presentation/screens/show_posts/like_part.dart';
 import 'package:cached_network_image/cached_network_image.dart';

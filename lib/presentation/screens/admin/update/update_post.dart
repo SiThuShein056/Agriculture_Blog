@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_cubit.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_state.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/form_widget.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:blog_app/presentation/screens/chat/video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,9 +25,9 @@ class UpdatePostScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var bloc = context.read<UpdateDataCubit>();
     var post = ModalRoute.of(context)!.settings.arguments as PostModel;
-    bloc.categoryController.text = bloc.categoryController.text.isEmpty
+    bloc.mainCategoryController.text = bloc.mainCategoryController.text.isEmpty
         ? post.category
-        : bloc.categoryController.text;
+        : bloc.mainCategoryController.text;
     bloc.descriptionController.text = bloc.descriptionController.text.isEmpty
         ? post.description
         : bloc.descriptionController.text;
@@ -72,42 +74,6 @@ class UpdatePostScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // InkWell(
-                            //   onTap: () {
-                            //     bloc.pickPostPhoto();
-                            //   },
-                            //   child: SizedBox(
-                            //     width: MediaQuery.of(context).size.height * .15,
-                            //     height: MediaQuery.of(context).size.width * .3,
-                            //     child: Card(
-                            //       child: BlocBuilder<UpdateDataCubit,
-                            //           UpdateDataBaseState>(builder: (_, state) {
-                            //         var stateImage = state.url ?? "";
-                            //         var postImage = post.image ?? "";
-
-                            //         if (stateImage == "" && postImage == "") {
-                            //           return const Icon(Icons.upload_outlined);
-                            //         }
-                            //         if (stateImage != "" && postImage == "") {
-                            //           return Image.network(
-                            //             stateImage,
-                            //             fit: BoxFit.cover,
-                            //           );
-                            //         }
-                            //         if (stateImage == "" && postImage != "") {
-                            //           return Image.network(
-                            //             postImage,
-                            //             fit: BoxFit.cover,
-                            //           );
-                            //         }
-                            //         return Image.network(
-                            //           stateImage,
-                            //           fit: BoxFit.cover,
-                            //         );
-                            //       }),
-                            //     ),
-                            //   ),
-                            // ),
                             StreamBuilder(
                                 stream: FirebaseStoreDb().postImages(post.id),
                                 builder: (context, snapshot) {
@@ -131,9 +97,68 @@ class UpdatePostScreen extends StatelessWidget {
                                       children: [
                                         InkWell(
                                             onTap: () async {
-                                              bloc.pickPostPhotos();
-                                              await bloc
-                                                  .deletePostImages(post.id);
+                                              await showDialog(
+                                                  context: context,
+                                                  builder: (context) => Center(
+                                                        child: AlertDialog(
+                                                          elevation: 0.01,
+                                                          title: const Text(
+                                                              "Select Action"),
+                                                          content: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              TextButton.icon(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    bloc.pickPostVideos();
+                                                                    await bloc
+                                                                        .deletePostVideos(
+                                                                            post.id);
+                                                                    StarlightUtils
+                                                                        .pop();
+                                                                  },
+                                                                  label: const Text(
+                                                                      "Pick Videos"),
+                                                                  icon: const Icon(
+                                                                      Icons
+                                                                          .video_file_outlined)),
+                                                              TextButton.icon(
+                                                                onPressed:
+                                                                    () async {
+                                                                  bloc.pickPostPhotos();
+                                                                  await bloc
+                                                                      .deletePostImages(
+                                                                          post.id);
+                                                                  StarlightUtils
+                                                                      .pop();
+                                                                },
+                                                                label: const Text(
+                                                                    "Pick Images"),
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .image_outlined,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          actions: [
+                                                            TextButton(
+                                                                onPressed: () {
+                                                                  StarlightUtils
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                        "Close"))
+                                                          ],
+                                                        ),
+                                                      ));
                                             },
                                             child: SizedBox(
                                               width: MediaQuery.of(context)
@@ -148,8 +173,9 @@ class UpdatePostScreen extends StatelessWidget {
                                                 child: Icon(Icons.upload),
                                               ),
                                             )),
-                                        (state.url == null ||
-                                                (state.url?.isEmpty == true))
+                                        (state.imageUrl == null ||
+                                                (state.imageUrl?.isEmpty ==
+                                                    true))
                                             ? const SizedBox()
                                             : Expanded(
                                                 child: SizedBox(
@@ -161,8 +187,8 @@ class UpdatePostScreen extends StatelessWidget {
                                                   child: ListView.builder(
                                                       scrollDirection:
                                                           Axis.horizontal,
-                                                      itemCount:
-                                                          state.url!.length,
+                                                      itemCount: state
+                                                          .imageUrl!.length,
                                                       itemBuilder: (_, i) {
                                                         return SizedBox(
                                                           width: MediaQuery.of(
@@ -178,7 +204,8 @@ class UpdatePostScreen extends StatelessWidget {
                                                           child: Card(
                                                             child:
                                                                 Image.network(
-                                                              state.url![i],
+                                                              state
+                                                                  .imageUrl![i],
                                                               fit: BoxFit.cover,
                                                             ),
                                                           ),
@@ -187,7 +214,7 @@ class UpdatePostScreen extends StatelessWidget {
                                                 ),
                                               ),
                                         if (postImages.isNotEmpty &&
-                                            state.url == null)
+                                            state.imageUrl == null)
                                           Expanded(
                                             child: SizedBox(
                                               width: context.width,
@@ -226,7 +253,114 @@ class UpdatePostScreen extends StatelessWidget {
                                     );
                                   });
                                 }),
+                            StreamBuilder(
+                                stream: FirebaseStoreDb().postVideos(post.id),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CupertinoActivityIndicator());
+                                  }
+                                  if (snapshot.data == null) {
+                                    return const Center(
+                                      child: Text("No Data"),
+                                    );
+                                  }
+                                  List<PostVideoModel> postVideos =
+                                      snapshot.data!.toList();
 
+                                  return BlocBuilder<UpdateDataCubit,
+                                          UpdateDataBaseState>(
+                                      builder: (context, state) {
+                                    return Row(
+                                      children: [
+                                        (state.videoUrl == null ||
+                                                (state.videoUrl?.isEmpty ==
+                                                    true))
+                                            ? const SizedBox()
+                                            : Expanded(
+                                                child: SizedBox(
+                                                  width: context.width,
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .3,
+                                                  child: ListView.builder(
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      itemCount: state
+                                                          .videoUrl!.length,
+                                                      itemBuilder: (_, i) {
+                                                        return SizedBox(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              .15,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              .3,
+                                                          child: Card(
+                                                            child: IconButton(
+                                                              onPressed: () {
+                                                                StarlightUtils.push(
+                                                                    VideoPlayerWidget(
+                                                                        uri: state
+                                                                            .videoUrl![i]));
+                                                              },
+                                                              icon: const Icon(Icons
+                                                                  .play_circle_outline),
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }),
+                                                ),
+                                              ),
+                                        if (postVideos.isNotEmpty &&
+                                            state.videoUrl == null)
+                                          Expanded(
+                                            child: SizedBox(
+                                              width: context.width,
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  .3,
+                                              child: ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount: postVideos.length,
+                                                  itemBuilder: (_, i) {
+                                                    return SizedBox(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .height *
+                                                              .15,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              .3,
+                                                      child: Card(
+                                                          child: IconButton(
+                                                              onPressed: () {
+                                                                StarlightUtils.push(
+                                                                    VideoPlayerWidget(
+                                                                        uri: postVideos[i]
+                                                                            .videoUrl));
+                                                              },
+                                                              icon: const Icon(Icons
+                                                                  .play_circle_outline))),
+                                                    );
+                                                  }),
+                                            ),
+                                          ),
+                                      ],
+                                    );
+                                  });
+                                }),
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
                               child: Text(
@@ -316,15 +450,15 @@ class UpdatePostScreen extends StatelessWidget {
                                 },
                                 onTap: () {
                                   StarlightUtils.pushNamed(
-                                    RouteNames.categories,
+                                    RouteNames.mainCategories,
                                   ).then((category) {
-                                    bloc.categoryController.text = category;
+                                    bloc.mainCategoryController.text = category;
                                   });
                                 },
                                 readOnly: true,
                                 autovalidateMode:
                                     AutovalidateMode.onUserInteraction,
-                                controller: bloc.categoryController,
+                                controller: bloc.mainCategoryController,
                                 decoration: InputDecoration(
                                   hintText: "Select Category",
                                   border: OutlineInputBorder(

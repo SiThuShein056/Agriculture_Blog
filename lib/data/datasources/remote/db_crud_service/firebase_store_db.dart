@@ -5,9 +5,11 @@ import 'package:blog_app/data/datasources/remote/auth_services/authu_service_imp
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
+import 'package:blog_app/data/models/main_category_model/main_cateory_model.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/data/models/savedPost_model/save_post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
@@ -27,6 +29,8 @@ class FirebaseStoreDb {
       StreamController<List<PostModel>>.broadcast();
   final StreamController<List<CategoryModel>> _categoryStream =
       StreamController<List<CategoryModel>>.broadcast();
+  final StreamController<List<MainCategoryModel>> _mainCategoryStream =
+      StreamController<List<MainCategoryModel>>.broadcast();
   final StreamController<List<SubCategoryModel>> _subCategoryStream =
       StreamController<List<SubCategoryModel>>.broadcast();
   final StreamController<List<NotificationModel>> _notiStream =
@@ -45,6 +49,8 @@ class FirebaseStoreDb {
       StreamController<List<SavePostModel>>.broadcast();
   final StreamController<List<PostImageModel>> _postImagesStream =
       StreamController<List<PostImageModel>>.broadcast();
+  final StreamController<List<PostVideoModel>> _postVideoStream =
+      StreamController<List<PostVideoModel>>.broadcast();
 
   // String getConservation(String id) {
   //   return _auth.currentUser!.uid.hashCode <= id.hashCode
@@ -377,24 +383,54 @@ class FirebaseStoreDb {
   }
 
   Map<String, StreamSubscription> categoriesStream = {};
-  void _categoryStreamSetup() {
-    categoriesStream["data"] = _db
+  void _categoryStreamSetup(String id) {
+    categoriesStream[id] = _db
         .collection("categories")
-        // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
+        .where("mainCategory_id", isEqualTo: id)
         .snapshots()
         .listen((e) {
       return categoryParser(e);
     });
   }
 
-  Stream<List<CategoryModel>> get categories {
-    var stream = categoriesStream["data"];
+  Stream<List<CategoryModel>> categories(String id) {
+    var stream = categoriesStream[id];
     if (stream != null) {
       stream.cancel();
-      categoriesStream.remove("data");
+      categoriesStream.remove(id);
     }
-    _categoryStreamSetup();
+    _categoryStreamSetup(id);
     return _categoryStream.stream;
+  }
+
+  /// MAIN CATEGORIES
+  final List<MainCategoryModel> _mainCategories = [];
+  void mainCategoryParser(QuerySnapshot event) {
+    _mainCategories.clear();
+    _mainCategories
+        .addAll(event.docs.map((e) => MainCategoryModel.fromJson(e.data())));
+    _mainCategoryStream.add(_mainCategories);
+  }
+
+  Map<String, StreamSubscription> mainCategoriesStream = {};
+  void _mainCategoryStreamSetup() {
+    mainCategoriesStream["data"] = _db
+        .collection("mainCategories")
+        // .where("userId", isNotEqualTo: _auth.currentUser!.uid)
+        .snapshots()
+        .listen((e) {
+      return mainCategoryParser(e);
+    });
+  }
+
+  Stream<List<MainCategoryModel>> get mainCategories {
+    var stream = mainCategoriesStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      mainCategoriesStream.remove("data");
+    }
+    _mainCategoryStreamSetup();
+    return _mainCategoryStream.stream;
   }
 
   ///SUBCATEGORIES
@@ -615,6 +651,43 @@ class FirebaseStoreDb {
     }
     _postImagesStreamsSetUp(postId);
     return _postImagesStream.stream;
+  }
+
+  ///POST VIDEO
+  final List<PostVideoModel> _postVideos = [];
+  void postVideosParser(QuerySnapshot event) {
+    // for (var i in event.docs) {
+    //   var model = LikeModel.fromJson(i.data());
+    //   if (!_likes.contains(model)) {
+    //     _likes.add(model);
+    //   }
+    // }
+    _postVideos.clear();
+
+    _postVideos
+        .addAll(event.docs.map((e) => PostVideoModel.fromJson(e.data())));
+    _postVideoStream.add(_postVideos);
+  }
+
+  final Map<String, StreamSubscription> _postVideosStreams = {};
+  void _postVideosStreamsSetUp(String postId) {
+    _postVideosStreams[postId] = _db
+        .collection("postVideos")
+        .where("post_id", isEqualTo: postId)
+        .snapshots(includeMetadataChanges: true)
+        .listen((event) {
+      return postVideosParser(event);
+    });
+  }
+
+  Stream<List<PostVideoModel>> postVideos(String postId) {
+    var stream = _postVideosStreams[postId];
+    if (stream != null) {
+      stream.cancel();
+      _postVideosStreams.remove(postId);
+    }
+    _postVideosStreamsSetUp(postId);
+    return _postVideoStream.stream;
   }
 
   ///COMMENTS

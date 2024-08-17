@@ -31,8 +31,9 @@ class DatabaseUpdateService {
       payload["commentPermission"] = commentPermission;
     }
     if (messageStatus != null) payload["messageStatus"] = messageStatus;
-    if (chatMessageToken != null)
+    if (chatMessageToken != null) {
       payload["chat_message_token"] = chatMessageToken;
+    }
 
     await _db.collection("users").doc(id).update(payload);
   }
@@ -61,6 +62,16 @@ class DatabaseUpdateService {
     if (name != null) payload["name"] = name;
 
     await _db.collection("categories").doc(id).update(payload);
+  }
+
+  Future<void> updateMainCategoryData({
+    required String id,
+    String? name,
+  }) async {
+    Map<String, dynamic> payload = {};
+    if (name != null) payload["name"] = name;
+
+    await _db.collection("mainCategories").doc(id).update(payload);
   }
 
   Future<void> updateSubCategoryData({

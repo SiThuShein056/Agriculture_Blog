@@ -7,27 +7,25 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
-class CreateCategory extends StatelessWidget {
-  const CreateCategory({
+class CreateMainCategory extends StatelessWidget {
+  const CreateMainCategory({
     super.key,
   });
-
   @override
   Widget build(BuildContext context) {
     final postCreateBloc = context.read<CreateCubit>();
-    String id = ModalRoute.of(context)!.settings.arguments as String;
 
     return Stack(
       children: [
         Scaffold(
           appBar: AppBar(
-            title: const Text("Create Cateory"),
+            title: const Text("Create Main Cateory"),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomOutlinedButton(
                   function: () {
-                    postCreateBloc.createCategory(id);
+                    postCreateBloc.createMainCategory();
                   },
                   lable: "Create",
                   icon: Icons.post_add_outlined,
@@ -52,9 +50,9 @@ class CreateCategory extends StatelessWidget {
                       return null;
                     },
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: postCreateBloc.categoryController,
+                    controller: postCreateBloc.mainCategoryController,
                     decoration: InputDecoration(
-                      hintText: "Enter Category",
+                      hintText: "Enter Main Category",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),

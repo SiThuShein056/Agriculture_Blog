@@ -67,8 +67,57 @@ class CreatePost extends StatelessWidget {
                             Row(
                               children: [
                                 InkWell(
-                                    onTap: () {
-                                      postCreateBloc.pickPostPhotos();
+                                    onTap: () async {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (context) => Center(
+                                                child: AlertDialog(
+                                                  elevation: 0.01,
+                                                  title: const Text(
+                                                      "Select Action"),
+                                                  content: Column(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      TextButton.icon(
+                                                          onPressed: () {
+                                                            postCreateBloc
+                                                                .pickPostVideo();
+                                                            StarlightUtils
+                                                                .pop();
+                                                          },
+                                                          label: const Text(
+                                                              "Pick Videos"),
+                                                          icon: const Icon(Icons
+                                                              .video_file_outlined)),
+                                                      TextButton.icon(
+                                                        onPressed: () {
+                                                          postCreateBloc
+                                                              .pickPostPhotos();
+
+                                                          StarlightUtils.pop();
+                                                        },
+                                                        label: const Text(
+                                                            "Pick Images"),
+                                                        icon: const Icon(
+                                                          Icons.image_outlined,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    TextButton(
+                                                        onPressed: () {
+                                                          StarlightUtils.pop();
+                                                        },
+                                                        child:
+                                                            const Text("Close"))
+                                                  ],
+                                                ),
+                                              ));
                                     },
                                     child: SizedBox(
                                       width:
@@ -84,7 +133,7 @@ class CreatePost extends StatelessWidget {
                                 Expanded(
                                   child: BlocBuilder<CreateCubit, CreateState>(
                                       builder: (_, state) {
-                                    var url = state.url;
+                                    var url = state.imageUrl;
                                     if (url?.length == 0 || url == null) {
                                       return const SizedBox();
                                     }
@@ -119,6 +168,40 @@ class CreatePost extends StatelessWidget {
                                 )
                               ],
                             ),
+                            BlocBuilder<CreateCubit, CreateState>(
+                                builder: (_, state) {
+                              var videoUrl = state.videoUrl;
+                              if (videoUrl?.length == 0 || videoUrl == null) {
+                                return const SizedBox();
+                              }
+                              return SizedBox(
+                                width: context.width,
+                                height: MediaQuery.of(context).size.width * .3,
+                                child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: videoUrl.length,
+                                    itemBuilder: (_, i) {
+                                      return SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .15,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .3,
+                                          child: Card(
+                                              child: IconButton(
+                                                  onPressed: () {
+                                                    StarlightUtils.push(
+                                                        VideoPlayerWidget(
+                                                            uri: videoUrl[i]));
+                                                  },
+                                                  icon: const Icon(Icons
+                                                      .video_collection_outlined))));
+                                    }),
+                              );
+                            }),
                             const Padding(
                               padding: EdgeInsets.symmetric(vertical: 10.0),
                               child: Text(
@@ -204,13 +287,13 @@ class CreatePost extends StatelessWidget {
                                 validator: (value) {
                                   if (value!.isEmpty) return "";
                                   if (value.contains("null")) {
-                                    return "You need to select both category and sub_category";
+                                    return "You need to select All category and sub_category";
                                   }
                                   return null;
                                 },
                                 onTap: () {
                                   StarlightUtils.pushNamed(
-                                    RouteNames.categories,
+                                    RouteNames.mainCategories,
                                   ).then((category) {
                                     postCreateBloc.categoryController.text =
                                         category;
@@ -223,7 +306,7 @@ class CreatePost extends StatelessWidget {
                                     AutovalidateMode.onUserInteraction,
                                 controller: postCreateBloc.categoryController,
                                 decoration: InputDecoration(
-                                  hintText: "Select Category",
+                                  hintText: "Select Main Category",
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),

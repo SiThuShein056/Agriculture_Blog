@@ -1,7 +1,8 @@
 abstract class CreateState {
-  final List<String>? url;
+  final List<String>? imageUrl;
+  final List<String>? videoUrl;
 
-  const CreateState([this.url]);
+  const CreateState({this.imageUrl, this.videoUrl});
 }
 
 class CreateInitialState extends CreateState {
@@ -21,7 +22,7 @@ class ProfilePhotoPickingState extends CreateState {
 }
 
 class CreateSuccessState extends CreateState {
-  const CreateSuccessState([super.url]);
+  const CreateSuccessState({super.imageUrl, super.videoUrl});
 }
 
 class CreateErrorState extends CreateState {

@@ -25,14 +25,13 @@ class MessagingService {
   }
 
   sendNotificationToSelectedDevice(
-    String sms,
+    String title,
+    String body,
     String deviceToken,
   ) async {
     GetServerKey getServerKey = GetServerKey();
     String serverAccessTokenKey = await getServerKey.getServerKeyToken();
     logger.i("ServerAccessTokenKey : $serverAccessTokenKey");
-    String userName =
-        Injection<AuthService>().currentUser!.displayName.toString();
 
     String endPointFirebaaseCloudMessaging =
         'https://fcm.googleapis.com/v1/projects/blog-app-94e6c/messages:send';
@@ -41,8 +40,8 @@ class MessagingService {
       'message': {
         'token': deviceToken,
         'notification': {
-          'title': 'Sent From $userName',
-          'body': sms,
+          'title': title,
+          'body': body,
         },
         'data': {
           'type': 'msj',

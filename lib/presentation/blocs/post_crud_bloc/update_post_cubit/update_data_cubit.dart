@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
+import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_state.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +20,7 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
   final AuthService auth = Injection<AuthService>();
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
+      mainCategoryController = TextEditingController(),
       commentController = TextEditingController(),
       phoneController = TextEditingController(),
       privacyController = TextEditingController(),
@@ -26,8 +28,8 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
 
   final FocusNode titleFocusNode = FocusNode(),
       descriptionFocusNode = FocusNode();
-  String? imageUrl;
   List<String> imageList = [];
+  List<String> videoList = [];
   ValueNotifier<String> privacy = ValueNotifier("select");
 
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
@@ -39,8 +41,21 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
       var postedId = element["post_id"].toString();
 
       if (postedId == postId) {
-        log("Deleted");
+        log("Deleted Image");
         await _db.collection("postImages").doc(element['id']).delete();
+      }
+    }
+  }
+
+  Future<void> deletePostVideos(String postId) async {
+    var postvideoData = await _db.collection("postVideos").get();
+    var data = postvideoData.docs;
+    for (var element in data) {
+      var postedId = element["post_id"].toString();
+
+      if (postedId == postId) {
+        log("Deleted Video");
+        await _db.collection("postVideos").doc(element['id']).delete();
       }
     }
   }
@@ -52,7 +67,7 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
     try {
       DatabaseUpdateService().updatePostData(
           id: id,
-          category: categoryController.text,
+          category: mainCategoryController.text,
           description: descriptionController.text,
           phone: phoneController.text,
           privacy: privacy.value);
@@ -75,6 +90,23 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
           );
         }
       }
+      if (videoList != []) {
+        log("For In  ${videoList.length.toString()}");
+        for (var element in videoList) {
+          final postVideoDoc = _db.collection("postVideos").doc();
+
+          final postImg = PostVideoModel(
+            id: postVideoDoc.id,
+            postId: id,
+            userId: auth.currentUser!.uid,
+            createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+            videoUrl: element,
+          );
+          await postVideoDoc.set(
+            postImg.toJson(),
+          );
+        }
+      }
 
       emit(const UpdateDataSuccessState());
     } on FirebaseException catch (e) {
@@ -92,6 +124,24 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
       DatabaseUpdateService().updateCategoryData(
         id: id,
         name: categoryController.text,
+      );
+
+      emit(const UpdateDataSuccessState());
+    } on FirebaseException catch (e) {
+      emit(UpdateDataErrorState(e.code));
+    } catch (e) {
+      emit(UpdateDataErrorState(e.toString()));
+    }
+  }
+
+  Future<void> updateMainCategory(String id) async {
+    if (state is UpdateDataLoadingState ||
+        formKey?.currentState?.validate() != true) return;
+    emit(const UpdateDataLoadingState());
+    try {
+      DatabaseUpdateService().updateMainCategoryData(
+        id: id,
+        name: mainCategoryController.text,
       );
 
       emit(const UpdateDataSuccessState());
@@ -189,7 +239,30 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
       imageList.add(imageUrl);
     }
 
-    emit(UpdatePickSuccessState(imageList));
+    emit(UpdatePickSuccessState(imageList, videoList));
+    return;
+  }
+
+  Future<void> pickPostVideos() async {
+    if (state is UpdateDataLoadingState) return;
+    emit(const UpdateDataLoadingState());
+
+    final XFile? video =
+        await Injection<ImagePicker>().pickVideo(source: ImageSource.gallery);
+
+    if (video != null) {
+      final point = Injection<FirebaseStorage>().ref(
+          "postVideos/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${video.name.split(".").last}");
+      final uploaded = await point.putFile(video.path.file);
+      //TODO
+
+      var v = await Injection<FirebaseStorage>()
+          .ref(uploaded.ref.fullPath)
+          .getDownloadURL();
+      videoList.add(v);
+    }
+
+    emit(UpdatePickSuccessState(imageList, videoList));
     return;
   }
 
@@ -200,6 +273,7 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
     commentController.dispose();
     descriptionController.dispose();
     categoryController.dispose();
+    mainCategoryController.dispose();
     titleFocusNode.dispose();
     descriptionFocusNode.dispose();
     return super.close();

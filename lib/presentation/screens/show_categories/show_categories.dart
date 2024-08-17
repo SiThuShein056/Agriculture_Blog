@@ -9,8 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
 class ShowCategories extends StatelessWidget {
-  const ShowCategories({super.key});
-
+  final String id;
+  const ShowCategories({
+    super.key,
+    required this.id,
+  });
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -40,7 +43,7 @@ class ShowCategories extends StatelessWidget {
                 actions: [
                   IconButton(
                       onPressed: () {
-                        showSearch(context: context, delegate: SearchScreen())
+                        showSearch(context: context, delegate: SearchScreen(id))
                             .then((value) {
                           StarlightUtils.pop(result: value);
                         });
@@ -66,14 +69,15 @@ class ShowCategories extends StatelessWidget {
                     // }
                     return FloatingActionButton(
                       onPressed: () {
-                        StarlightUtils.pushNamed(RouteNames.createCategories)
+                        StarlightUtils.pushNamed(RouteNames.createCategories,
+                                arguments: id)
                             .then((e) => StarlightUtils.pop);
                       },
                       child: const Icon(Icons.add),
                     );
                   }),
               body: StreamBuilder(
-                stream: FirebaseStoreDb().categories,
+                stream: FirebaseStoreDb().categories(id),
                 builder: (_, snap) {
                   if (snap.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -91,6 +95,11 @@ class ShowCategories extends StatelessWidget {
                     );
                   }
                   List<CategoryModel> categories = snap.data!.toList();
+                  if (categories.isEmpty) {
+                    return const Center(
+                      child: Text("No data found"),
+                    );
+                  }
 
                   return Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -121,6 +130,8 @@ class ShowCategories extends StatelessWidget {
 }
 
 class SearchScreen extends SearchDelegate {
+  String id;
+  SearchScreen(this.id);
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [const SizedBox()];
@@ -146,7 +157,7 @@ class SearchScreen extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().categories,
+        stream: FirebaseStoreDb().categories(id),
         builder: (_, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(

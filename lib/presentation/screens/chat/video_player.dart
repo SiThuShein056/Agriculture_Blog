@@ -63,8 +63,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
       appBar: AppBar(
         title: const Text("Video View Screen"),
       ),
-      body: CustomVideoPlayer(
-        customVideoPlayerController: _customVideoPlayerController,
+      body: Center(
+        child: CustomVideoPlayer(
+          customVideoPlayerController: _customVideoPlayerController,
+        ),
       ),
     );
   }

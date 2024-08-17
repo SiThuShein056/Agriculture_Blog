@@ -9,7 +9,6 @@ import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:logger/logger.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
 class ChatCreateService {
@@ -95,18 +94,19 @@ class ChatCreateService {
       chat.toJson(),
     )
         .then((onValue) {
-      Logger logger = Logger();
+      var sender = Injection<AuthService>().currentUser!.displayName;
       MessagingService msg = MessagingService();
       msg.sendNotificationToSelectedDevice(
           type.name == Type.text.name
-              ? message
+              ? "$sender Sent Message"
               : type.name == Type.image.name
-                  ? "Send Image"
+                  ? "$sender Send Image"
                   : type.name == Type.video.name
-                      ? "Send Video"
+                      ? "$sender Send Video"
                       : type.name == Type.videoCallLink.name
-                          ? "Calling You Video Call"
-                          : "Calling you Voice call",
+                          ? "$sender Calling to you with Video Call"
+                          : "$sender Calling to you with Voice call",
+          message,
           user.chatMessageToken);
     });
   }

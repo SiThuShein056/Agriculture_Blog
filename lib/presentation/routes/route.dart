@@ -31,6 +31,7 @@ class RouteNames {
       postDetail = "/post-detail",
       categories = "/categories",
       createCategories = "/createCategories",
+      createMainCategories = "/create-main-Categories",
       createSubCategories = "/createSubCategories",
       adminDashBoard = "/admin-dash-board",
       noti = "/notification-screen",
@@ -38,8 +39,10 @@ class RouteNames {
       messageCard = "/message-card",
       readPosts = "/read-post",
       readUsers = "/read-user",
+      readMainCategories = "/read-main-category",
       readCategories = "/read-category",
       readSubCategories = "/read-sub-category",
+      mainCategories = "/main-categories",
       subCategories = "/sub-categories";
 }
 
@@ -80,6 +83,16 @@ Route? router(RouteSettings settings) {
             child: const LoginScreen(),
           ),
           settings);
+    case RouteNames.mainCategories:
+      return _protectedRoute(
+          incomingRoute,
+          BlocProvider(
+            create: (_) => HomeBloc(
+              HomeInitialState(Injection<AuthService>().currentUser),
+            ),
+            child: const ShowMainCategories(),
+          ),
+          settings);
     case RouteNames.categories:
       return _protectedRoute(
           incomingRoute,
@@ -87,7 +100,9 @@ Route? router(RouteSettings settings) {
             create: (_) => HomeBloc(
               HomeInitialState(Injection<AuthService>().currentUser),
             ),
-            child: const ShowCategories(),
+            child: ShowCategories(
+              id: settings.arguments.toString(),
+            ),
           ),
           settings);
     case RouteNames.subCategories:
@@ -316,10 +331,24 @@ Route? router(RouteSettings settings) {
         const ReadUser(),
         settings,
       );
+    case RouteNames.mainCategories:
+      return _protectedRoute(
+        incomingRoute,
+        const ReadMainCategory(),
+        settings,
+      );
     case RouteNames.readCategories:
       return _protectedRoute(
         incomingRoute,
-        const ReadCategory(),
+        ReadCategory(
+          id: settings.arguments.toString(),
+        ),
+        settings,
+      );
+    case RouteNames.readMainCategories:
+      return _protectedRoute(
+        incomingRoute,
+        const ReadMainCategory(),
         settings,
       );
     case RouteNames.userControlScreen:
@@ -392,6 +421,15 @@ Route? router(RouteSettings settings) {
             BlocProvider<CreateCubit>(create: (_) => CreateCubit()),
           ],
           child: const CreatePost(),
+        ),
+        settings,
+      );
+    case RouteNames.createMainCategories:
+      return _protectedRoute(
+        incomingRoute,
+        MultiBlocProvider(
+          providers: [BlocProvider(create: (_) => CreateCubit())],
+          child: const CreateMainCategory(),
         ),
         settings,
       );

@@ -1,12 +1,14 @@
 import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/post_crud_service/post_create_service.dart';
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
-import 'package:blog_app/data/models/notification_model/notification_model.dart';
+import 'package:blog_app/data/models/main_category_model/main_cateory_model.dart';
 import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/data/models/savedPost_model/save_post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/injection.dart';
@@ -27,6 +29,7 @@ class CreateCubit extends Cubit<CreateState> {
   final AuthService auth = Injection<AuthService>();
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
+      mainCategoryController = TextEditingController(),
       commentController = TextEditingController(),
       phoneController = TextEditingController(),
       privacyController = TextEditingController(),
@@ -35,7 +38,7 @@ class CreateCubit extends Cubit<CreateState> {
   final FocusNode titleFocusNode = FocusNode(),
       descriptionFocusNode = FocusNode();
   List<String> imageUrl = [];
-  String? imgUrl;
+  List<String> videoUrl = [];
   ValueNotifier<int> readCounts = ValueNotifier(0);
   ValueNotifier<int> notiCounts = ValueNotifier(0);
   ValueNotifier<String> privacy = ValueNotifier("select");
@@ -62,9 +65,15 @@ class CreateCubit extends Cubit<CreateState> {
         privacy: privacy.value,
         description: descriptionController.text,
       );
-      await doc.set(
+      await doc
+          .set(
         post.toJson(),
-      );
+      )
+          .then((v) {
+        if (privacy.value == "public") {
+          PostCreateService().sentNewPostNotification(categoryController.text);
+        }
+      });
 
       if (imageUrl != []) {
         log("For In  ${imageUrl.length.toString()}");
@@ -78,26 +87,34 @@ class CreateCubit extends Cubit<CreateState> {
             createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
             imageUrl: element,
           );
-          log("buld db");
           await postImageDoc.set(
             postImg.toJson(),
           );
         }
       }
+      if (videoUrl != []) {
+        log("For VideoUrl In  ${videoUrl.length.toString()}");
+        for (var element in videoUrl) {
+          final postVideoDoc = _db.collection("postVideos").doc();
 
-      final noti = NotificationModel(
-          id: notiDoc.id,
-          postId: doc.id,
-          userId: auth.currentUser!.uid,
-          createdAt: DateTime.now().microsecondsSinceEpoch.toString());
-      await notiDoc.set(
-        noti.toJson(),
-      );
+          final postVideo = PostVideoModel(
+            id: postVideoDoc.id,
+            postId: doc.id,
+            userId: auth.currentUser!.uid,
+            createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+            videoUrl: element,
+          );
+          await postVideoDoc.set(
+            postVideo.toJson(),
+          );
+        }
+      }
 
-      notiCounts.value++;
       categoryController.text = "";
       descriptionController.text = "";
       phoneController.text = "";
+      imageUrl.clear();
+      videoUrl.clear();
 
       emit(const CreateSuccessState());
     } on FirebaseException catch (e) {
@@ -106,57 +123,6 @@ class CreateCubit extends Cubit<CreateState> {
       emit(CreateErrorState(e.toString()));
     }
   }
-
-  // Future<void> pickPostPhoto() async {
-  //   if (state is CreateLoadingState) return;
-  //   emit(const CreateLoadingState());
-
-  //   final userChoice = await StarlightUtils.dialog(AlertDialog(
-  //     title: const Text("Choose Method"),
-  //     content: SizedBox(
-  //       height: 120,
-  //       child: Column(children: [
-  //         ListTile(
-  //           onTap: () {
-  //             StarlightUtils.pop(result: ImageSource.camera);
-  //           },
-  //           leading: const Icon(Icons.camera),
-  //           title: const Text("Camera"),
-  //         ),
-  //         ListTile(
-  //           onTap: () {
-  //             StarlightUtils.pop(result: ImageSource.gallery);
-  //           },
-  //           leading: const Icon(Icons.image),
-  //           title: const Text("Gallery"),
-  //         )
-  //       ]),
-  //     ),
-  //   ));
-  //   if (userChoice == null) {
-  //     emit(const CreateErrorState("User choose is nill"));
-
-  //     return;
-  //   }
-  //   final XFile? image =
-  //       await Injection<ImagePicker>().pickImage(source: userChoice);
-  //   if (image == null) {
-  //     emit(const CreateErrorState("Xfile is nill"));
-
-  //     return;
-  //   }
-  //   final point = Injection<FirebaseStorage>().ref(
-  //       "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
-  //   final uploaded = await point.putFile(image.path.file);
-  //   //TODO
-
-  //   imageUrl = await Injection<FirebaseStorage>()
-  //       .ref(uploaded.ref.fullPath)
-  //       .getDownloadURL();
-
-  //   emit(CreateSuccessState(imageUrl));
-  //   return;
-  // }
 
   Future<void> pickPostPhotos() async {
     if (state is CreateLoadingState) return;
@@ -177,35 +143,34 @@ class CreateCubit extends Cubit<CreateState> {
       imageUrl.add(img);
     }
     log(imageUrl.length.toString());
-    emit(CreateSuccessState(imageUrl));
+    emit(CreateSuccessState(imageUrl: imageUrl, videoUrl: videoUrl));
     return;
   }
 
   Future<void> pickPostVideo() async {
     if (state is CreateLoadingState) return;
     emit(const CreateLoadingState());
-    imageUrl.clear();
-    final List<XFile> image =
-        await Injection<ImagePicker>().pickMultipleMedia();
+    final XFile? video =
+        await Injection<ImagePicker>().pickVideo(source: ImageSource.gallery);
 
-    for (var element in image) {
+    if (video != null) {
       final point = Injection<FirebaseStorage>().ref(
-          "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${element.name.split(".").last}");
-      final uploaded = await point.putFile(element.path.file);
+          "postVideos/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${video.name.split(".").last}");
+      final uploaded = await point.putFile(video.path.file);
       //TODO
 
-      var img = await Injection<FirebaseStorage>()
+      var v = await Injection<FirebaseStorage>()
           .ref(uploaded.ref.fullPath)
           .getDownloadURL();
 
-      imageUrl.add(img);
+      videoUrl.add(v);
     }
-    log(imageUrl.length.toString());
-    emit(CreateSuccessState(imageUrl));
+    log("Video URL${videoUrl.length}");
+    emit(CreateSuccessState(imageUrl: imageUrl, videoUrl: videoUrl));
     return;
   }
 
-  Future<void> createCategory() async {
+  Future<void> createCategory(String id) async {
     if (state is CreateLoadingState ||
         formKey?.currentState?.validate() != true) return;
     emit(const CreateLoadingState());
@@ -214,7 +179,30 @@ class CreateCubit extends Cubit<CreateState> {
 
       final post = CategoryModel(
         id: doc.id,
+        mainCategoryID: id,
         name: categoryController.text,
+      );
+      await doc.set(
+        post.toJson(),
+      );
+      emit(const CreateSuccessState());
+    } on FirebaseException catch (e) {
+      emit(CreateErrorState(e.code));
+    } catch (e) {
+      emit(CreateErrorState(e.toString()));
+    }
+  }
+
+  Future<void> createMainCategory() async {
+    if (state is CreateLoadingState ||
+        formKey?.currentState?.validate() != true) return;
+    emit(const CreateLoadingState());
+    try {
+      final doc = _db.collection("mainCategories").doc();
+
+      final post = MainCategoryModel(
+        id: doc.id,
+        name: mainCategoryController.text,
       );
       await doc.set(
         post.toJson(),
@@ -264,9 +252,13 @@ class CreateCubit extends Cubit<CreateState> {
         body: body,
         createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
       );
-      await doc.set(
+      await doc
+          .set(
         comment.toJson(),
-      );
+      )
+          .then((v) async {
+        PostCreateService().sentNewCommentNotification(postId, body);
+      });
       commentController.text = "";
       emit(const CreateSuccessState());
     } on FirebaseException catch (e) {

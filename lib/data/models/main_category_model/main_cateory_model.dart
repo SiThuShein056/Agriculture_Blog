@@ -1,16 +1,14 @@
-class CategoryModel {
+class MainCategoryModel {
   final String id;
   final String name;
-  final String mainCategoryID;
 
-  CategoryModel({
+  MainCategoryModel({
     required this.id,
     required this.name,
-    required this.mainCategoryID,
   });
 
   @override
-  bool operator ==(covariant CategoryModel other) {
+  bool operator ==(covariant MainCategoryModel other) {
     // TODO: implement ==
     return other.id == id;
   }
@@ -22,14 +20,12 @@ class CategoryModel {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "mainCategory_id": mainCategoryID,
       };
 
-  factory CategoryModel.fromJson(dynamic data) {
-    return CategoryModel(
+  factory MainCategoryModel.fromJson(dynamic data) {
+    return MainCategoryModel(
       id: data["id"],
       name: data["name"],
-      mainCategoryID: data["mainCategory_id"],
     );
   }
 }

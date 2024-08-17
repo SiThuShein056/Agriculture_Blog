@@ -59,7 +59,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     height: MediaQuery.of(context).size.height * .25,
                     child: InkWell(
                       onTap: () {
-                        StarlightUtils.pushNamed(RouteNames.readCategories);
+                        StarlightUtils.pushNamed(RouteNames.readMainCategories);
                       },
                       child: Card(
                         elevation: 3,

@@ -5,6 +5,7 @@ import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/pos
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/form_widget.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:blog_app/presentation/screens/chat/video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';

@@ -1,6 +1,7 @@
 abstract class UpdateDataBaseState {
-  final List<String>? url;
-  const UpdateDataBaseState([this.url]);
+  final List<String>? imageUrl;
+  final List<String>? videoUrl;
+  const UpdateDataBaseState([this.imageUrl, this.videoUrl]);
 }
 
 class UpdateDataInitialState extends UpdateDataBaseState {
@@ -12,11 +13,11 @@ class UpdateDataLoadingState extends UpdateDataBaseState {
 }
 
 class UpdateDataSuccessState extends UpdateDataBaseState {
-  const UpdateDataSuccessState([super.url]);
+  const UpdateDataSuccessState([super.imageUrl, super.videoUrl]);
 }
 
 class UpdatePickSuccessState extends UpdateDataBaseState {
-  const UpdatePickSuccessState([super.url]);
+  const UpdatePickSuccessState([super.imageUrl, super.videoUrl]);
 }
 
 class UpdateDataErrorState extends UpdateDataBaseState {

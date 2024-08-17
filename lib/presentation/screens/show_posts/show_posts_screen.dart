@@ -273,6 +273,7 @@ class ShowPost extends StatelessWidget {
                                 //         ),
                                 //       )),
                                 MultiPhotoShow(postId: posts[i].id),
+                                PostVideoShow(postId: posts[i].id),
                                 const Divider(),
                                 SizedBox(
                                   height: 40,

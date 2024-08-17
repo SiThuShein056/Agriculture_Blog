@@ -96,7 +96,7 @@ class MessageCard extends StatelessWidget {
                           uri: message.message,
                         ));
                       },
-                      icon: const Icon(Icons.video_file_outlined))
+                      icon: const Icon(Icons.video_collection))
                   : (message.type == Type.videoCallLink &&
                           message.expiredTime == true)
                       ? InkWell(

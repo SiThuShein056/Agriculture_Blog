@@ -310,91 +310,110 @@ class SingleChat extends StatelessWidget {
 
                   return chats.isBlocked
                       ? const Text("Unavailabel to send message.......")
-                      : Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
+                      : Column(
                           children: [
-                            IconButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
+                            const Align(
+                                alignment: Alignment.bottomRight,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 5),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.0,
+                                  ),
+                                )),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
 
-                                bloc.toggle();
-                              },
-                              icon: const Icon(Icons.emoji_emotions_outlined),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  _messageType(context, bloc, user, chatID);
-                                },
-                                icon: const Icon(Icons.link_outlined)),
-                            Expanded(
-                              child: Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextField(
-                                      onTap: () {
-                                        if (bloc.isShowEmoji.value) {
-                                          bloc.toggle();
-                                        }
-                                      },
-                                      controller: bloc.messageController,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      decoration: const InputDecoration(
-                                          hintText: "Type Here",
-                                          border: InputBorder.none),
-                                    ),
-                                  )),
-                            ),
-                            BlocBuilder<ChatBloc, ChatBaseState>(
-                                builder: (context, state) {
-                              if (state is ChatLoadingState) {
-                                log("Loading ${state is ChatLoadingState}");
-
-                                return const Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 10, vertical: 5),
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.0,
-                                      ),
-                                    ));
-                              }
-                              if (state is SuccessState) {
-                                log("Loading ${state is ChatLoadingState}");
-                              }
-                              return MaterialButton(
-                                minWidth: 0,
-                                padding: const EdgeInsets.only(
-                                    top: 10, bottom: 10, left: 10, right: 5),
-                                shape: const CircleBorder(),
-                                onPressed: () async {
-                                  bool enable = await FirebaseStoreDb()
-                                      .checkMessageStatus();
-
-                                  if (enable) {
-                                    bloc.add(SentTextMessageEvent(user));
-
-                                    ChatUpdateService().updateChatData(
-                                        id: chatID,
-                                        createdTime: DateTime.now()
-                                            .millisecondsSinceEpoch
-                                            .toString());
-                                  } else {
-                                    StarlightUtils.snackbar(const SnackBar(
-                                        content: Text(
-                                            "Your account has been blocked")));
-                                  }
-                                },
-                                color: const Color.fromARGB(255, 120, 240, 164),
-                                child: const Icon(
-                                  Icons.send_outlined,
+                                    bloc.toggle();
+                                  },
+                                  icon:
+                                      const Icon(Icons.emoji_emotions_outlined),
                                 ),
-                              );
-                            }),
+                                IconButton(
+                                    onPressed: () {
+                                      _messageType(context, bloc, user, chatID);
+                                    },
+                                    icon: const Icon(Icons.link_outlined)),
+                                Expanded(
+                                  child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: TextField(
+                                          onTap: () {
+                                            if (bloc.isShowEmoji.value) {
+                                              bloc.toggle();
+                                            }
+                                          },
+                                          controller: bloc.messageController,
+                                          keyboardType: TextInputType.multiline,
+                                          maxLines: null,
+                                          decoration: const InputDecoration(
+                                              hintText: "Type Here",
+                                              border: InputBorder.none),
+                                        ),
+                                      )),
+                                ),
+                                BlocBuilder<ChatBloc, ChatBaseState>(
+                                    builder: (context, state) {
+                                  if (state is ChatLoadingState) {
+                                    log("Loading ${state is ChatLoadingState}");
+
+                                    return const Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10, vertical: 5),
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2.0,
+                                          ),
+                                        ));
+                                  }
+                                  if (state is SuccessState) {
+                                    log("Loading ${state is ChatLoadingState}");
+                                  }
+                                  return MaterialButton(
+                                    minWidth: 0,
+                                    padding: const EdgeInsets.only(
+                                        top: 10,
+                                        bottom: 10,
+                                        left: 10,
+                                        right: 5),
+                                    shape: const CircleBorder(),
+                                    onPressed: () async {
+                                      bool enable = await FirebaseStoreDb()
+                                          .checkMessageStatus();
+
+                                      if (enable) {
+                                        bloc.add(SentTextMessageEvent(user));
+
+                                        ChatUpdateService().updateChatData(
+                                            id: chatID,
+                                            createdTime: DateTime.now()
+                                                .millisecondsSinceEpoch
+                                                .toString());
+                                      } else {
+                                        StarlightUtils.snackbar(const SnackBar(
+                                            content: Text(
+                                                "Your account has been blocked")));
+                                      }
+                                    },
+                                    color: const Color.fromARGB(
+                                        255, 120, 240, 164),
+                                    child: const Icon(
+                                      Icons.send_outlined,
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
                           ],
                         );
                 }
@@ -505,7 +524,7 @@ class SingleChat extends StatelessWidget {
                             width: MediaQuery.of(context).size.height * .15,
                             height: MediaQuery.of(context).size.width * .3,
                             child: const Card(
-                              child: Icon(Icons.video_file_outlined),
+                              child: Icon(Icons.video_collection),
                             ),
                           )),
                     )
