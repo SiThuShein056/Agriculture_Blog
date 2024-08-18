@@ -312,15 +312,27 @@ class SingleChat extends StatelessWidget {
                       ? const Text("Unavailabel to send message.......")
                       : Column(
                           children: [
-                            const Align(
-                                alignment: Alignment.bottomRight,
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 5),
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.0,
-                                  ),
-                                )),
+                            BlocBuilder<ChatBloc, ChatBaseState>(
+                                builder: (context, state) {
+                              if (state is ChatLoadingState) {
+                                log("Loading ${state is ChatLoadingState}");
+
+                                return const Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 5),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                      ),
+                                    ));
+                              }
+                              if (state is SuccessState) {
+                                log("Loading ${state is ChatLoadingState}");
+                              }
+
+                              return const SizedBox();
+                            }),
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
@@ -361,57 +373,35 @@ class SingleChat extends StatelessWidget {
                                         ),
                                       )),
                                 ),
-                                BlocBuilder<ChatBloc, ChatBaseState>(
-                                    builder: (context, state) {
-                                  if (state is ChatLoadingState) {
-                                    log("Loading ${state is ChatLoadingState}");
+                                MaterialButton(
+                                  minWidth: 0,
+                                  padding: const EdgeInsets.only(
+                                      top: 10, bottom: 10, left: 10, right: 5),
+                                  shape: const CircleBorder(),
+                                  onPressed: () async {
+                                    bool enable = await FirebaseStoreDb()
+                                        .checkMessageStatus();
 
-                                    return const Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 5),
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2.0,
-                                          ),
-                                        ));
-                                  }
-                                  if (state is SuccessState) {
-                                    log("Loading ${state is ChatLoadingState}");
-                                  }
-                                  return MaterialButton(
-                                    minWidth: 0,
-                                    padding: const EdgeInsets.only(
-                                        top: 10,
-                                        bottom: 10,
-                                        left: 10,
-                                        right: 5),
-                                    shape: const CircleBorder(),
-                                    onPressed: () async {
-                                      bool enable = await FirebaseStoreDb()
-                                          .checkMessageStatus();
+                                    if (enable) {
+                                      bloc.add(SentTextMessageEvent(user));
 
-                                      if (enable) {
-                                        bloc.add(SentTextMessageEvent(user));
-
-                                        ChatUpdateService().updateChatData(
-                                            id: chatID,
-                                            createdTime: DateTime.now()
-                                                .millisecondsSinceEpoch
-                                                .toString());
-                                      } else {
-                                        StarlightUtils.snackbar(const SnackBar(
-                                            content: Text(
-                                                "Your account has been blocked")));
-                                      }
-                                    },
-                                    color: const Color.fromARGB(
-                                        255, 120, 240, 164),
-                                    child: const Icon(
-                                      Icons.send_outlined,
-                                    ),
-                                  );
-                                }),
+                                      ChatUpdateService().updateChatData(
+                                          id: chatID,
+                                          createdTime: DateTime.now()
+                                              .millisecondsSinceEpoch
+                                              .toString());
+                                    } else {
+                                      StarlightUtils.snackbar(const SnackBar(
+                                          content: Text(
+                                              "Your account has been blocked")));
+                                    }
+                                  },
+                                  color:
+                                      const Color.fromARGB(255, 120, 240, 164),
+                                  child: const Icon(
+                                    Icons.send_outlined,
+                                  ),
+                                ),
                               ],
                             ),
                           ],

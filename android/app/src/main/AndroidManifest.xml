@@ -44,10 +44,10 @@
     </queries>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="blog_app"
+        android:label="Farmer Hub"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <!-- <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB7EjVT2nu6Ss4lNQlntovasAP-S2WOhBE"/> -->
         

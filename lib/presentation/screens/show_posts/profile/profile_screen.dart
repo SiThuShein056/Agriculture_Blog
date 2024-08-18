@@ -680,12 +680,14 @@ class PostVideoShow extends StatelessWidget {
                           ? context.width
                           : context.width * 0.5,
                       child: Card(
-                          child: IconButton(
-                              onPressed: () {
-                                StarlightUtils.push(VideoPlayerWidget(
-                                    uri: postVideos[i].videoUrl));
-                              },
-                              icon: const Icon(Icons.play_circle_outline))),
+                        child: IconButton(
+                          onPressed: () {
+                            StarlightUtils.push(
+                                VideoPlayerWidget(uri: postVideos[i].videoUrl));
+                          },
+                          icon: const Icon(Icons.play_circle_outline),
+                        ),
+                      ),
                     ),
                   );
                 }),

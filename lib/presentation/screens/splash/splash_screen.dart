@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   moveToHome() async {
-    await Future.delayed(const Duration(seconds: 10), () async {
+    await Future.delayed(const Duration(seconds: 5), () async {
       StarlightUtils.pushReplacementNamed(RouteNames.home);
     });
   }
@@ -23,13 +23,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: FadedScaleAnimation(
-          child: Image.asset(
-            "assets/images/platzi_store_logo.png",
-            height: 80,
-            width: 80,
-          ),
+      backgroundColor: Theme.of(context).cardColor,
+      body: const Center(
+        child: CircleAvatar(
+          radius: 50,
+          backgroundImage: AssetImage("assets/app_logo/logo1.png"),
         ),
       ),
     );

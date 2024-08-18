@@ -15,7 +15,8 @@ import 'package:starlight_utils/starlight_utils.dart';
 class ChatBloc extends Bloc<ChatBaseEvent, ChatBaseState> {
   ChatBloc() : super(const ChatInitialState()) {
     on<SentTextMessageEvent>((event, emit) async {
-      if (state is ChatLoadingState ||
+      if (
+          // state is ChatLoadingState ||
           formKey?.currentState?.validate() != true) return;
       emit(const ChatLoadingState());
       try {

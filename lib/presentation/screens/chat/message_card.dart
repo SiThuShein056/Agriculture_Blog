@@ -96,7 +96,7 @@ class MessageCard extends StatelessWidget {
                           uri: message.message,
                         ));
                       },
-                      icon: const Icon(Icons.video_collection))
+                      icon: const Icon(Icons.play_circle_outline_outlined))
                   : (message.type == Type.videoCallLink &&
                           message.expiredTime == true)
                       ? InkWell(
@@ -220,7 +220,7 @@ class MessageCard extends StatelessWidget {
                             uri: message.message,
                           ));
                         },
-                        icon: const Icon(Icons.video_file_outlined))
+                        icon: const Icon(Icons.play_circle_outline))
                     : (message.type == Type.videoCallLink &&
                             message.expiredTime == true)
                         ? Text(
