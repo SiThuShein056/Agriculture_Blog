@@ -24,12 +24,14 @@ class LoginScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 20.0),
-                    child: Image.asset(
-                      "assets/app_logo/logo1.png",
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: MediaQuery.of(context).size.width,
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    child: Center(
+                      child: CircleAvatar(
+                        radius: 80,
+                        backgroundImage:
+                            AssetImage("assets/app_logo/logo1.png"),
+                      ),
                     ),
                   ),
                   const Text(

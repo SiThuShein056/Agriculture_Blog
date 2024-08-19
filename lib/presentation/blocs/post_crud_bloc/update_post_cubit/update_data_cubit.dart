@@ -31,8 +31,12 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
   List<String> imageList = [];
   List<String> videoList = [];
   ValueNotifier<String> privacy = ValueNotifier("select");
+  ValueNotifier<bool> commentStatus = ValueNotifier(true);
 
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
+  void toggle() {
+    commentStatus.value = !commentStatus.value;
+  }
 
   Future<void> deletePostImages(String postId) async {
     var postimgData = await _db.collection("postImages").get();
@@ -66,11 +70,13 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
     emit(const UpdateDataLoadingState());
     try {
       DatabaseUpdateService().updatePostData(
-          id: id,
-          category: mainCategoryController.text,
-          description: descriptionController.text,
-          phone: phoneController.text,
-          privacy: privacy.value);
+        id: id,
+        category: mainCategoryController.text,
+        description: descriptionController.text,
+        phone: phoneController.text,
+        privacy: privacy.value,
+        commentStatus: commentStatus.value,
+      );
 
       if (imageList != []) {
         log("For In  ${imageList.length.toString()}");

@@ -36,64 +36,73 @@ class CommentPart extends StatelessWidget {
             onTap: () async {
               var grantPermission =
                   await FirebaseStoreDb().checkCommentPermission();
+              var postCommentStatus =
+                  await FirebaseStoreDb().checkPostCommentStatus(postsId);
               if (grantPermission) {
-                showBottomSheet(
-                  context: context,
-                  builder: (_) => Container(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: StreamBuilder(
-                        stream: FirebaseStoreDb().comments(postsId),
-                        builder: (context, cmtSnap) {
-                          if (cmtSnap.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CupertinoActivityIndicator());
-                          }
-                          if (cmtSnap.data == null) {
-                            return const Center(
-                              child: Text("No Data"),
+                if (postCommentStatus) {
+                  showBottomSheet(
+                    context: context,
+                    builder: (_) => Container(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: StreamBuilder(
+                          stream: FirebaseStoreDb().comments(postsId),
+                          builder: (context, cmtSnap) {
+                            if (cmtSnap.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CupertinoActivityIndicator());
+                            }
+                            if (cmtSnap.data == null) {
+                              return const Center(
+                                child: Text("No Data"),
+                              );
+                            }
+                            List<CommentModel> comments =
+                                cmtSnap.data!.toList();
+                            return Column(
+                              children: [
+                                /////အတုံးလေးလုပ်တာ//////
+                                Container(
+                                  width: 100,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(
+                                        102, 184, 181, 211),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  margin: const EdgeInsets.only(bottom: 20),
+                                ),
+                                Expanded(
+                                    child: comments.isEmpty
+                                        ? const Center(
+                                            child: Text("No Data"),
+                                          )
+                                        : CommentBody(
+                                            comments: comments,
+                                            createBloc: createBloc)),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 10.0, left: 10, right: 10),
+                                  child: CommentTextField(
+                                    createBloc: createBloc,
+                                    postsId: postsId,
+                                    comments: comments,
+                                  ),
+                                ),
+                              ],
                             );
-                          }
-                          List<CommentModel> comments = cmtSnap.data!.toList();
-                          return Column(
-                            children: [
-                              /////အတုံးလေးလုပ်တာ//////
-                              Container(
-                                width: 100,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromARGB(102, 184, 181, 211),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                margin: const EdgeInsets.only(bottom: 20),
-                              ),
-                              Expanded(
-                                  child: comments.isEmpty
-                                      ? const Center(
-                                          child: Text("No Data"),
-                                        )
-                                      : CommentBody(
-                                          comments: comments,
-                                          createBloc: createBloc)),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    bottom: 10.0, left: 10, right: 10),
-                                child: CommentTextField(
-                                  createBloc: createBloc,
-                                  postsId: postsId,
-                                  comments: comments,
-                                ),
-                              ),
-                            ],
-                          );
-                        }),
-                  ),
-                );
+                          }),
+                    ),
+                  );
+                } else {
+                  StarlightUtils.snackbar(const SnackBar(
+                      content: Text(
+                          "Owner does not allow to  comment on this post.")));
+                }
               } else {
                 StarlightUtils.snackbar(const SnackBar(
                     content:
-                        Text("Owner does not allow to comment on this post.")));
+                        Text("Owner does not allow to comment on her posts.")));
               }
             },
             icon: Icons.mode_comment_outlined,

@@ -45,6 +45,10 @@ class CreateCubit extends Cubit<CreateState> {
 
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> ediable = ValueNotifier(false);
+  final ValueNotifier<bool> commentStatus = ValueNotifier(true);
+  void toggle() {
+    commentStatus.value = !commentStatus.value;
+  }
 
   Future<void> createPost() async {
     if (state is CreateLoadingState ||
@@ -64,6 +68,7 @@ class CreateCubit extends Cubit<CreateState> {
         phone: phoneController.text,
         privacy: privacy.value,
         description: descriptionController.text,
+        commentStatus: commentStatus.value,
       );
       await doc
           .set(

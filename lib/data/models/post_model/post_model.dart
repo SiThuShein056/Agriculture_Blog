@@ -8,6 +8,7 @@ class PostModel extends Equatable {
   final String? phone;
   final String privacy;
   final String description;
+  final bool commentStatus;
 
   const PostModel({
     required this.id,
@@ -17,6 +18,7 @@ class PostModel extends Equatable {
     this.phone,
     required this.privacy,
     required this.description,
+    required this.commentStatus,
   });
 
   Map<String, dynamic> toJson() => {
@@ -27,6 +29,7 @@ class PostModel extends Equatable {
         "phone": phone,
         "post_type": privacy,
         "description": description,
+        "commentStatus": commentStatus,
       };
 
   factory PostModel.fromJson(dynamic data) {
@@ -38,6 +41,7 @@ class PostModel extends Equatable {
       phone: data["phone"],
       privacy: data["post_type"],
       description: data["description"],
+      commentStatus: data["commentStatus"],
     );
   }
 

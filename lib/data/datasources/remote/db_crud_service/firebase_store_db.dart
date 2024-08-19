@@ -194,6 +194,20 @@ class FirebaseStoreDb {
     return isStatus;
   }
 
+  Future<bool> checkPostCommentStatus(String postID) async {
+    var isStatus = true;
+    var data = await FirebaseFirestore.instance
+        .collection("posts")
+        .where("id", isEqualTo: postID)
+        .get();
+    var postData = data.docs;
+
+    for (var element in postData) {
+      isStatus = element["commentStatus"];
+    }
+    return isStatus;
+  }
+
   Future<bool> checkMessageStatus() async {
     var isStatus = true;
     var data = await FirebaseFirestore.instance

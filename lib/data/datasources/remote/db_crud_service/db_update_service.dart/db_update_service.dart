@@ -44,12 +44,14 @@ class DatabaseUpdateService {
     String? phone,
     String? privacy,
     String? description,
+    bool? commentStatus,
   }) async {
     Map<String, dynamic> payload = {};
     if (category != null) payload["category"] = category;
     if (phone != null) payload["phone"] = phone;
     if (privacy != null) payload["post_type"] = privacy;
     if (description != null) payload["description"] = description;
+    if (commentStatus != null) payload["commentStatus"] = commentStatus;
 
     await _db.collection("posts").doc(id).update(payload);
   }
