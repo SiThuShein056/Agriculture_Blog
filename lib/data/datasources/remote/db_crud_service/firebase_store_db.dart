@@ -35,6 +35,8 @@ class FirebaseStoreDb {
       StreamController<List<SubCategoryModel>>.broadcast();
   final StreamController<List<NotificationModel>> _notiStream =
       StreamController<List<NotificationModel>>.broadcast();
+  final StreamController<List<NotificationModel>> _readNotiStream =
+      StreamController<List<NotificationModel>>.broadcast();
   final StreamController<List<CommentModel>> _commentStream =
       StreamController<List<CommentModel>>.broadcast();
   final StreamController<List<UserModel>> _userStream =
@@ -51,35 +53,6 @@ class FirebaseStoreDb {
       StreamController<List<PostImageModel>>.broadcast();
   final StreamController<List<PostVideoModel>> _postVideoStream =
       StreamController<List<PostVideoModel>>.broadcast();
-
-  // String getConservation(String id) {
-  //   return _auth.currentUser!.uid.hashCode <= id.hashCode
-  //       ? '${_auth.currentUser!.uid}_$id'
-  //       : '${id}_${_auth.currentUser!.uid}';
-  // }
-
-  // Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(UserModel user) {
-  //   Stream<QuerySnapshot<Map<String, dynamic>>> msg = _db
-  //       .collection("chats/${getConservation(user.id)}/messages")
-  //       .snapshots();
-  //   log(getConservation(user.id));
-
-  //   return msg;
-  // }
-
-  // Future<void> sendMessage(UserModel user, String msg) async {
-  //   final time = DateTime.now().millisecondsSinceEpoch.toString();
-
-  //   final MessageModel message = MessageModel(
-  //       fromId: _auth.currentUser!.uid,
-  //       toId: user.id,
-  //       readTime: '',
-  //       sentTime: time,
-  //       type: "text",
-  //       message: msg);
-  //   final ref = _db.collection("chats/${getConservation(user.id)}/messages/");
-  //   return ref.doc(time).set(message.toJson());
-  // }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getUser(String userId) {
     Stream<QuerySnapshot<Map<String, dynamic>>> user =
@@ -507,6 +480,37 @@ class FirebaseStoreDb {
     return _singlePostStream.stream;
   }
 
+  ///READ NOTIFICATION
+  final List<NotificationModel> _readNotis = [];
+  void readNotiParser(QuerySnapshot event) {
+    _readNotis.clear();
+    _readNotis
+        .addAll(event.docs.map((e) => NotificationModel.fromJson(e.data())));
+    _readNotiStream.add(_readNotis);
+  }
+
+  Map<String, StreamSubscription> readNotisStream = {};
+  void readNotiStreamSetup() {
+    readNotisStream["data"] = _db
+        .collection("notifications")
+        .where("read", isEqualTo: false)
+        .where("user_id", isEqualTo: _auth.currentUser!.uid)
+        .snapshots()
+        .listen((e) {
+      return readNotiParser(e);
+    });
+  }
+
+  Stream<List<NotificationModel>> get readNotis {
+    var stream = readNotisStream["data"];
+    if (stream != null) {
+      stream.cancel();
+      readNotisStream.remove("data");
+    }
+    readNotiStreamSetup();
+    return _readNotiStream.stream;
+  }
+
   ///NOTIFICATION
   final List<NotificationModel> _notis = [];
   void notiParser(QuerySnapshot event) {
@@ -517,8 +521,11 @@ class FirebaseStoreDb {
 
   Map<String, StreamSubscription> notisStream = {};
   void notiStreamSetup() {
-    notisStream["data"] =
-        _db.collection("notification").snapshots().listen((e) {
+    notisStream["data"] = _db
+        .collection("notifications")
+        .where("user_id", isEqualTo: _auth.currentUser!.uid)
+        .snapshots()
+        .listen((e) {
       return notiParser(e);
     });
   }

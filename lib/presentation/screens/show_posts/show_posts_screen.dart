@@ -61,69 +61,65 @@ class ShowPost extends StatelessWidget {
             },
             icon: const Icon(Icons.search),
           ),
+          StreamBuilder(
+              stream: FirebaseStoreDb().readNotis,
+              builder: (_, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CupertinoActivityIndicator(),
+                  );
+                }
+                if (snap.hasError) {
+                  return const SizedBox();
+                }
+                if (snap.data == null) {
+                  return const Center(
+                    child: Text("No Data"),
+                  );
+                }
+                List<NotificationModel> notis = snap.data!.toList();
+                // log("local length${createBloc.readCounts.value}");
+                // log("Globle length${createBloc.notiCounts.value}");
+                // log("noti length${notis.length}");
+                // log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
+                // if (createBloc.readCounts.value == 0 &&
+                //     createBloc.notiCounts.value == notis.length) {
+                //   createBloc.readCounts.value = 0;
+                // } else
+                // if (createBloc.notiCounts.value != notis.length) {
+                //   createBloc.notiCounts.value = notis.length;
+                //   createBloc.readCounts.value += 1;
+                // } else {
+                //   createBloc.notiCounts.value = createBloc.notiCounts.value;
+                //   createBloc.readCounts.value = createBloc.readCounts.value;
+                // }
+                // log("local length${createBloc.readCounts.value}");
+                // log("Globle length${createBloc.notiCounts.value}");
+                // log("noti length${notis.length}");
+                // log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 
-          // StreamBuilder<List<NotificationModel>>(
-          //     stream: FirebaseStoreDb().notis,
-          //     builder: (_, snap) {
-          //       if (snap.connectionState == ConnectionState.waiting) {
-          //         return const Center(
-          //           child: CupertinoActivityIndicator(),
-          //         );
-          //       }
-          //       if (snap.hasError) {
-          //         return const SizedBox();
-          //       }
-          //       if (snap.data == null) {
-          //         return const Center(
-          //           child: Text("No Data"),
-          //         );
-          //       }
-          //       List<NotificationModel> notis = snap.data!.toList();
-          //       log("local length${createBloc.readCounts.value}");
-          //       log("Globle length${createBloc.notiCounts.value}");
-          //       log("noti length${notis.length}");
-          //       log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-          //       // if (createBloc.readCounts.value == 0 &&
-          //       //     createBloc.notiCounts.value == notis.length) {
-          //       //   createBloc.readCounts.value = 0;
-          //       // } else
-          //       if (createBloc.notiCounts.value != notis.length) {
-          //         createBloc.notiCounts.value = notis.length;
-          //         createBloc.readCounts.value += 1;
-          //       } else {
-          //         createBloc.notiCounts.value = createBloc.notiCounts.value;
-          //         createBloc.readCounts.value = createBloc.readCounts.value;
-          //       }
-          //       log("local length${createBloc.readCounts.value}");
-          //       log("Globle length${createBloc.notiCounts.value}");
-          //       log("noti length${notis.length}");
-          //       log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-
-          //       return Padding(
-          //         padding: const EdgeInsets.all(8.0),
-          //         child: Row(
-          //           children: [
-          //             IconButton(
-          //               onPressed: () {
-          //                 StarlightUtils.pushNamed(RouteNames.noti)
-          //                     .then((onValue) {
-          //                   createBloc.readCounts.value = 0;
-          //                   // log("local count$readCounts");
-          //                 });
-          //               },
-          //               icon: const Icon(Icons.notifications_outlined),
-          //             ),
-          //             ValueListenableBuilder(
-          //                 valueListenable: createBloc.readCounts,
-          //                 builder: (_, v, s) {
-          //                   return createBloc.readCounts.value == 0
-          //                       ? const SizedBox()
-          //                       : Text(createBloc.readCounts.value.toString());
-          //                 })
-          //           ],
-          //         ),
-          //       );
-          //     }),
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          StarlightUtils.pushNamed(RouteNames.noti);
+                        },
+                        icon: const Icon(Icons.notifications_outlined),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Text(
+                          notis.isEmpty ? "" : notis.length.toString(),
+                          style: const TextStyle(
+                              color: Colors.red, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }),
         ],
       ),
       body: StreamBuilder(
@@ -235,43 +231,6 @@ class ShowPost extends StatelessWidget {
                                         arguments: posts[i]);
                                   },
                                 ),
-                                // if (posts[i].image.isEmpty ||
-                                //     posts[i].image == "")
-                                //   const SizedBox()
-                                // else
-                                //   SizedBox(
-                                //       width: MediaQuery.of(context).size.width,
-                                //       height:
-                                //           MediaQuery.of(context).size.height *
-                                //               .3,
-                                //       child: InkWell(
-                                //         onTap: () {
-                                //           StarlightUtils.pushNamed(
-                                //               RouteNames.imageViewerScreen,
-                                //               arguments: posts[i].image);
-                                //         },
-                                //         child: Card(
-                                //           child: CachedNetworkImage(
-                                //             imageUrl: posts[i].image,
-                                //             imageBuilder:
-                                //                 (context, imageProvider) =>
-                                //                     Container(
-                                //               decoration: BoxDecoration(
-                                //                 image: DecorationImage(
-                                //                     image: imageProvider,
-                                //                     fit: BoxFit.cover),
-                                //               ),
-                                //             ),
-                                //             placeholder: (context, url) =>
-                                //                 const CircularProgressIndicator()
-                                //                     .centered(),
-                                //             errorWidget: (context, url,
-                                //                     error) =>
-                                //                 const Icon(Icons.error_outline)
-                                //                     .centered(),
-                                //           ),
-                                //         ),
-                                //       )),
                                 MultiPhotoShow(postId: posts[i].id),
                                 PostVideoShow(postId: posts[i].id),
                                 const Divider(),

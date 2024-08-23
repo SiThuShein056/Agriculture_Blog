@@ -85,4 +85,14 @@ class DatabaseUpdateService {
 
     await _db.collection("subCategories").doc(id).update(payload);
   }
+
+  Future<void> updateNotiData({
+    required String id,
+  }) async {
+    await _db.collection("notifications").doc(id).update({"read": true});
+  }
+
+  Future<void> deleteNoti(String id) async {
+    await _db.collection("notifications").doc(id).delete();
+  }
 }

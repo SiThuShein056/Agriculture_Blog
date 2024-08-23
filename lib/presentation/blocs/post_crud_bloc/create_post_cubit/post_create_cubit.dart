@@ -114,7 +114,9 @@ class CreateCubit extends Cubit<CreateState> {
           );
         }
       }
-
+      if (privacy.value == "public") {
+        PostCreateService().createNotifications(doc.id);
+      }
       categoryController.text = "";
       descriptionController.text = "";
       phoneController.text = "";
@@ -288,13 +290,13 @@ class CreateCubit extends Cubit<CreateState> {
 
   Future<void> deletePost(String postId) async {
     await _db.collection("posts").doc(postId).delete();
-    var notiData = await _db.collection("notification").get();
+    var notiData = await _db.collection("notifications").get();
     var notis = notiData.docs;
     for (var element in notis) {
       var postedId = element["post_id"].toString();
 
       if (postedId == postId) {
-        await _db.collection("notification").doc(element['id']).delete();
+        await _db.collection("notifications").doc(element['id']).delete();
       }
     }
     // var cmtData = await _db.collection("comments").get();

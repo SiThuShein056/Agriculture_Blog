@@ -1,4 +1,5 @@
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_update_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
@@ -57,12 +58,10 @@ class NotificationScreen extends StatelessWidget {
                               motion: const ScrollMotion(),
                               children: [
                                 SlidableAction(
-                                  onPressed: (context) {},
-                                  icon: Icons.reply,
-                                  backgroundColor: Colors.grey[300]!,
-                                ),
-                                SlidableAction(
-                                  onPressed: (context) {},
+                                  onPressed: (context) {
+                                    DatabaseUpdateService()
+                                        .deleteNoti(notis[i].id);
+                                  },
                                   icon: Icons.delete,
                                   foregroundColor: Colors.white,
                                   backgroundColor: Colors.red[700]!,
@@ -70,7 +69,7 @@ class NotificationScreen extends StatelessWidget {
                               ]),
                           child: StreamBuilder(
                               stream:
-                                  FirebaseStoreDb().getUser(notis[i].userId),
+                                  FirebaseStoreDb().getUser(notis[i].ownerId),
                               builder: (_, snap) {
                                 if (snap.connectionState ==
                                     ConnectionState.waiting) {
@@ -119,6 +118,9 @@ class NotificationScreen extends StatelessWidget {
                                           StarlightUtils.pushNamed(
                                               RouteNames.postDetail,
                                               arguments: notiPost[0]);
+
+                                          DatabaseUpdateService()
+                                              .updateNotiData(id: notis[i].id);
                                         },
                                         leading: (user?.profielUrl == null ||
                                                 user?.profielUrl == "")
@@ -150,12 +152,19 @@ class NotificationScreen extends StatelessWidget {
                                         trailing: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               MyUtil.getPostedTime(
                                                   context: context,
                                                   time: notiPost[0].createdAt),
                                             ),
+                                            Text(
+                                              notis[i].read ? "" : "New",
+                                              style: const TextStyle(
+                                                  color: Colors.red),
+                                            )
                                           ],
                                         ),
                                       );
