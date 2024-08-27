@@ -21,6 +21,30 @@ class RegisterBloc extends Bloc<RegisterBaseEvent, RegisterBaseState> {
 
       emit(const RegisterSuccessState());
     });
+
+    on<SentOTPEvent>((event, emit) async {
+      if (state is RegisterLoadingState ||
+          formKey?.currentState?.validate() != true) return;
+      emit(const RegisterLoadingState());
+      log("OTP SENT TO EMAIL ${emailContrller.text}");
+      final result = await _auth.setOtp(emailContrller.text);
+      if (result.hasError) {
+        return emit(RegisterFailState(error: result.error!.message.toString()));
+      }
+      emit(const RegisterSuccessState());
+    });
+
+    on<VerifyOTPEvent>((event, state) async {
+      if (state is RegisterLoadingState) return;
+
+      emit(const RegisterLoadingState());
+
+      final result = await _auth.registerVerifyOtp(value);
+      if (result.hasError) {
+        return emit(RegisterFailState(error: result.error!.message.toString()));
+      }
+      emit(const RegisterSuccessState());
+    });
   }
 
   GlobalKey<FormState>? formKey = GlobalKey<FormState>();
@@ -28,6 +52,7 @@ class RegisterBloc extends Bloc<RegisterBaseEvent, RegisterBaseState> {
       passwordController = TextEditingController(),
       nameController = TextEditingController(),
       confirmPasswordController = TextEditingController();
+  var value = "";
 
   final FocusNode emailFocus = FocusNode(),
       passWordFocus = FocusNode(),

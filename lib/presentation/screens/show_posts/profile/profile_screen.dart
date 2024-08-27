@@ -18,7 +18,7 @@ class ProfileScreen extends StatelessWidget {
           "Profile",
           style: TextStyle(
               fontSize: 25, letterSpacing: 1, fontWeight: FontWeight.w900),
-        ),
+        ).tr(),
       ),
       body: StreamBuilder(
           stream: FirebaseStoreDb()
@@ -35,7 +35,7 @@ class ProfileScreen extends StatelessWidget {
               user = UserModel.fromJson(element);
             }
             if (user == null) {
-              return const Text("No User");
+              return const Text("No User").tr();
             }
 
             return ListView(
@@ -195,7 +195,7 @@ class ProfileScreen extends StatelessWidget {
                                           RouteNames.singleChat,
                                           arguments: user);
                                     },
-                                    lable: "Chat",
+                                    lable: "Chat".tr(),
                                     icon: Icons.comment_outlined,
                                   ),
                               ],
@@ -218,8 +218,8 @@ class ProfileScreen extends StatelessWidget {
                         );
                       }
                       if (snap.data == null) {
-                        return const Center(
-                          child: Text("No Data"),
+                        return Center(
+                          child: const Text("No-Posted-Data").tr(),
                         );
                       }
                       List<PostModel> myPosts = snap.data!.toList();
@@ -227,7 +227,7 @@ class ProfileScreen extends StatelessWidget {
                       if (myPosts.isEmpty) {
                         return Padding(
                           padding: const EdgeInsets.only(top: 150.0),
-                          child: const Text("No Posted Data").centered(),
+                          child: const Text("No-Posted-Data").tr().centered(),
                         );
                       }
 
@@ -333,15 +333,16 @@ class ProfileScreen extends StatelessWidget {
                                                                     MyUtil.showToast(
                                                                         context);
                                                                   } else {
-                                                                    StarlightUtils.snackbar(const SnackBar(
+                                                                    StarlightUtils.snackbar(SnackBar(
                                                                         content:
-                                                                            Text("Your account has been blocked.")));
+                                                                            Text("Your account has been blocked.".tr())));
                                                                     StarlightUtils
                                                                         .pop();
                                                                   }
                                                                 },
                                                                 title: const Text(
-                                                                    "Delete"),
+                                                                        "Delete")
+                                                                    .tr(),
                                                                 trailing:
                                                                     const Icon(Icons
                                                                         .delete),
@@ -364,15 +365,16 @@ class ProfileScreen extends StatelessWidget {
                                                                           .pop();
                                                                     });
                                                                   } else {
-                                                                    StarlightUtils.snackbar(const SnackBar(
+                                                                    StarlightUtils.snackbar(SnackBar(
                                                                         content:
-                                                                            Text("Your account has been blocked.")));
+                                                                            const Text("Your account has been blocked.").tr()));
                                                                     StarlightUtils
                                                                         .pop();
                                                                   }
                                                                 },
                                                                 title: const Text(
-                                                                    "Update"),
+                                                                        "Update")
+                                                                    .tr(),
                                                                 trailing:
                                                                     const Icon(Icons
                                                                         .update),
@@ -414,7 +416,7 @@ class ProfileScreen extends StatelessWidget {
                                                 "Phone Number: ${myPosts[index].phone}",
                                                 style: const TextStyle(
                                                     color: Colors.blue),
-                                              ),
+                                              ).tr(),
                                             )),
                                       GestureDetector(
                                         child: Padding(
@@ -491,8 +493,11 @@ class ProfileScreen extends StatelessWidget {
                                                 postId: myPosts[index].id,
                                                 createCubit: createCubit),
                                             CommentPart(
-                                                postsId: myPosts[index].id,
-                                                createBloc: createCubit),
+                                              postsId: myPosts[index].id,
+                                              createBloc: createCubit,
+                                              postedUserID:
+                                                  myPosts[index].userId,
+                                            ),
                                             (userId !=
                                                         Injection<AuthService>()
                                                             .currentUser!
@@ -501,7 +506,7 @@ class ProfileScreen extends StatelessWidget {
                                                 ? PostActionButton(
                                                     icon: Icons
                                                         .add_chart_outlined,
-                                                    label: "Chat",
+                                                    label: "Chat".tr(),
                                                     onTap: () {
                                                       ChatCreateService()
                                                           .createChat(
@@ -512,7 +517,7 @@ class ProfileScreen extends StatelessWidget {
                                                           arguments: user);
                                                     },
                                                   )
-                                                : const Text("This's Me"),
+                                                : const Text("This's Me").tr(),
                                           ],
                                         ),
                                       )
@@ -538,7 +543,7 @@ class ProfileScreen extends StatelessWidget {
                   onPressed: () {
                     StarlightUtils.pop();
                   },
-                  child: const Text("Exit"))
+                  child: const Text("Exit").tr())
             ],
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -549,12 +554,12 @@ class ProfileScreen extends StatelessWidget {
                     StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
                         arguments: url);
                   },
-                  title: const Text("View Image"),
+                  title: const Text("View Image").tr(),
                   trailing: const Icon(Icons.remove_red_eye_outlined),
                 ),
                 const Divider(),
                 ListTile(
-                  title: const Text("Upload Image"),
+                  title: const Text("Upload Image").tr(),
                   trailing: const Icon(Icons.upload_outlined),
                   onTap: () {
                     StarlightUtils.pop();
@@ -587,8 +592,8 @@ class MultiPhotoShow extends StatelessWidget {
             return const Center(child: CupertinoActivityIndicator());
           }
           if (postImageSnap.data == null) {
-            return const Center(
-              child: Text("No Data"),
+            return Center(
+              child: const Text("No Data").tr(),
             );
           }
           List<PostImageModel> postImages = postImageSnap.data!.toList();
@@ -654,8 +659,8 @@ class PostVideoShow extends StatelessWidget {
             return const Center(child: CupertinoActivityIndicator());
           }
           if (postVideoSnap.data == null) {
-            return const Center(
-              child: Text("No Data"),
+            return Center(
+              child: const Text("No Data").tr(),
             );
           }
           List<PostVideoModel> postVideos = postVideoSnap.data!.toList();

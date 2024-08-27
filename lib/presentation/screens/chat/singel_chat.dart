@@ -18,6 +18,7 @@ import 'package:blog_app/presentation/blocs/user_image_bloc/user_image_state.dar
 import 'package:blog_app/presentation/screens/chat/message_card.dart';
 import 'package:blog_app/presentation/screens/chat/video_call.dart';
 import 'package:blog_app/presentation/screens/chat/voice_call.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -55,7 +56,7 @@ class SingleChat extends StatelessWidget {
                     case ConnectionState.done:
                       if (snap.data == null) {
                         return const Center(
-                          child: Text("Data is null value"),
+                          child: SizedBox(),
                         );
                       } else {
                         final data = snap.data!.docs;
@@ -73,10 +74,10 @@ class SingleChat extends StatelessWidget {
                                       child: ListTile(
                                         onTap: () async {
                                           if (chats.isBlocked) {
-                                            StarlightUtils.snackbar(
-                                                const SnackBar(
-                                                    content: Text(
-                                                        "Unavailable now")));
+                                            StarlightUtils.snackbar(SnackBar(
+                                                content: const Text(
+                                                        "Unavailable now")
+                                                    .tr()));
                                           } else {
                                             bloc.add(SentVideoCallLinkEvent(
                                                 user, callID));
@@ -91,18 +92,19 @@ class SingleChat extends StatelessWidget {
                                         leading: const Icon(
                                             Icons.video_call_outlined),
                                         title: Text(chats.isBlocked
-                                            ? "Unavailable now"
-                                            : "Video Call"),
+                                                ? "Unavailable now"
+                                                : "Video Call")
+                                            .tr(),
                                       )),
                                   PopupMenuItem(
                                     value: 1,
                                     child: ListTile(
                                       onTap: () async {
                                         if (chats.isBlocked) {
-                                          StarlightUtils.snackbar(
-                                              const SnackBar(
-                                                  content:
-                                                      Text("Unavailable now")));
+                                          StarlightUtils.snackbar(SnackBar(
+                                              content:
+                                                  const Text("Unavailable now")
+                                                      .tr()));
                                         } else {
                                           bloc.add(SentVoiceCallLinkEvent(
                                               user, callID));
@@ -116,8 +118,8 @@ class SingleChat extends StatelessWidget {
                                       },
                                       leading: const Icon(Icons.call_outlined),
                                       title: Text(chats.isBlocked
-                                          ? "Unavailable now"
-                                          : "Voice Call"),
+                                          ? "Unavailable now".tr()
+                                          : "Voice Call".tr()),
                                     ),
                                   ),
                                   PopupMenuItem(
@@ -131,9 +133,10 @@ class SingleChat extends StatelessWidget {
                                                 isBlocked: false,
                                                 blockerId: "");
                                           } else {
-                                            StarlightUtils.snackbar(const SnackBar(
-                                                content: Text(
-                                                    "You are blocked by this user")));
+                                            StarlightUtils.snackbar(SnackBar(
+                                                content: const Text(
+                                                        "You are blocked by this user")
+                                                    .tr()));
                                           }
                                         } else {
                                           ChatUpdateService().updateChatData(
@@ -148,8 +151,9 @@ class SingleChat extends StatelessWidget {
                                       },
                                       leading: const Icon(Icons.block_outlined),
                                       title: Text(blocker
-                                          ? "UnBlock This user"
-                                          : "Block This User"),
+                                              ? "UnBlock This user"
+                                              : "Block This User")
+                                          .tr(),
                                     ),
                                   )
                                 ]);
@@ -236,7 +240,7 @@ class SingleChat extends StatelessWidget {
                     case ConnectionState.done:
                       if (snap.data == null) {
                         return const Center(
-                          child: Text("Data is null value"),
+                          child: SizedBox(),
                         );
                       } else {
                         // List<MessageModel> messages = snap.data ?? [];
@@ -251,7 +255,7 @@ class SingleChat extends StatelessWidget {
                                   bloc.messageController.text = "Hi 👋";
                                   bloc.add(SentTextMessageEvent(user));
                                 },
-                                child: const Text("Say hi 👋")),
+                                child: const Text("Say hi 👋").tr()),
                           );
                         }
 
@@ -302,14 +306,14 @@ class SingleChat extends StatelessWidget {
               builder: (_, snap) {
                 if (snap.data == null) {
                   return const Center(
-                    child: Text("Data is null value"),
+                    child: SizedBox(),
                   );
                 } else {
                   final data = snap.data!.docs;
                   ChatModel chats = ChatModel.fromJson(data[0].data());
 
                   return chats.isBlocked
-                      ? const Text("Unavailabel to send message.......")
+                      ? const Text("Unavailabel to send message").tr()
                       : Column(
                           children: [
                             BlocBuilder<ChatBloc, ChatBaseState>(

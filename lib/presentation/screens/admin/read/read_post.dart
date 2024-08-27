@@ -4,6 +4,7 @@ import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/search_post.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +50,8 @@ class ReadPost extends StatelessWidget {
               return const Center(child: CupertinoActivityIndicator());
             }
             if (snap.data == null) {
-              return const Center(
-                child: Text("No Data"),
+              return Center(
+                child: const Text("No Data").tr(),
               );
             }
             List<PostModel> posts = snap.data!.toList();
@@ -161,8 +162,9 @@ class ReadPost extends StatelessWidget {
                                                                 .pop();
                                                           });
                                                         },
-                                                        title: const Text(
-                                                            "Delete"),
+                                                        title:
+                                                            const Text("Delete")
+                                                                .tr(),
                                                         trailing: const Icon(
                                                             Icons.delete),
                                                       ),
@@ -174,8 +176,9 @@ class ReadPost extends StatelessWidget {
                                                               arguments:
                                                                   posts[i]);
                                                         },
-                                                        title: const Text(
-                                                            "Update"),
+                                                        title:
+                                                            const Text("Update")
+                                                                .tr(),
                                                         trailing: const Icon(
                                                             Icons.update),
                                                       )
@@ -281,22 +284,24 @@ class ReadPost extends StatelessWidget {
                                         createCubit: createBloc,
                                       ),
                                       CommentPart(
-                                          postsId: posts[i].id,
-                                          createBloc: createBloc),
+                                        postsId: posts[i].id,
+                                        createBloc: createBloc,
+                                        postedUserID: posts[i].userId,
+                                      ),
                                       user.id !=
                                               Injection<AuthService>()
                                                   .currentUser!
                                                   .uid
                                           ? PostActionButton(
                                               icon: Icons.add_chart_outlined,
-                                              label: "Chat",
+                                              label: "Chat".tr(),
                                               onTap: () {
                                                 StarlightUtils.pushNamed(
                                                     RouteNames.singleChat,
                                                     arguments: user);
                                               },
                                             )
-                                          : const Text("This's Me"),
+                                          : const Text("This's Me").tr(),
                                     ],
                                   ),
                                 )

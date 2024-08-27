@@ -167,7 +167,7 @@ class SettingScreen extends StatelessWidget {
                                       onPressed: () {
                                         StarlightUtils.pop();
                                       },
-                                      child: const Text("Ok"))
+                                      child: const Text("OK").tr())
                                 ],
                               );
                             });
@@ -181,7 +181,7 @@ class SettingScreen extends StatelessWidget {
 
             ReuseListTileWidget(
               icon: const Icon(Icons.lock_open_outlined),
-              title: "Change Password",
+              title: "Change-Password".tr(),
               onpress: () {
                 var provider = Injection<AuthService>().checkProvider();
                 if (provider == "google.com") {
@@ -209,7 +209,7 @@ class SettingScreen extends StatelessWidget {
             ),
             Card(
               child: ListTile(
-                title: const Text("Languages"),
+                title: const Text("Languages").tr(),
                 trailing: SizedBox(
                   width: 60,
                   child: DropdownButton(
@@ -232,7 +232,7 @@ class SettingScreen extends StatelessWidget {
             ),
             Card(
               child: ListTile(
-                title: const Text("Theme"),
+                title: const Text("Theme").tr(),
                 trailing: SizedBox(
                   width: 60,
                   child: BlocBuilder<ThemeCubit, ThemeMode>(
@@ -290,7 +290,7 @@ class SettingScreen extends StatelessWidget {
                     user = UserModel.fromJson(element);
                   }
                   if (user == null) {
-                    return const Text("No User");
+                    return const Text("No User").tr();
                   }
                   return Card(
                     child: SwitchListTile(
@@ -299,7 +299,8 @@ class SettingScreen extends StatelessWidget {
                           await DatabaseUpdateService().updateUserData(
                               id: user!.id, commentPermission: v);
                         },
-                        title: const Text("Allow to comment on your posts")),
+                        title:
+                            const Text("Allow-To-Comment-On-Your-Posts").tr()),
                   );
                 }),
             StreamBuilder(
@@ -310,8 +311,8 @@ class SettingScreen extends StatelessWidget {
                     return const Center(child: CupertinoActivityIndicator());
                   }
                   if (savePostSnap.data == null) {
-                    return const Center(
-                      child: Text("No Data"),
+                    return Center(
+                      child: const Text("No Data").tr(),
                     );
                   }
                   var savedPosts = savePostSnap.data!;
@@ -324,8 +325,9 @@ class SettingScreen extends StatelessWidget {
                       leading: const Icon(
                         Icons.bookmark,
                       ),
-                      title: Text(
-                          savedPosts.isEmpty ? "Not Save yet" : "My Posts"),
+                      title:
+                          Text(savedPosts.isEmpty ? "Not-Save-Yet" : "My Posts")
+                              .tr(),
                       trailing: savedPosts.isEmpty
                           ? const SizedBox()
                           : Text(

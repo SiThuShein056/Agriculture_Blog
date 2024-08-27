@@ -7,6 +7,7 @@ import 'package:blog_app/presentation/screens/show_posts/comment_part.dart';
 import 'package:blog_app/presentation/screens/show_posts/like_part.dart';
 import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -54,7 +55,7 @@ class PostDetail extends StatelessWidget {
                                     StarlightUtils.pop();
                                   });
                                 },
-                                title: const Text("Delete"),
+                                title: const Text("Delete").tr(),
                                 trailing: const Icon(Icons.delete),
                               ),
                               ListTile(
@@ -66,7 +67,7 @@ class PostDetail extends StatelessWidget {
                                     StarlightUtils.pop();
                                   });
                                 },
-                                title: const Text("Update"),
+                                title: const Text("Update").tr(),
                                 trailing: const Icon(Icons.update),
                               )
                             ],
@@ -92,7 +93,7 @@ class PostDetail extends StatelessWidget {
                     child: Text(
                       "Phone Number: $phone",
                       style: const TextStyle(color: Colors.blue),
-                    ),
+                    ).tr(),
                   )),
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -115,7 +116,11 @@ class PostDetail extends StatelessWidget {
                     postId: posts.id,
                     createCubit: createCubit,
                   ),
-                  CommentPart(postsId: posts.id, createBloc: createCubit),
+                  CommentPart(
+                    postsId: posts.id,
+                    createBloc: createCubit,
+                    postedUserID: posts.userId,
+                  ),
                 ],
               ),
             ),

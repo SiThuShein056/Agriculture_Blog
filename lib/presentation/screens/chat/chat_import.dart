@@ -7,6 +7,7 @@ import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:blog_app/presentation/screens/chat/search_chat_user.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';

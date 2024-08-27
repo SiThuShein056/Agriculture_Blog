@@ -16,11 +16,14 @@ import 'package:blog_app/presentation/screens/admin/read/read_sub_category.dart'
 import 'package:blog_app/presentation/screens/admin/read/read_user.dart';
 import 'package:blog_app/presentation/screens/admin/read/user_control.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_category.dart';
+import 'package:blog_app/presentation/screens/admin/update/update_main_categories.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_post.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_sub_category.dart';
 import 'package:blog_app/presentation/screens/chat/singel_chat.dart';
 import 'package:blog_app/presentation/screens/create_post/create_post_import.dart';
 import 'package:blog_app/presentation/screens/noti/notification_screen.dart';
+import 'package:blog_app/presentation/screens/register/register_otp_verify_screen.dart';
+import 'package:blog_app/presentation/screens/register/register_sent_otp_screen.dart';
 import 'package:blog_app/presentation/screens/setting/setting_import.dart';
 import 'package:blog_app/presentation/screens/show_categories/show_categories.dart';
 import 'package:blog_app/presentation/screens/show_categories/show_main_categories.dart';
@@ -30,6 +33,7 @@ import 'package:blog_app/presentation/screens/show_posts/profile/image_view.dart
 import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/saved_post/saved_post_import.dart';
 import 'package:blog_app/presentation/screens/splash/splash_import.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

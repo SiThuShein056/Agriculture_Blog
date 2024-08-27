@@ -32,7 +32,7 @@ class CreatePost extends StatelessWidget {
             backgroundColor: Theme.of(context).cardColor,
             resizeToAvoidBottomInset: true,
             appBar: AppBar(
-              title: const Text("Create Post"),
+              title: const Text("Create-Post").tr(),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -46,7 +46,7 @@ class CreatePost extends StatelessWidget {
                             content: Text("Your account has been blocked.")));
                       }
                     },
-                    lable: "Create Post",
+                    lable: "Post".tr(),
                     icon: Icons.post_add_outlined,
                   ),
                 )
@@ -184,22 +184,22 @@ class CreatePost extends StatelessWidget {
                           );
                         },
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
                           "Privacy",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       TextFormField(
                         readOnly: true,
                         controller: postCreateBloc.privacyController,
                         validator: (value) {
                           if (value!.isEmpty) return "";
-                          if (value == "select" &&
-                              postCreateBloc.privacy.value == "select") {
-                            return "You must need to select  privacy";
+                          if (value == "select".tr() &&
+                              postCreateBloc.privacy.value == "select".tr()) {
+                            return "You must need to select  privacy".tr();
                           }
                           return null;
                         },
@@ -211,10 +211,10 @@ class CreatePost extends StatelessWidget {
                                     alignment: Alignment.center,
                                     borderRadius: BorderRadius.circular(5),
                                     value: value,
-                                    items: ["select", "public", "private"]
+                                    items: ["select", "Public", "Private"]
                                         .map((e) => DropdownMenuItem(
                                               value: e,
-                                              child: Text(e),
+                                              child: Text(e).tr(),
                                             ))
                                         .toList(),
                                     onChanged: (v) {
@@ -224,26 +224,26 @@ class CreatePost extends StatelessWidget {
                                       log(postCreateBloc.privacy.value);
                                     });
                               }),
-                          hintText: "Select Privacy",
+                          hintText: "Select-Privacy".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          "Comment Status",
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
+                          "Comment-Status",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       ValueListenableBuilder(
                         valueListenable: postCreateBloc.commentStatus,
                         builder: (context, value, child) {
                           return Card(
                             child: SwitchListTile(
-                                title: const Text("Allow to Comment"),
+                                title: const Text("Allow-To-Comment").tr(),
                                 value: value,
                                 onChanged: (v) {
                                   postCreateBloc.toggle();
@@ -251,13 +251,13 @@ class CreatePost extends StatelessWidget {
                           );
                         },
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          "Phone Number",
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
+                          "Phone-Number",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       TextFormField(
                         // validator: (value) {
@@ -269,19 +269,19 @@ class CreatePost extends StatelessWidget {
                         controller: postCreateBloc.phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          hintText: "Enter your phone",
+                          hintText: "Enter your phone".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
                           "Category",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       BlocBuilder<CreateCubit, CreateState>(
                         builder: (context, snapshot) {
@@ -289,7 +289,8 @@ class CreatePost extends StatelessWidget {
                             validator: (value) {
                               if (value!.isEmpty) return "";
                               if (value.contains("null")) {
-                                return "You need to select All category and sub_category";
+                                return "You need to select All category and sub_category"
+                                    .tr();
                               }
                               return null;
                             },
@@ -308,7 +309,7 @@ class CreatePost extends StatelessWidget {
                                 AutovalidateMode.onUserInteraction,
                             controller: postCreateBloc.categoryController,
                             decoration: InputDecoration(
-                              hintText: "Select Main Category",
+                              hintText: "Select-Main-Category".tr(),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -316,13 +317,13 @@ class CreatePost extends StatelessWidget {
                           );
                         },
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
                           "Description",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       TextFormField(
                         validator: (value) {
@@ -333,7 +334,7 @@ class CreatePost extends StatelessWidget {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: postCreateBloc.descriptionController,
                         decoration: InputDecoration(
-                          hintText: "Enter a description",
+                          hintText: "Enter-A-Description".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -361,13 +362,13 @@ class CreatePost extends StatelessWidget {
           return const SizedBox();
         }, listener: (context, state) {
           if (state is CreateErrorState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Fail Action"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Fail Action").tr(),
             ));
           }
           if (state is CreateSuccessState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Success Action"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Success Action").tr(),
             ));
           }
         }),

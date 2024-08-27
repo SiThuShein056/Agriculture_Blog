@@ -8,11 +8,11 @@ class ChatHome extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          "Chat",
-          style: TextStyle(
+        title: Text(
+          "Chat".tr(),
+          style: const TextStyle(
               fontSize: 25, letterSpacing: 1, fontWeight: FontWeight.w900),
-        ),
+        ).tr(),
         actions: [
           IconButton(
               onPressed: () {
@@ -33,8 +33,8 @@ class ChatHome extends StatelessWidget {
               case ConnectionState.active:
               case ConnectionState.done:
                 if (snap.data == null) {
-                  return const Center(
-                    child: Text("Data is null value"),
+                  return Center(
+                    child: const Text("Data is null value").tr(),
                   );
                 } else {
                   // List<ChatModel> chats = snap.data!.reversed.toList();
@@ -43,8 +43,8 @@ class ChatHome extends StatelessWidget {
                       data.map((e) => ChatModel.fromJson(e.data())).toList();
 
                   if (chats.isEmpty) {
-                    return const Center(
-                      child: Text("Search User to Start"),
+                    return Center(
+                      child: const Text("Search User to Start").tr(),
                     );
                   }
 
@@ -143,7 +143,7 @@ class ChatHome extends StatelessWidget {
                                               : "No message",
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                        ),
+                                        ).tr(),
                                         trailing: message == null
                                             ? null
                                             : message.readTime.isEmpty &&

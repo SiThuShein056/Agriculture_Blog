@@ -65,7 +65,8 @@ class UpdateUserScreen extends StatelessWidget {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: bloc.passwordController,
                         decoration: InputDecoration(
-                            label: const Text("Enter old password to update"),
+                            label:
+                                const Text("Enter old password to update").tr(),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
                       ),
@@ -89,7 +90,7 @@ class UpdateUserScreen extends StatelessWidget {
                             }
                           },
                           icon: const Icon(Icons.update_outlined),
-                          label: const Text("Update")),
+                          label: const Text("Update").tr()),
                     ),
                   )
                 ],
@@ -114,15 +115,16 @@ class UpdateUserScreen extends StatelessWidget {
         }, listener: (context, state) {
           if (state is UpdateUserInfoFailState) {
             if (state.message.contains("mailed changed")) {
-              StarlightUtils.dialog(const DialogWidget(
+              StarlightUtils.dialog(DialogWidget(
                 message:
-                    "You must need to verify your email and login again to update your mail",
-                title: "Notification",
+                    "You must need to verify your email and login again to update your mail"
+                        .tr(),
+                title: "Notification".tr(),
               ));
             } else {
               StarlightUtils.dialog(DialogWidget(
                 message: state.message,
-                title: "Update Fail",
+                title: "Update Fail".tr(),
               ));
             }
             return;

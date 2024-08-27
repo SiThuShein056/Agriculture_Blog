@@ -342,6 +342,17 @@ class AuthService {
     });
   }
 
+  Future<Result> registerVerifyOtp(String value) {
+    return tried(() async {
+      if (await Injection<EmailOTP>().verifyOTP(otp: value.toString()) !=
+          true) {
+        return const Result(error: GeneralError("Invalid Otp"));
+      }
+
+      return const Result();
+    });
+  }
+
   // Future<Result> registerVerifyOtp(
   //     String value, String name, String password, String email) {
   //   return tried(() async {

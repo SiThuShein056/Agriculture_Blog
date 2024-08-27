@@ -2,5 +2,332 @@
     "home":"မူလ",
     "setting":"ချိန်ညှိမှု",
     "profile-screen":"ကိုယ်ရေးကိုယ်တာ",
-    "glad-tosee-you":""
+    "Change-Password": "စကားဝှက်ပြောင်းရန်",
+    "Languages": "ဘာသာစကား",
+    "Theme": "ညဒီဇိုင်းနှင့်နေ့ဒီဇိုင်း",
+    "Allow-To-Comment-On-Your-Posts": "မှတ်ချက်ရေးရန်ခွင့်ပြုမည်",
+    "Not-Save-Yet": "သိမ်းယူထားခြင်းမရှိပါ",
+    "Farmer-Hub-Home": "Farmer Hub",
+    "Setting": "ဆက်တင်များ",
+    "Lisence": "လိုင်စင်",
+    "About": "အကြောင်းအရာ",
+    "Help-Center": "အကူအညီ",
+    "Logout": "ထွက်မည်",
+
+
+    "Glad-To-See-You": "မင်္ဂလာပါ" ,
+    "Please-login-to-access-your-account": "လူကြီးမင်းရဲ့အကောင့်ကိုလက်ခံဖို့ရန် ကျေးဇူးပြု၍ လော့ဂ်အင်ဝင်ပေးပါ",
+    "Email":"အီးမေးထည့်ရန်",
+
+    "Need-To-Fill": "ဖြည့်ရန်လိုအပ်ပါသည်",
+    "Email need to valid":"အီးမေးလ်လိပ်စာလိုအပ်ပါသည်",
+    "Password": "စကားဝှက်ထည့်ရန်",
+    "Login": "လော့အင်",
+    "Login-With-Google": "ဂူဂယ်လ်ဖြင့်လောဂ်အင်ဝင်မယ်",
+    "New-User?": "အကောင့်သစ်လား?",
+    "Sign-Up":"အကောင့်သစ်ဖွင့်မယ်",
+    "Fail to Login":"အကောင့်ဝင်ခြင်းမအောင်မြင်ပါ",
+
+
+    "Welcome-From-Farmer-Hub": "စိုက်ပျိုးရေး နည်းပညာ ဗဟုသုတများ မျှဝေရန် နွေးထွေးစွာကြိုဆိုပါတယ်",
+    "Please-Register-To-Access-Your-Account": "ကျေးဇူးပြု၍ အကောင့်သစ်ဖွင့်ပေးပါ",
+    "Enter-Your-Email": "အီးမေးထည့်သွင်းပါ",
+    "Email-Is-Required": " အီးမေးထည့်သွင်းရန်လိုအပ်ပါသည်",
+    "Invalid email":"အီးမေးမှားနေသည်",
+
+    "Enter-Your-Name": "အမည်ထည့်သွင်းပါ",
+    "Name-Is-Required": "အမည်ထည့်သွင်းရန်လိုအပ်ပါသည်",
+
+    "Enter-Your-Password": "စကားဝှက်ထည့်သွင်းပါ",
+    "Password-Is-Required": "စကားဝှက်ထည့်သွင်းရန်လိုအပ်ပါသည်",
+
+    "Enter-Your-Confirm-Password": "အတည်ပြုစကားဝှက်ထည့်သွင်းပါ",
+    "Confirm-Password-Is-Required": "အတည်ပြုစကားဝှက်ထည့်သွင်းရန်လိုအပ်ပါသည်",
+
+    "Register": "စာရင်းသွင်းမည်",
+    "Already-Have-An-Account?-": "စာရင်းသွင်းပြီးသောအကောင့်လား",
+    "Sign-IN":"လော့ဂ်အင်",
+    "Fail Action":"မအောင်မြင်ပါ",
+
+    "Forget-Password": "စကားဝှက်မေ့သွားပါသလား",
+    "Forget-Password?": "စကားဝှက်မေ့နေပါသလား",
+    "Forget-Recommend": "စကားဝှက်ပြောင်းရန် လူကြီးမင်း၏ အီးမေးကို ထည့်သွင်းပေးပါ",
+    "Enter-Email": "အီးမေးထည့်သွင်းရန်",
+    "Email-Is-Need-To-Validate": "အီးမေးကိုအတည်ပြုပါ",
+    "Sent-OTP": "OTPကုဒ်ပို့ရန်",
+    "need to fill":"ဖြည့်ရန်လိုအပ်ပါသည်",
+    "Fail to Sent OTP":"OTP ပို့မရပါ",
+
+
+    
+    
+    "New-Post": "ပို့စ်တင်ရန်",
+    "Create-Post": "ပို.စ်ဖန်တီးရန်",
+    
+    "Privacy": "ကိုယ်‌ရေးလုံခြုံမှု",
+    
+
+
+
+    "Public": "အများ",
+    "Private": "မိမိ",
+
+    "You must need to select  privacy":"ကို‌ရေးလုံခြုံမှုကိုရွေးရန်",
+    "Select-Privacy": "ပို့စ်မြင်နိုင်သူ",
+    "select":"ရွေးပါ",
+
+    "Comment-Status": "မှတ်ချက်ရေးခွင့်ပြုရန်",
+    "Allow-To-Comment": "ခွင့်ပြုသည်",
+
+
+    "Phone-Number": "ဖုန်နံပါတ်",
+    "Enter your phone":"ဖုန်နံပါတ်ထည့်ပါ",
+    "Category": "အကြောင်းအရာ",
+    "Select-Main-Category": "အဓိကအကြောင်းကိုရွေးရန် ",
+    "Description": "အကြံပြုရန်",
+    "Enter-A-Description": "အသေးစိတ်ရေးရန်",
+
+    "Success Action":"အောင်မြင်စွာပြီးပါပြီ",
+    "You need to select All category and sub_category":"အကြောင်းအရာကိုပြည့်စုံစွာရွေးပါ",
+    "Select Category":"အကြောင်းအရာကိုရွေးရန်",
+    "Uploaded image":"ပုံတင်ရန်",
+    "SubCategory":"အသိပေးချက်များ",
+    "Data is null value":"အချက်အလက်များမရှိပါ",
+    "Search User to Start":"အသုံးပြုသူကိုရှာပါ",
+
+
+    "Image":"ပုံ",
+    "Video":"ဗီဒီယို",
+    "Video Call":"ဗီဒီယိုကော",
+    "Voice Call":"အသံကော",
+    "No message":"မက်ဆေ့မရှိပါ",
+    "Tap here to join Video call  with me":"ဗီဒီယိုကောပြောရန်နှိပ်ပါ",
+    "Expired Video Call ID ":"ဗီဒီယိုကောပြောမရတော့ပါ",
+    "Tap here to join Voice call  with me":"အသံကောပြောရန်နှိပ်ပါ",
+    "Expired Voice call  ID":"အသံကောပြောမရတော့ပါ",
+
+    "Video Call ID :":"ဗီဒီယိုကောပြောရန်ကုဒ်",
+    "Expired Video Call ID :":"ဗီဒီယိုကောပြောရန်ကုဒ်အသုံးပြုမရတော့ပါ",
+
+
+    "Copy Text":"စာသားကူးယူပါ",
+    "Copied":"ကူးယူခဲ့သည်",
+
+
+    "Save Image":"ပုံသိမ်းသည်",
+    "Save Video":"ဗီဒီယိုသိမ်းသည်",
+    "Edit Message":"မက်ဆေ့ပြင်ရန်",
+    "Delete Message":"မက်ဆေ့ဖျက်ရန်",
+    "Update Message":"မက်ဆေ့ကိုအသစ်ပြင်ရန်",
+    "Cancel":"မလုပ်ပါ",
+
+
+    "Error  Occurred":"မှား‌နေသည်",
+
+    "Unavailable now":"ယခုမရနိုင်ပါ",
+
+
+    "You are blocked by this user":"ထိုသူအားဘလော့ခဲ့သည်",
+
+
+    "UnBlock This user":"မဘလော့ပါ",
+    "Block This User":"ဘလော့ပါ",
+
+    "Say hi 👋":"မင်္ဂလာပါ 👋",
+
+
+    "Video View Screen": "ဗီဒီယိုကြည့်ရန်မျက်နှာပြင်",
+    "No User": "အသုံးပြုသူမရှိပါ",
+    "Error": "မှား‌နေသည်",
+    "No data found": "အချက်အလက်များမရှိပါ",
+    "Choose existed categories": "ရှိပြီးသားအကြောင်းအရာကိုရွေးပါ",
+    "Choose existed MainCategories": "ရှိပြီးသားအဓိကအကြောင်းအရာကိုရွေးပါ",
+
+    "Phone Number:": "ဖုန်းနံပါတ်",
+
+    "This's Me": "ကျွန်ုပ်၏ပို့",
+
+    "My Saved Posts": "မိမိသိမ်းထားသောပို့စ်များ",
+
+    "Unavailabel to send message":"မက်ဆေ့ပို့မရတော့ပါ.......",
+
+
+    "Categories": "အမျိုးအစားများ",
+    "Main Categories":"အဓိက အမျိုးအစားများ",
+    "Sub Categories":"အမျိူးစားကွဲများ",
+
+
+    "Don't have any data? Add new data": "လို ချင်တာ မရှိ လျှင်  အသစ် ထည့်ပါ",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "Voice Call ID :":"အသံကောပြောရန်ကုဒ်",
+    "Expired Voice Call ID :":"အသံကောပြောရန်ကုဒ်အသုံးပြုမရတော့ပါ",
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "Notifications":"အသိပေးချက်များ",
+    "No noti data":"အသိပေးချက်များမရှိပါ",
+    "No Post Data":"ပို့စ်များမရှိပါ",
+    "New":"အသစ်",
+
+    "Profile": "ပရိုဖိုင်",
+    "No-Posted-Data": "တင်ထားသောပို့စ်မရှိပါ",
+
+    "Select-Action": "ရွေးခြယ်ရန်",
+    "Pick-Videos": "ဗီဒီရိုရွေးရန်",
+    "Pick-Image": "ပုံရွေးရန်",
+    
+
+    "Exit":"ထွက်မည်",
+    "View Image":"ကြည့်ရန်",
+    "Upload Image":"ပုံတင်ရန်",
+
+
+
+    "No Data":"မရှိပါ",
+
+
+    "like": "ကြိုက်",
+    "likes": "ကြိုက်",
+    "liked": "ကြိုက်",
+    
+    "Comment": "မှတ်ချက်",
+    "Comments": "မှတ်ချက်",
+
+    "Update": "ပြုပြင်မည်",
+
+    "Delete": "ဖျက်မည်",
+    "Edit":"ပြင်မည်",
+    "Type-Something": "အကြံပြု‌ရေးသားပါ",
+    "Update Fail":"ပြောင်းလဲခြင်းမအောင်မြင်ပါ",
+    "Success":"အောင်မြင်စွာပြီးပါပြီ",
+
+
+
+    
+    "Search-User": "အသုံးပြုသူရှာရန်",
+    "Search-Post": "ပို.စ်ရှာရန်",
+    "Close": "ပိတ်မည်",
+
+
+
+
+    "Owner does not allow to  comment on this post.":"သင့်ကိုမှတ်ချက်ပေရန်ခွင့်မပြုပါ",
+    "Your account has been banned":"သင်၏အကောင့် ကိုပိတ်ထားခံရသည်။",
+    "Your account has been blocked.":"သင်၏အကောင့် ကိုပိတ်ထားသည်။",
+    "Enter old password to update":"အသုံးပြုခဲ့သည့်စကားဝှက်ကိုရိုက်ပါ",
+    "You must need to verify your email and login again to update your mail":"အီးမေးပြောင်းရန်အတည်ပြုပါ။လော့အင်ဝင်ပါ",
+
+
+
+
+
+    
+    "Save-Post": "သိမ်းယူ",
+    "Copy-Post-Link": "မျှဝေရန်",
+
+
+
+    "Enable Posts": "ပို့စ်မရနိုင်ပါ",
+    "Enable Comments": "မှတ်ချက်မရနိုင်ပါ",
+    "Enable Messages": "စာပို့မရနိုင်ပါ",
+
+
+
+
+    "Otp Verify Screen": "OTPကုဒ်အတည်ပြုပါ",
+    "Enter verification code we just sent in your email address": "အီးမေးမှရသောOTPကုဒ် ၆လုံးကိုကျေးဇူးပြု၍ဖြည့်ပါ။ ",
+    "Verify OTP": "အတည်ပြုမည်",
+    "We sent link to reset your password": "စကားဝှက်ပြောင်းရန်သင်၏အီးမေးလ်တွင်လင့်ပို့လိုက်သည်",
+    "OK": "ကောင်းပြီ",
+
+    "MainCategory":"အဓိကအကြောင်းအရာ",
+
+    "Select Action": "ရွေးခြယ်ရန်",
+    "Pick Videos": "ဗီဒီရို",
+    "Pick Images": "ဓါတ်ပုံ",
+
+
+
+
+
+
+
+
+
+    "Build Result": "အဖြေကိုတည်ဆောက်ပါ",
+    
+
+
+
+
+
+
+    "Update Name": "အမည်ပြောင်းရန်",
+    "Enter your name": "အမည်ထည့်သွင်းပါ",
+    "Update Mail": "အီးမေးပြောင်းရန်",
+    "Enter your new Mail": "အီးမေးထည့်သွင်းပါ",
+
+    "Update Password": "စကားဝှက်ပြောင်းရန်",
+    "Enter your new Password": "စကားဝှက်ထည့်သွင်းပါ",
+
+    "Post": "ပို့စ်တင်မည်",
+    "Any Problem,contact me":"ပြဿနာတစ်ခုခုဖြစ်လျှင်၊ဆက်သွယ်ရန်",
+
+
+
+
+
+
+
+
+
+
+    "Home": "မူလ",
+    "Farmer-Hub": "Farmer Hub",
+    "Chat": "စာပို့ရန်"
+
+
+
+
+
+
 }
+
+

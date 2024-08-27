@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -29,8 +30,8 @@ class SearchPost extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     log("Build Result Part");
 
-    return const Center(
-      child: Text("Build Result"),
+    return Center(
+      child: const Text("Build Result").tr(),
     );
   }
 
@@ -47,20 +48,20 @@ class SearchPost extends SearchDelegate {
             );
           }
           if (snap.hasError) {
-            return const Center(
-              child: Text("Error  Occurred"),
+            return Center(
+              child: const Text("Error  Occurred").tr(),
             );
           }
           if (snap.data == null) {
-            return const Center(
-              child: Text("Data is null value"),
+            return Center(
+              child: const Text("Data is null value").tr(),
             );
           }
           List<PostModel> posts = snap.data!.toList();
 
           if (posts.isEmpty) {
-            return const Center(
-              child: Text("No Data"),
+            return Center(
+              child: const Text("No Data").tr(),
             );
           }
           final searchPosts = posts

@@ -4,6 +4,7 @@ import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_
 import 'package:blog_app/data/models/main_category_model/main_cateory_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -22,7 +23,7 @@ class ShowMainCategories extends StatelessWidget {
             },
             icon: const Icon(Icons.chevron_left),
           ),
-          title: const Text("အဓိက အမျိုးအစားများ"),
+          title: const Text("Main Categories").tr(),
           actions: [
             IconButton(
                 onPressed: () {
@@ -67,19 +68,19 @@ class ShowMainCategories extends StatelessWidget {
               );
             }
             if (snap.hasError) {
-              return const Center(
-                child: Text("Error"),
+              return Center(
+                child: const Text("Error").tr(),
               );
             }
             if (snap.data == null) {
-              return const Center(
-                child: Text("Data is null value"),
+              return Center(
+                child: const Text("Data is null value").tr(),
               );
             }
             List<MainCategoryModel> mainCategories = snap.data!.toList();
             if (mainCategories.isEmpty) {
-              return const Center(
-                child: Text("No data found"),
+              return Center(
+                child: const Text("No data found").tr(),
               );
             }
 
@@ -128,8 +129,8 @@ class SearchScreen extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Center(
-      child: Text("Choose existed MainCategories"),
+    return Center(
+      child: const Text("Choose existed MainCategories").tr(),
     );
   }
 
@@ -144,13 +145,13 @@ class SearchScreen extends SearchDelegate {
             );
           }
           if (snap.hasError) {
-            return const Center(
-              child: Text("Error"),
+            return Center(
+              child: const Text("Error").tr(),
             );
           }
           if (snap.data == null) {
-            return const Center(
-              child: Text("Data is null value"),
+            return Center(
+              child: const Text("Data is null value").tr(),
             );
           }
           List<MainCategoryModel> mainCategories = snap.data!.toList();
@@ -158,8 +159,8 @@ class SearchScreen extends SearchDelegate {
               mainCategories.where((e) => e.name.contains(query)).toList();
 
           if (searchMainCategory.isEmpty) {
-            return const Center(
-              child: Text("လို ချင်တာ မရှိ လျှင် အသစ် ထည့်ပါ"),
+            return Center(
+              child: const Text("Don't have any data? Add new data").tr(),
             );
           }
           return Padding(

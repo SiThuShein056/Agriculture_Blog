@@ -1,16 +1,25 @@
-part of 'forget_password_import.dart';
+import 'package:blog_app/presentation/blocs/register_bloc/register_import.dart';
+import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
+import 'package:blog_app/presentation/common_widgets/dialog_widget.dart';
+import 'package:blog_app/presentation/common_widgets/form_widget.dart';
+import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:starlight_utils/starlight_utils.dart';
 
-class ForgetPasswordScreen extends StatelessWidget {
-  const ForgetPasswordScreen({super.key});
+class RegisterSentOTPScreen extends StatelessWidget {
+  const RegisterSentOTPScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<UpdateUserInfoBloc>();
+    final bloc = context.read<RegisterBloc>();
     return Stack(
       children: [
         Scaffold(
           appBar: AppBar(
-            title: const Text("Forget-Password").tr(),
+            title: const Text("Register OTP"),
             automaticallyImplyLeading: false,
             leading: IconButton(
                 onPressed: () {
@@ -26,16 +35,12 @@ class ForgetPasswordScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Forget-Password?",
-                    style: TextStyle(fontSize: 17),
-                  ).tr(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: const Text("Forget-Recommend").tr(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text("Pleae Enter Email Address to Verify firstly"),
                   ),
                   TextFormField(
-                    controller: bloc.userDataController,
+                    controller: bloc.emailContrller,
                     validator: (value) {
                       if (value == null) return "need to fill".tr();
                       return value.isEmail
@@ -60,9 +65,9 @@ class ForgetPasswordScreen extends StatelessWidget {
             ),
           ),
         ),
-        BlocConsumer<UpdateUserInfoBloc, UpdateUserInfoBaseState>(
+        BlocConsumer<RegisterBloc, RegisterBaseState>(
             builder: (context, state) {
-          if (state is UpdateUserInfoLoadingState) {
+          if (state is RegisterLoadingState) {
             return Container(
               width: context.width,
               height: context.height,
@@ -77,17 +82,17 @@ class ForgetPasswordScreen extends StatelessWidget {
           }
           return const SizedBox();
         }, listener: (context, state) {
-          if (state is UpdateUserInfoFailState) {
+          if (state is RegisterFailState) {
             StarlightUtils.dialog(
               DialogWidget(
-                  message: state.message.toString(),
+                  message: state.error.toString(),
                   title: "Fail to Sent OTP".tr()),
             );
           }
 
-          if (state is UpdateUserInfoSuccessState) {
-            StarlightUtils.pushNamed(RouteNames.forgetPasswordVerifyOtpScreen,
-                arguments: bloc.userDataController.text);
+          if (state is RegisterSuccessState) {
+            StarlightUtils.pushNamed(RouteNames.registerVerifyOTPScreen,
+                arguments: bloc.emailContrller.text);
           }
         }),
       ],

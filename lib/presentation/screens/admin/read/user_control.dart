@@ -1,5 +1,6 @@
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -44,21 +45,21 @@ class UserControl extends StatelessWidget {
                       await DatabaseUpdateService()
                           .updateUserData(id: user!.id, postStatus: v);
                     },
-                    title: const Text("Enable Posts")),
+                    title: const Text("Enable Posts").tr()),
                 SwitchListTile(
                     value: user.commentStatus,
                     onChanged: (v) async {
                       await DatabaseUpdateService()
                           .updateUserData(id: user!.id, commentStatus: v);
                     },
-                    title: const Text("Enable Comments")),
+                    title: const Text("Enable Comments").tr()),
                 SwitchListTile(
                     value: user.messageStatus,
                     onChanged: (v) async {
                       await DatabaseUpdateService()
                           .updateUserData(id: user!.id, messageStatus: v);
                     },
-                    title: const Text("Enable Messages")),
+                    title: const Text("Enable Messages").tr()),
               ],
             ),
           );

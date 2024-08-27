@@ -35,27 +35,27 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const Text(
-                    "Glad To See You",
+                    "Glad-To-See-You",
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.w700,
                     ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 20),
-                    child: Text(
-                      "Please login to access your account",
+                  ).tr(),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: const Text(
+                      "Please-login-to-access-your-account",
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
-                    ),
+                    ).tr(),
                   ),
 
                   TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty) return "Need to fill";
-                      return value.isEmail ? null : "Email need to valid";
+                      if (value!.isEmpty) return "Need-To-Fill".tr();
+                      return value.isEmail ? null : "Email need to valid".tr();
                     },
                     controller: loginBloc.emailController,
                     focusNode: loginBloc.emailFocusNode,
@@ -68,7 +68,7 @@ class LoginScreen extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      hintText: "email",
+                      hintText: "Email".tr(),
                     ),
                   ),
                   Padding(
@@ -79,7 +79,7 @@ class LoginScreen extends StatelessWidget {
                             return TextFormField(
                               validator: (text) {
                                 if (text!.isEmpty) {
-                                  return "Need to fill";
+                                  return "Need-To-Fill".tr();
                                 }
                                 return text.isStrongPassword();
                               },
@@ -103,7 +103,7 @@ class LoginScreen extends StatelessWidget {
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                hintText: "password",
+                                hintText: "Password".tr(),
                               ),
                             );
                           })),
@@ -115,8 +115,13 @@ class LoginScreen extends StatelessWidget {
                             StarlightUtils.pushNamed(
                                 RouteNames.forgetPasswordSentOTPScreen);
                           },
-                          child: const Text("Forget Password")),
-                      CustomOutlinedButton(function: login, lable: "Login"),
+                          child: const Text("Forget-Password").tr()),
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: login,
+                          child: const Text("Login").tr(),
+                        ),
+                      ),
                     ],
                   ),
                   Padding(
@@ -128,7 +133,7 @@ class LoginScreen extends StatelessWidget {
                         function: () {
                           loginBloc.add(const LoginWithGoogleEvent());
                         },
-                        lable: "Login With Google"),
+                        lable: "Login-With-Google".tr()),
                   ),
                   // ElevatedButton(
                   //   onPressed: () async {
@@ -141,13 +146,15 @@ class LoginScreen extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("New User?"),
+                        const Text("New-User?").tr(),
                         TextButton(
                             onPressed: () {
-                              StarlightUtils.pushReplacementNamed(
-                                  RouteNames.registerScreen);
+                              // StarlightUtils.pushReplacementNamed(
+                              //     RouteNames.registerScreen);
+                              StarlightUtils.pushNamed(
+                                  RouteNames.registerSentOTPScreen);
                             },
-                            child: const Text("Sign Up"))
+                            child: const Text("Sign-Up").tr())
                       ],
                     ),
                   )
@@ -176,8 +183,8 @@ class LoginScreen extends StatelessWidget {
           if (state is LoginFailedState) {
             log("UI login fail State");
 
-            StarlightUtils.dialog(
-                DialogWidget(message: state.error, title: "Fail to Login"));
+            StarlightUtils.dialog(DialogWidget(
+                message: state.error, title: "Fail to Login".tr()));
           }
           if (state is LoginSuccessState) {
             log("UI login success State");

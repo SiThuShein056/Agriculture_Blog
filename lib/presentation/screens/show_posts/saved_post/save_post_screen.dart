@@ -16,7 +16,7 @@ class SavedPostScreen extends StatelessWidget {
           "My Saved Posts",
           style: TextStyle(
               fontSize: 20, letterSpacing: 1, fontWeight: FontWeight.w900),
-        ),
+        ).tr(),
       ),
       body: ListView.builder(
           itemCount: posts.length,
@@ -36,8 +36,8 @@ class SavedPostScreen extends StatelessWidget {
                   List<PostModel> singlePost = singlePostSnap.data!;
 
                   if (singlePost.isEmpty) {
-                    return const Center(
-                      child: Text("No Post Data"),
+                    return Center(
+                      child: const Text("No Post Data").tr(),
                     );
                   }
 
@@ -111,7 +111,7 @@ class SavedPostScreen extends StatelessWidget {
                                           "Phone Number: $phone",
                                           style: const TextStyle(
                                               color: Colors.blue),
-                                        ),
+                                        ).tr(),
                                       )),
                                 GestureDetector(
                                   child: Padding(
@@ -143,15 +143,17 @@ class SavedPostScreen extends StatelessWidget {
                                         createCubit: createBloc,
                                       ),
                                       CommentPart(
-                                          postsId: posts[i].postId,
-                                          createBloc: createBloc),
+                                        postsId: posts[i].postId,
+                                        createBloc: createBloc,
+                                        postedUserID: posts[i].userId,
+                                      ),
                                       user.id !=
                                               Injection<AuthService>()
                                                   .currentUser!
                                                   .uid
                                           ? PostActionButton(
                                               icon: Icons.add_chart_outlined,
-                                              label: "Chat",
+                                              label: "Chat".tr(),
                                               onTap: () {
                                                 ChatCreateService()
                                                     .createChat(toId: user!.id);
@@ -161,7 +163,7 @@ class SavedPostScreen extends StatelessWidget {
                                                     arguments: user);
                                               },
                                             )
-                                          : const Text("This's Me"),
+                                          : const Text("This's Me").tr(),
                                     ],
                                   ),
                                 )
@@ -186,7 +188,7 @@ class SavedPostScreen extends StatelessWidget {
                   onPressed: () {
                     StarlightUtils.pop();
                   },
-                  child: const Text("Exit"))
+                  child: const Text("Exit").tr())
             ],
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -197,12 +199,12 @@ class SavedPostScreen extends StatelessWidget {
                     StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
                         arguments: url);
                   },
-                  title: const Text("View Image"),
+                  title: const Text("View Image").tr(),
                   trailing: const Icon(Icons.remove_red_eye_outlined),
                 ),
                 const Divider(),
                 ListTile(
-                  title: const Text("Upload Image"),
+                  title: const Text("Upload Image").tr(),
                   trailing: const Icon(Icons.upload_outlined),
                   onTap: () {
                     StarlightUtils.pop();
@@ -235,8 +237,8 @@ class MultiPhotoShow extends StatelessWidget {
             return const Center(child: CupertinoActivityIndicator());
           }
           if (postImageSnap.data == null) {
-            return const Center(
-              child: Text("No Data"),
+            return Center(
+              child: const Text("No Data").tr(),
             );
           }
           List<PostImageModel> postImages = postImageSnap.data!.toList();
@@ -414,8 +416,8 @@ class PostCardTopRow extends StatelessWidget {
         case 1:
           FlutterClipboard.copy(postID).then(
             (_) => StarlightUtils.snackbar(
-              const SnackBar(
-                content: Text("Copied"),
+              SnackBar(
+                content: const Text("Copied").tr(),
               ),
             ),
           );
@@ -425,8 +427,8 @@ class PostCardTopRow extends StatelessWidget {
       }
     } else {
       StarlightUtils.snackbar(
-        const SnackBar(
-          content: Text("Your account has been banned"),
+        SnackBar(
+          content: const Text("Your account has been banned").tr(),
         ),
       );
     }

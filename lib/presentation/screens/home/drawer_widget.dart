@@ -50,7 +50,7 @@ class DrawerWidget extends StatelessWidget {
                     children: [
                       ReuseListTileWidget(
                         icon: const Icon(Icons.settings),
-                        title: "Setting",
+                        title: "Setting".tr(),
                         onpress: () {
                           StarlightUtils.pop();
                           StarlightUtils.pushNamed(RouteNames.settingScreen,
@@ -59,14 +59,14 @@ class DrawerWidget extends StatelessWidget {
                       ),
                       ReuseListTileWidget(
                         icon: const Icon(Icons.rule_outlined),
-                        title: "Lisence",
+                        title: "Lisence".tr(),
                         onpress: () {
                           showLicensePage(context: context);
                         },
                       ),
                       ReuseListTileWidget(
                         icon: const Icon(Icons.info_rounded),
-                        title: "About",
+                        title: "About".tr(),
                         onpress: () {
                           StarlightUtils.pushNamed(RouteNames.aboutScreen);
                         },
@@ -93,7 +93,7 @@ class DrawerWidget extends StatelessWidget {
                               }
                               return ReuseListTileWidget(
                                 icon: const Icon(Icons.help_center_outlined),
-                                title: "HelpCenter",
+                                title: "Help-Center".tr(),
                                 onpress: () {
                                   StarlightUtils.pushNamed(
                                       RouteNames.singleChat,
@@ -115,7 +115,7 @@ class DrawerWidget extends StatelessWidget {
           ),
           ReuseListTileWidget(
               icon: const Icon(Icons.logout_rounded),
-              title: "Logout",
+              title: "Logout".tr(),
               onpress: () {
                 Injection<AuthService>().signOut();
               })

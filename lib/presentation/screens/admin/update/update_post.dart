@@ -9,6 +9,7 @@ import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/upd
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:blog_app/presentation/screens/chat/video_player.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,7 +50,7 @@ class UpdatePostScreen extends StatelessWidget {
         Scaffold(
             backgroundColor: Theme.of(context).cardColor,
             appBar: AppBar(
-              title: const Text("Update"),
+              title: const Text("Update").tr(),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -58,7 +59,7 @@ class UpdatePostScreen extends StatelessWidget {
                       await bloc.updatePost(post.id);
                       MyUtil.showToast(context);
                     },
-                    lable: "Update",
+                    lable: "Update".tr(),
                     icon: Icons.post_add_outlined,
                   ),
                 )
@@ -81,8 +82,8 @@ class UpdatePostScreen extends StatelessWidget {
                                   child: CupertinoActivityIndicator());
                             }
                             if (snapshot.data == null) {
-                              return const Center(
-                                child: Text("No Data"),
+                              return Center(
+                                child: const Text("No Data").tr(),
                               );
                             }
                             List<PostImageModel> postImages =
@@ -100,7 +101,8 @@ class UpdatePostScreen extends StatelessWidget {
                                                   child: AlertDialog(
                                                     elevation: 0.01,
                                                     title: const Text(
-                                                        "Select Action"),
+                                                            "Select Action")
+                                                        .tr(),
                                                     content: Column(
                                                       mainAxisSize:
                                                           MainAxisSize.min,
@@ -119,7 +121,8 @@ class UpdatePostScreen extends StatelessWidget {
                                                                   .pop();
                                                             },
                                                             label: const Text(
-                                                                "Pick Videos"),
+                                                                    "Pick Videos")
+                                                                .tr(),
                                                             icon: const Icon(Icons
                                                                 .video_file_outlined)),
                                                         TextButton.icon(
@@ -132,7 +135,8 @@ class UpdatePostScreen extends StatelessWidget {
                                                                 .pop();
                                                           },
                                                           label: const Text(
-                                                              "Pick Images"),
+                                                                  "Pick Images")
+                                                              .tr(),
                                                           icon: const Icon(
                                                             Icons
                                                                 .image_outlined,
@@ -147,7 +151,8 @@ class UpdatePostScreen extends StatelessWidget {
                                                                 .pop();
                                                           },
                                                           child: const Text(
-                                                              "Close"))
+                                                                  "Close")
+                                                              .tr())
                                                     ],
                                                   ),
                                                 ));
@@ -244,8 +249,8 @@ class UpdatePostScreen extends StatelessWidget {
                                   child: CupertinoActivityIndicator());
                             }
                             if (snapshot.data == null) {
-                              return const Center(
-                                child: Text("No Data"),
+                              return Center(
+                                child: const Text("No Data").tr(),
                               );
                             }
                             List<PostVideoModel> postVideos =
@@ -339,13 +344,13 @@ class UpdatePostScreen extends StatelessWidget {
                               );
                             });
                           }),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
                           "Privacy",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       TextFormField(
                         readOnly: true,
@@ -354,7 +359,7 @@ class UpdatePostScreen extends StatelessWidget {
                           if (value!.isEmpty) return "";
                           if (value == "select" &&
                               bloc.privacy.value == "select") {
-                            return "You must need to select  privacy";
+                            return "You must need to select  privacy".tr();
                           }
                           return null;
                         },
@@ -366,10 +371,10 @@ class UpdatePostScreen extends StatelessWidget {
                                     alignment: Alignment.center,
                                     borderRadius: BorderRadius.circular(5),
                                     value: value,
-                                    items: ["select", "public", "private"]
+                                    items: ["select", "Public", "Private"]
                                         .map((e) => DropdownMenuItem(
                                               value: e,
-                                              child: Text(e),
+                                              child: Text(e).tr(),
                                             ))
                                         .toList(),
                                     onChanged: (v) {
@@ -377,39 +382,39 @@ class UpdatePostScreen extends StatelessWidget {
                                       bloc.privacy.value = v;
                                     });
                               }),
-                          hintText: "Select Privacy",
+                          hintText: "Select-Privacy".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          "Comment Status",
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
+                          "Comment-Status",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       ValueListenableBuilder(
                           valueListenable: bloc.commentStatus,
                           builder: (context, value, child) {
                             return Card(
                               child: SwitchListTile(
-                                  title: const Text("Allow to Comment"),
+                                  title: const Text("Allow-To-Comment").tr(),
                                   value: value,
                                   onChanged: (v) {
                                     bloc.toggle();
                                   }),
                             );
                           }),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
-                          "Phone Number",
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
+                          "Phone-Number",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       TextFormField(
                         // validator: (value) {
@@ -421,19 +426,19 @@ class UpdatePostScreen extends StatelessWidget {
                         controller: bloc.phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
-                          hintText: "Enter your phone",
+                          hintText: "Enter your phone".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
                           "Category",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       BlocBuilder<UpdateDataCubit, UpdateDataBaseState>(
                           builder: (context, snapshot) {
@@ -441,7 +446,8 @@ class UpdatePostScreen extends StatelessWidget {
                           validator: (value) {
                             if (value!.isEmpty) return "";
                             if (value.contains("null")) {
-                              return "You need to select both category and sub_category";
+                              return "You need to select All category and sub_category"
+                                  .tr();
                             }
                             return null;
                           },
@@ -456,20 +462,20 @@ class UpdatePostScreen extends StatelessWidget {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: bloc.mainCategoryController,
                           decoration: InputDecoration(
-                            hintText: "Select Category",
+                            hintText: "Select-Category".tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
                         );
                       }),
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.0),
-                        child: Text(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: const Text(
                           "Description",
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
+                        ).tr(),
                       ),
                       TextFormField(
                         validator: (value) {
@@ -480,7 +486,7 @@ class UpdatePostScreen extends StatelessWidget {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: bloc.descriptionController,
                         decoration: InputDecoration(
-                          hintText: "Enter a description",
+                          hintText: "Enter-A-Description".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -509,18 +515,18 @@ class UpdatePostScreen extends StatelessWidget {
           return const SizedBox();
         }, listener: (context, state) {
           if (state is UpdateDataErrorState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Fail Action"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Fail Action").tr(),
             ));
           }
           if (state is UpdatePickSuccessState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Uploaded image"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Uploaded image").tr(),
             ));
           }
           if (state is UpdateDataSuccessState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Success Action"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Success Action").tr(),
             ));
 
             StarlightUtils.pop();

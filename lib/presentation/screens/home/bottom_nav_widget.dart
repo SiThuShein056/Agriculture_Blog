@@ -19,28 +19,28 @@ class BottomNavWidget extends StatelessWidget {
           /// Home
           SalomonBottomBarItem(
             icon: const Icon(Icons.home_outlined),
-            title: const Text("Home"),
+            title: const Text("Home").tr(),
             selectedColor: Colors.teal,
           ),
 
           /// Create Post
           SalomonBottomBarItem(
             icon: const Icon(Icons.post_add_outlined),
-            title: const Text("New Post"),
+            title: const Text("New-Post").tr(),
             selectedColor: Colors.teal,
           ),
 
           /// chat
           SalomonBottomBarItem(
             icon: const Icon(Icons.chat_bubble_outline),
-            title: const Text("Chat"),
+            title: const Text("Chat").tr(),
             selectedColor: Colors.teal,
           ),
 
           /// Search
           SalomonBottomBarItem(
             icon: const Icon(Icons.person_outline),
-            title: const Text("Profile"),
+            title: const Text("Profile").tr(),
             selectedColor: Colors.teal,
           ),
         ],

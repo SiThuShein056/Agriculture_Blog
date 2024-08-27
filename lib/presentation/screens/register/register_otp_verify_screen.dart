@@ -1,20 +1,25 @@
-part of 'otp_verify_import.dart';
+import 'package:blog_app/presentation/blocs/register_bloc/register_import.dart';
+import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
+import 'package:blog_app/presentation/common_widgets/dialog_widget.dart';
+import 'package:blog_app/presentation/common_widgets/form_widget.dart';
+import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:pinput/pinput.dart';
+import 'package:starlight_utils/starlight_utils.dart';
 
-class OtpVerifyScreen extends StatelessWidget {
-  final String email;
-  final bool isRegister;
-  final String? password, name;
-  const OtpVerifyScreen({
+class RegisterOtpVerifyScreen extends StatelessWidget {
+  RegisterOtpVerifyScreen({
     super.key,
     required this.email,
-    required this.isRegister,
-    this.password,
-    this.name,
   });
-
+  String email;
   @override
   Widget build(BuildContext context) {
-    final bloc = context.read<UpdateUserInfoBloc>();
+    final bloc = context.read<RegisterBloc>();
+
     return Stack(
       children: [
         Scaffold(
@@ -49,10 +54,6 @@ class OtpVerifyScreen extends StatelessWidget {
                 ),
                 CustomOutlinedButton(
                     function: () {
-                      bloc.userDataController.text = email;
-
-                      log("Tapped button${bloc.userDataController.text}");
-
                       bloc.add(const VerifyOTPEvent());
                     },
                     lable: "Verify OTP".tr())
@@ -60,9 +61,9 @@ class OtpVerifyScreen extends StatelessWidget {
             ),
           ),
         ),
-        BlocConsumer<UpdateUserInfoBloc, UpdateUserInfoBaseState>(
+        BlocConsumer<RegisterBloc, RegisterBaseState>(
             builder: (context, state) {
-          if (state is UpdateUserInfoLoadingState) {
+          if (state is RegisterLoadingState) {
             return Container(
               width: context.width,
               height: context.height,
@@ -77,24 +78,22 @@ class OtpVerifyScreen extends StatelessWidget {
           }
           return const SizedBox();
         }, listener: (context, state) {
-          if (state is UpdateUserInfoFailState) {
-            log("Fail");
+          if (state is RegisterFailState) {
             StarlightUtils.dialog(DialogWidget(
-              message: state.message,
-              title: "Update Fail".tr(),
+              message: state.error,
+              title: "Fail",
             ));
             return;
-          } else if (state is UpdateUserInfoSuccessState) {
-            log("Success");
+          } else if (state is RegisterSuccessState) {
             StarlightUtils.dialog(AlertDialog(
               title: const Text("Success").tr(),
-              content: const Text("We sent link to reset your password").tr(),
+              content: const Text("We add your new account"),
               actions: [
                 TextButton(
                     onPressed: () {
-                      // StarlightUtils.popAndPushNamed(RouteNames.loginScreen);
                       StarlightUtils.pushReplacementNamed(
-                          RouteNames.loginScreen);
+                          RouteNames.registerScreen,
+                          arguments: email);
                     },
                     child: const Text("OK").tr())
               ],

@@ -13,6 +13,7 @@ import 'package:blog_app/presentation/screens/chat/video_player.dart';
 import 'package:blog_app/presentation/screens/chat/voice_call.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:clipboard/clipboard.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,25 +69,31 @@ class MessageCard extends StatelessWidget {
                 bottomRight: Radius.circular(15),
               )),
           child: message.type == Type.image
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(
-                      MediaQuery.of(context).size.width * 0.03),
-                  child: CachedNetworkImage(
-                    imageUrl: message.message,
-                    imageBuilder: (context, imageProvider) => Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: imageProvider,
-                          fit: BoxFit.cover,
+              ? InkWell(
+                  onTap: () {
+                    StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
+                        arguments: message.message);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(
+                        MediaQuery.of(context).size.width * 0.03),
+                    child: CachedNetworkImage(
+                      imageUrl: message.message,
+                      imageBuilder: (context, imageProvider) => Container(
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
+                      placeholder: (context, url) =>
+                          const CircularProgressIndicator().centered(),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error).centered(),
+                      height: MediaQuery.of(context).size.height * .35,
+                      width: MediaQuery.of(context).size.height * .35,
                     ),
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator().centered(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error).centered(),
-                    height: MediaQuery.of(context).size.height * .35,
-                    width: MediaQuery.of(context).size.height * .35,
                   ),
                 )
               : message.type == Type.video
@@ -110,7 +117,7 @@ class MessageCard extends StatelessWidget {
                                 fontSize: 15,
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline),
-                          ),
+                          ).tr(),
                         )
                       : (message.type == Type.videoCallLink &&
                               message.expiredTime == false)
@@ -122,7 +129,7 @@ class MessageCard extends StatelessWidget {
                                     fontSize: 15,
                                     color: Colors.red,
                                     decoration: TextDecoration.underline),
-                              ),
+                              ).tr(),
                             )
                           : (message.type == Type.voiceCallLink &&
                                   message.expiredTime == true)
@@ -137,7 +144,7 @@ class MessageCard extends StatelessWidget {
                                         fontSize: 15,
                                         color: Colors.blue,
                                         decoration: TextDecoration.underline),
-                                  ),
+                                  ).tr(),
                                 )
                               : (message.type == Type.voiceCallLink &&
                                       message.expiredTime == false)
@@ -150,13 +157,16 @@ class MessageCard extends StatelessWidget {
                                             color: Colors.red,
                                             decoration:
                                                 TextDecoration.underline),
-                                      ),
+                                      ).tr(),
                                     )
-                                  : Text(
-                                      message.message,
-                                      style: const TextStyle(
-                                          fontSize: 15, color: Colors.black),
-                                    ),
+                                  : message.isPostID
+                                      ? IsPostID(postID: message.message)
+                                      : Text(
+                                          message.message,
+                                          style: const TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black),
+                                        ),
         ),
         Padding(
           padding:
@@ -229,7 +239,7 @@ class MessageCard extends StatelessWidget {
                                 decoration: TextDecoration.underline,
                                 fontSize: 15,
                                 color: Colors.blue),
-                          )
+                          ).tr()
                         : (message.type == Type.videoCallLink &&
                                 message.expiredTime == false)
                             ? Text(
@@ -238,7 +248,7 @@ class MessageCard extends StatelessWidget {
                                     decoration: TextDecoration.underline,
                                     fontSize: 15,
                                     color: Colors.red),
-                              )
+                              ).tr()
                             : (message.type == Type.voiceCallLink &&
                                     message.expiredTime == true)
                                 ? Text(
@@ -247,7 +257,7 @@ class MessageCard extends StatelessWidget {
                                         decoration: TextDecoration.underline,
                                         fontSize: 15,
                                         color: Colors.blue),
-                                  )
+                                  ).tr()
                                 : (message.type == Type.voiceCallLink &&
                                         message.expiredTime == false)
                                     ? Text(
@@ -323,7 +333,7 @@ class MessageCard extends StatelessWidget {
               ),
               message.type == Type.text
                   ? OptionItem(
-                      name: "Copy Text",
+                      name: "Copy Text".tr(),
                       icon: const Icon(
                         Icons.copy_all_outlined,
                         color: Colors.blue,
@@ -332,7 +342,7 @@ class MessageCard extends StatelessWidget {
                         FlutterClipboard.copy(message.message).then((value) {
                           StarlightUtils.pop();
                           StarlightUtils.snackbar(
-                              const SnackBar(content: Text("Copied")));
+                              SnackBar(content: const Text("Copied").tr()));
                         });
                       })
                   : message.type == Type.image
@@ -340,7 +350,7 @@ class MessageCard extends StatelessWidget {
                           valueListenable: bloc.saving,
                           builder: (context, value, child) {
                             return OptionItem(
-                                name: value ? "Saving..." : "Save Image",
+                                name: value ? "Saving..." : "Save Image".tr(),
                                 icon: const Icon(
                                   Icons.download_outlined,
                                   color: Colors.blue,
@@ -356,7 +366,7 @@ class MessageCard extends StatelessWidget {
                                 return OptionItem(
                                     name: value
                                         ? "Saving..........."
-                                        : "Save Video",
+                                        : "Save Video".tr(),
                                     icon: const Icon(
                                       Icons.download_outlined,
                                       color: Colors.blue,
@@ -378,7 +388,7 @@ class MessageCard extends StatelessWidget {
                   message.type == Type.text &&
                   (message.isPostID == false))
                 OptionItem(
-                    name: "Edit Message",
+                    name: "Edit Message".tr(),
                     icon: const Icon(
                       Icons.edit_outlined,
                       color: Colors.blue,
@@ -389,7 +399,7 @@ class MessageCard extends StatelessWidget {
                     }),
               if (isMe)
                 OptionItem(
-                    name: "Delete Message",
+                    name: "Delete Message".tr(),
                     icon: const Icon(
                       Icons.delete_outline_outlined,
                       color: Colors.red,
@@ -439,13 +449,13 @@ class MessageCard extends StatelessWidget {
   Future<dynamic> _updateMessageDialog() {
     String updateMessage = message.message;
     return StarlightUtils.dialog(AlertDialog(
-      title: const Row(
+      title: Row(
         children: [
-          Icon(
+          const Icon(
             Icons.message,
             color: Colors.blue,
           ),
-          Text("Update Message")
+          const Text("Update Message").tr()
         ],
       ),
       content: TextFormField(
@@ -465,7 +475,7 @@ class MessageCard extends StatelessWidget {
           child: const Text(
             "Cancel",
             style: TextStyle(fontSize: 16, color: Colors.blue),
-          ),
+          ).tr(),
         ),
         MaterialButton(
           onPressed: () {
@@ -477,7 +487,7 @@ class MessageCard extends StatelessWidget {
           child: const Text(
             "Update",
             style: TextStyle(fontSize: 16, color: Colors.blue),
-          ),
+          ).tr(),
         )
       ],
     ));

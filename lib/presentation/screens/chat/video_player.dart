@@ -1,4 +1,5 @@
 import 'package:appinio_video_player/appinio_video_player.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
@@ -61,7 +62,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Video View Screen"),
+        title: const Text("Video View Screen").tr(),
       ),
       body: Center(
         child: CustomVideoPlayer(

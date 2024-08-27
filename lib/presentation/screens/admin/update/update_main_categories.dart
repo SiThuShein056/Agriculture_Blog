@@ -3,6 +3,7 @@ import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/upd
 import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_state.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/form_widget.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -25,7 +26,7 @@ class UpdateMainCategoryScreen extends StatelessWidget {
       children: [
         Scaffold(
             appBar: AppBar(
-              title: const Text("Update"),
+              title: const Text("Update").tr(),
               actions: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -36,7 +37,7 @@ class UpdateMainCategoryScreen extends StatelessWidget {
 
                       StarlightUtils.pop();
                     },
-                    lable: "Update",
+                    lable: "Update".tr(),
                     icon: Icons.post_add_outlined,
                   ),
                 )
@@ -56,13 +57,14 @@ class UpdateMainCategoryScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.0),
-                              child: Text(
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              child: const Text(
                                 "MainCategory",
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
+                              ).tr(),
                             ),
                             BlocBuilder<UpdateDataCubit, UpdateDataBaseState>(
                                 builder: (context, snapshot) {
@@ -108,13 +110,13 @@ class UpdateMainCategoryScreen extends StatelessWidget {
           return const SizedBox();
         }, listener: (context, state) {
           if (state is UpdateDataErrorState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Fail Action"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Fail Action").tr(),
             ));
           }
           if (state is UpdateDataSuccessState) {
-            StarlightUtils.snackbar(const SnackBar(
-              content: Text("Success Action"),
+            StarlightUtils.snackbar(SnackBar(
+              content: const Text("Success Action").tr(),
             ));
 
             StarlightUtils.pop();

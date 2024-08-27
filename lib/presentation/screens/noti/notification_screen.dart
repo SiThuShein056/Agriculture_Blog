@@ -5,6 +5,7 @@ import 'package:blog_app/data/models/notification_model/notification_model.dart'
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -23,7 +24,7 @@ class NotificationScreen extends StatelessWidget {
             StarlightUtils.pop();
           },
         ),
-        title: const Text("Notifications"),
+        title: const Text("Notifications").tr(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -42,8 +43,8 @@ class NotificationScreen extends StatelessWidget {
               }
               List<NotificationModel> notis = snapshot.data!.toList();
               if (notis.isEmpty) {
-                return const Center(
-                  child: Text("No noti data"),
+                return Center(
+                  child: const Text("No noti data").tr(),
                 );
               }
               return Column(
@@ -107,8 +108,9 @@ class NotificationScreen extends StatelessWidget {
                                           postSnap.data!.toList();
 
                                       if (notiPost.isEmpty) {
-                                        return const Center(
-                                          child: Text("No Post Data"),
+                                        return Center(
+                                          child:
+                                              const Text("No Post Data").tr(),
                                         );
                                       }
 
@@ -132,7 +134,6 @@ class NotificationScreen extends StatelessWidget {
                                                 radius: 25,
                                                 backgroundImage: NetworkImage(
                                                     user!.profielUrl),
-                                                child: Text(user.name[0]),
                                               ),
                                         title: Row(
                                             mainAxisAlignment:
@@ -164,7 +165,7 @@ class NotificationScreen extends StatelessWidget {
                                               notis[i].read ? "" : "New",
                                               style: const TextStyle(
                                                   color: Colors.red),
-                                            )
+                                            ).tr()
                                           ],
                                         ),
                                       );

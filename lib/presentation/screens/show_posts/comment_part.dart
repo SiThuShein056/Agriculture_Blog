@@ -1,6 +1,9 @@
+import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
+import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -13,13 +16,17 @@ class CommentPart extends StatelessWidget {
     super.key,
     required this.postsId,
     required this.createBloc,
+    required this.postedUserID,
   });
 
   final String postsId;
   final CreateCubit createBloc;
+  final String postedUserID;
 
   @override
   Widget build(BuildContext context) {
+    final String userID = Injection<AuthService>().currentUser!.uid;
+
     return StreamBuilder(
         stream: FirebaseStoreDb().comments(postsId),
         builder: (context, cmtSnap) {
@@ -27,8 +34,8 @@ class CommentPart extends StatelessWidget {
             return const Center(child: CupertinoActivityIndicator());
           }
           if (cmtSnap.data == null) {
-            return const Center(
-              child: Text("No Data"),
+            return Center(
+              child: const Text("No Data").tr(),
             );
           }
           List<CommentModel> comments = cmtSnap.data!.toList();
@@ -38,7 +45,13 @@ class CommentPart extends StatelessWidget {
                   await FirebaseStoreDb().checkCommentPermission();
               var postCommentStatus =
                   await FirebaseStoreDb().checkPostCommentStatus(postsId);
-              if (grantPermission) {
+
+              if (!grantPermission && (postedUserID == userID)) {
+                StarlightUtils.snackbar(SnackBar(
+                    content: const Text(
+                            "Owner does not allow to comment on her posts.")
+                        .tr()));
+              } else {
                 if (postCommentStatus) {
                   showBottomSheet(
                     context: context,
@@ -53,8 +66,8 @@ class CommentPart extends StatelessWidget {
                                   child: CupertinoActivityIndicator());
                             }
                             if (cmtSnap.data == null) {
-                              return const Center(
-                                child: Text("No Data"),
+                              return Center(
+                                child: const Text("No Data").tr(),
                               );
                             }
                             List<CommentModel> comments =
@@ -74,8 +87,8 @@ class CommentPart extends StatelessWidget {
                                 ),
                                 Expanded(
                                     child: comments.isEmpty
-                                        ? const Center(
-                                            child: Text("No Data"),
+                                        ? Center(
+                                            child: const Text("No Data").tr(),
                                           )
                                         : CommentBody(
                                             comments: comments,
@@ -95,18 +108,17 @@ class CommentPart extends StatelessWidget {
                     ),
                   );
                 } else {
-                  StarlightUtils.snackbar(const SnackBar(
-                      content: Text(
-                          "Owner does not allow to  comment on this post.")));
+                  StarlightUtils.snackbar(SnackBar(
+                      content: const Text(
+                              "Owner does not allow to  comment on this post.")
+                          .tr()));
                 }
-              } else {
-                StarlightUtils.snackbar(const SnackBar(
-                    content:
-                        Text("Owner does not allow to comment on her posts.")));
               }
             },
             icon: Icons.mode_comment_outlined,
-            label: comments.isEmpty ? "Comment" : "Comments ${comments.length}",
+            label: comments.isEmpty
+                ? "Comment".tr()
+                : "Comments ${comments.length}".tr(),
           );
         });
   }
@@ -151,7 +163,7 @@ class CommentBody extends StatelessWidget {
                     user = UserModel.fromJson(element);
                   }
                   if (user == null) {
-                    return const Text("No User");
+                    return const Text("No User").tr();
                   }
                   return Row(
                     children: [
@@ -178,10 +190,12 @@ class CommentBody extends StatelessWidget {
                               onSelected: (value) => onSelected(context, value,
                                   comments[i].id, comments[i].body),
                               itemBuilder: (context) => [
-                                    const PopupMenuItem(
-                                        value: 0, child: Text("Delete")),
-                                    const PopupMenuItem(
-                                        value: 1, child: Text("Edit"))
+                                    PopupMenuItem(
+                                        value: 0,
+                                        child: const Text("Delete").tr()),
+                                    PopupMenuItem(
+                                        value: 1,
+                                        child: const Text("Edit").tr())
                                   ])
                           : const SizedBox()
                     ],
@@ -217,8 +231,8 @@ class CommentBody extends StatelessWidget {
       }
     } else {
       StarlightUtils.snackbar(
-        const SnackBar(
-          content: Text("Your account has been banned"),
+        SnackBar(
+          content: const Text("Your account has been banned").tr(),
         ),
       );
     }
@@ -267,8 +281,9 @@ class CommentTextField extends StatelessWidget {
                   },
                   minLines: 1,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                      hintText: "type something", border: InputBorder.none),
+                  decoration: InputDecoration(
+                      hintText: "Type-Something".tr(),
+                      border: InputBorder.none),
                 ),
               ),
             ),
@@ -285,9 +300,10 @@ class CommentTextField extends StatelessWidget {
                               createBloc.ediable.value = false;
                               createBloc.commentController.text = "";
                             } else {
-                              StarlightUtils.snackbar(const SnackBar(
-                                  content:
-                                      Text("Your account has been blocked.")));
+                              StarlightUtils.snackbar(SnackBar(
+                                  content: const Text(
+                                          "Your account has been blocked.")
+                                      .tr()));
                             }
                           },
                           icon: const Icon(Icons.check))
@@ -300,9 +316,10 @@ class CommentTextField extends StatelessWidget {
                               createBloc.createComment(
                                   postsId, createBloc.commentController.text);
                             } else {
-                              StarlightUtils.snackbar(const SnackBar(
-                                  content:
-                                      Text("Your account has been blocked.")));
+                              StarlightUtils.snackbar(SnackBar(
+                                  content: const Text(
+                                          "Your account has been blocked.")
+                                      .tr()));
                             }
                           },
                           icon: const Icon(Icons.send_outlined));

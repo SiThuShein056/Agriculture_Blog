@@ -9,6 +9,7 @@ import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:blog_app/presentation/common_widgets/reuse_list_tile_widget.dart';
 import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

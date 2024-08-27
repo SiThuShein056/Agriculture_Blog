@@ -4,6 +4,7 @@ import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -39,7 +40,7 @@ class ShowCategories extends StatelessWidget {
                   },
                   icon: const Icon(Icons.chevron_left),
                 ),
-                title: const Text("အမျိုးအစားများ"),
+                title: const Text("Categories").tr(),
                 actions: [
                   IconButton(
                       onPressed: () {
@@ -85,19 +86,19 @@ class ShowCategories extends StatelessWidget {
                     );
                   }
                   if (snap.hasError) {
-                    return const Center(
-                      child: Text("Error"),
+                    return Center(
+                      child: const Text("Error").tr(),
                     );
                   }
                   if (snap.data == null) {
-                    return const Center(
-                      child: Text("Data is null value"),
+                    return Center(
+                      child: const Text("Data is null value").tr(),
                     );
                   }
                   List<CategoryModel> categories = snap.data!.toList();
                   if (categories.isEmpty) {
-                    return const Center(
-                      child: Text("No data found"),
+                    return Center(
+                      child: const Text("No data found").tr(),
                     );
                   }
 
@@ -149,8 +150,8 @@ class SearchScreen extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const Center(
-      child: Text("Choose existed categories"),
+    return Center(
+      child: const Text("Choose existed categories").tr(),
     );
   }
 
@@ -165,13 +166,13 @@ class SearchScreen extends SearchDelegate {
             );
           }
           if (snap.hasError) {
-            return const Center(
-              child: Text("Error"),
+            return Center(
+              child: const Text("Error").tr(),
             );
           }
           if (snap.data == null) {
-            return const Center(
-              child: Text("Data is null value"),
+            return Center(
+              child: const Text("Data is null value").tr(),
             );
           }
           List<CategoryModel> categories = snap.data!.toList();
@@ -179,8 +180,8 @@ class SearchScreen extends SearchDelegate {
               categories.where((e) => e.name.contains(query)).toList();
 
           if (searchCategory.isEmpty) {
-            return const Center(
-              child: Text("လို ချင်တာ မရှိ လျှင် အသစ် ထည့်ပါ"),
+            return Center(
+              child: const Text("Don't have any data? Add new data").tr(),
             );
           }
           return Padding(

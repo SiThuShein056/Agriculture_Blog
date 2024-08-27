@@ -1,6 +1,266 @@
 {
     "home":"Home",
     "setting":"Setting",
-    "profile-screen":"Profile Screen"
+    "profile-screen":"Profile Screen",      
+    
+    "Change-Password": "Change Password",
+    "Languages": "Languages",
+    "Theme": "Theme",
+    "Allow-To-Comment-On-Your-Posts": "Allow to comment on your posts",
+    "Not-Save-Yet": "Not Save Yet",
+
+    "Farmer-Hub-Home": "Farmer Hub",
+    "Setting": "Setting",
+    "Lisence": "License",
+    "About": "about",
+    "Help-Center": "Help Center",
+    "Logout": "Logout",
+
+    "Glad-To-See-You": "Glad To See You",
+    "Please-login-to-access-your-account": "Please login to access your account",
+    "Email":"Email",
+    "Need-To-Fill": "Need to fill",
+    "Email need to valid":"Email need to valid",
+    "Password": "Password",
+    "Forget-Password": "Forget Password",
+    "Login": "Login",
+    "Login-With-Google": "Login With Google",
+    "New-User?": "New User?",
+    "Sign-Up":"Sign Up",
+    "Fail to Login":"Fail to Login",
+   
+    
+    "Welcome-From-Farmer-Hub": "Welcome From Farmer Hub",
+    "Please-Register-To-Access-Your-Account": "Please register to access your account",
+    "Enter-Your-Email": "Enter your email",
+    "Email-Is-Required": "Email is required",
+    "Invalid email":"Invalid email",
+    
+    "Enter-Your-Name": "Enter your name",
+    "Name-Is-Required": "Name is required",
+
+    "Enter-Your-Password": "Enter your password",
+    "Password-Is-Required": "Password is required",
+
+    "Enter-Your-Confirm-Password": "Enter your confirm password",
+    "Confirm-Password-Is-Required": "Confirm password is required",
+
+    "Register": "Register",
+    "Already-Have-An-Account?-": "Already have an account?",
+    "Sign-IN":"SignIN",
+    "Fail Action":"Fail Action",
+
+
+"Forget-Password?": "Forget password?",
+"Forget-Recommend": "Don't worry about that . Please enter your email address linked your account",
+"Enter-Email": "Enter email",
+"Email-Is-Need-To-Validate": "Email is need to validate",
+"Sent-OTP": "Sent OTP",
+"need to fill":"need to fill",
+"Fail to Sent OTP":"Fail to Sent OTP",
+
+
+
+"New-Post": "New Post",
+
+
+"Create-Post": "Create Post",
+"Privacy": "Privacy",
+
+
+"Public": "Public",
+"Private": "Private",
+"select":"select",
+
+
+
+
+"You must need to select  privacy":"You must need to select  privacy",
+
+"Select-Privacy": "Select Privacy",
+"Comment-Status": "Comment Status",
+"Allow-To-Comment": "Allow to Comment",
+"Phone-Number": "Phone number",
+"Enter your phone":"Enter your phone",
+"Category": "Category",
+"Select-Main-Category": "Select Main Category",
+"Description": "description",
+"Enter-A-Description": "Enter a description",
+"Success Action":"Success Action",
+"You need to select All category and sub_category":"You need to select All category and sub_category",
+"Select Category":"Select Category",
+"Uploaded image":"Uploaded image",
+"SubCategory":"SubCategory",
+"Data is null value":"Data is null value",
+"Search User to Start":"Search User to Start",
+
+"Image":"Image",
+"Video":"Video",
+"Video Call":"Video Call",
+"Voice Call":"Voice Call",
+"No message":"No message",
+
+"Tap here to join Video call  with me":"Tap here to join Video call  with me",
+"Expired Video Call ID ":"Expired Video Call ID ",
+"Tap here to join Voice call  with me":"Tap here to join Voice call  with me",
+"Expired Voice call  ID":"Expired Voice call  ID ",
+
+"Video Call ID :":"Video Call ID ",
+"Expired Video Call ID :":"Expired Video Call ID ",
+"Voice Call ID : ":"Voice Call ID ",
+"Expired Voice Call ID :":"Expired Voice Call ID ",
+
+"Copy Text":"Copy Text",
+"Copied":"Copied",
+
+"Save Image":"Save Image",
+"Save Video":"Save Video",
+ "Edit Message":"Edit Message",
+ "Delete Message":"Delete Message",
+ "Update Message":"Update Message",
+ "Cancel":"Cancel",
+
+ "Error  Occurred":"Error  Occurred",
+
+ "Unavailable now":"Unavailable now",
+
+ "You are blocked by this user":"You are blocked by this user",
+
+ "UnBlock This user":"UnBlock This user",
+ "Block This User":"Block This User",
+
+ "Say hi 👋":"Say hi 👋",
+ 
+
+
+
+
+"Notifications":"Notifications",
+"No noti data":"No noti data",
+"No Post Data":"No Post Data",
+"New":"New",
+
+
+
+"Profile": "Profile",
+"No-Posted-Data": "No Posted Data",
+
+
+"Exit":"Exit",
+"View Image":"View Image",
+"Upload Image":"Upload Image",
+
+
+"No Data":"No Data",
+
+"like": "like",
+"likes": "likes",
+"liked": "liked",
+
+"Comment": "Comment",
+"Comments": "Comments",
+"Delete": "Delete",
+"Update": "Update",
+"Edit":"Edit",
+"Type-Something": "Type Something",
+"Update Fail":"Update Fail",
+"Success":"Success",
+
+
+
+
+
+
+"Select-Action": "Select Action",
+"Search-User": "Search User",
+"Search-Post": "Search Post",
+"Close": "Close",
+
+
+
+ "Owner does not allow to  comment on this post.":"Owner does not allow to  comment on this post.",
+ "Your account has been banned":"Your account has been banned",
+ "Your account has been blocked.":"Your account has been blocked.",
+ "Enter old password to update":"Enter old password to update",
+ "You must need to verify your email and login again to update your mail":"You must need to verify your email and login again to update your mail",
+"Chat": "Chat",
+"Save-Post": "Save Post",
+"Copy-Post-Link": "Copy Post Link",
+
+
+"Enable Posts": "Enable Posts",
+"Enable Comments": "Enable Comments",
+"Enable Messages": "Enable Messages",
+
+"Otp Verify Screen": "Otp Verify Screen",
+"Enter verification code we just sent in your email address": "Enter verification code we just sent in your email address",
+"Verify OTP": "Verify OTP",
+"We sent link to reset your password": "We sent link to reset your password",
+"OK": "OK",
+
+"MainCategory":"MainCategory",
+
+
+
+"Select Action": "Select Action",
+"Pick Videos": "Pick Videos",
+"Pick Images": "Pick Images",
+
+"Video View Screen": "Video View Screen",
+"No User": "No User",
+"Error": "Error",
+"No data found": "No data found",
+"Choose existed categories": "Choose existed categories",
+"Phone Number:": "Phone Number:",
+
+"This's Me": "This's Me",
+
+"My Saved Posts": "My Saved Posts",
+
+"Build Result": "Build Result",
+
+"Update Name": "Update Name",
+"Enter your name": "Enter your name",
+"Enter your new Mail": "Enter your new Mail",
+
+"Update Password": "Update Password",
+
+"Post": "Post",
+"Any Problem,contact me":"Any Problem,contact me",
+"Select Main Category": "Select Main Category",
+
+"Unavailabel to send message":"Unavailabel to send message......",
+
+ 
+
+
+
+"Categories": "Categories",
+"Main Categories":"Main Categories",
+"Sub Categories":"Sub Categories",
+
+"Don't have any data? Add new data": "Don't have any data? Add new data",
+
+
+
+
+
+"Home": "Home",
+"Farmer-Hub": "Farmer Hub"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

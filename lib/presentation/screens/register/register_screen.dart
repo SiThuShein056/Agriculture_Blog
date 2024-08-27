@@ -1,11 +1,14 @@
 part of 'register_import.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  RegisterScreen({required this.email, super.key});
+
+  String email;
 
   @override
   Widget build(BuildContext context) {
     final RegisterBloc registerBloc = context.read<RegisterBloc>();
+    registerBloc.emailContrller.text = email;
     void register() {
       registerBloc.confirmPasswordFocus.unfocus();
       registerBloc.add(const OnRegisterSubmitted());
@@ -35,35 +38,36 @@ class RegisterScreen extends StatelessWidget {
                       ),
                     ),
                     const Text(
-                      "Welcome From Farmer Hub",
+                      "Welcome-From-Farmer-Hub",
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.w700,
                       ),
-                    ),
+                    ).tr(),
                     const Text(
-                      "Please register to access your account",
+                      "Please-Register-To-Access-Your-Account",
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
-                    ),
+                    ).tr(),
                     Padding(
                       padding: const EdgeInsets.only(
                         top: 25,
                       ),
                       child: TextFormField(
+                        readOnly: true,
                         controller: registerBloc.emailContrller,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         onEditingComplete:
                             registerBloc.passWordFocus.requestFocus,
                         validator: (value) {
                           value = value ?? "";
-                          if (value.isEmpty) return "Email is required";
-                          return value.isEmail ? null : "Invalid email";
+                          if (value.isEmpty) return "Email-Is-Required".tr();
+                          return value.isEmail ? null : "Invalid email".tr();
                         },
-                        decoration: const InputDecoration(
-                          hintText: "Enter your email",
+                        decoration: InputDecoration(
+                          hintText: "Enter-Your-Email".tr(),
                         ),
                       ),
                     ),
@@ -76,11 +80,11 @@ class RegisterScreen extends StatelessWidget {
                         //     registerBloc.passWordFocus.requestFocus,
                         validator: (value) {
                           value = value ?? "";
-                          if (value.isEmpty) return "Name is required";
+                          if (value.isEmpty) return "Name-Is-Required".tr();
                           return null;
                         },
-                        decoration: const InputDecoration(
-                          hintText: "Enter your Name",
+                        decoration: InputDecoration(
+                          hintText: "Enter-Your-Name".tr(),
                         ),
                       ),
                     ),
@@ -97,7 +101,9 @@ class RegisterScreen extends StatelessWidget {
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               value = value ?? "";
-                              if (value.isEmpty) return "Password is required";
+                              if (value.isEmpty) {
+                                return "Password-Is-Required".tr();
+                              }
                               return value.isStrongPassword(
                                 minLength: 6,
                                 // checkSpecailChar: true,
@@ -111,7 +117,7 @@ class RegisterScreen extends StatelessWidget {
                                         ? Icons.visibility
                                         : Icons.visibility_off,
                                   )),
-                              hintText: "Enter your password",
+                              hintText: "Enter-Your-Password".tr(),
                             ),
                           );
                         }),
@@ -133,7 +139,7 @@ class RegisterScreen extends StatelessWidget {
                               validator: (value) {
                                 value = value ?? "";
                                 if (value.isEmpty) {
-                                  return "Password is required";
+                                  return "Password-Is-Required".tr();
                                 }
 
                                 final isStrongPassword = value.isStrongPassword(
@@ -146,7 +152,7 @@ class RegisterScreen extends StatelessWidget {
                                 }
                                 if (value !=
                                     registerBloc.passwordController.text) {
-                                  return "Password does not match.";
+                                  return "Confirm-Password-Is-Required".tr();
                                 }
                                 return null;
                               },
@@ -159,7 +165,7 @@ class RegisterScreen extends StatelessWidget {
                                           ? Icons.visibility
                                           : Icons.visibility_off,
                                     )),
-                                hintText: "Enter your confirm password",
+                                hintText: "Enter-Your-Confirm-Password".tr(),
                               ),
                             );
                           }),
@@ -174,17 +180,18 @@ class RegisterScreen extends StatelessWidget {
                     //         function: register, lable: "Register"),
                     //   ],
                     // ),
-                    CustomOutlinedButton(function: register, lable: "Register"),
+                    CustomOutlinedButton(
+                        function: register, lable: "Register".tr()),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("Already have an account? "),
+                        const Text("Already-Have-An-Account?-").tr(),
                         TextButton(
                             onPressed: () {
                               StarlightUtils.pushReplacementNamed(
                                   RouteNames.loginScreen);
                             },
-                            child: const Text("Sign In"))
+                            child: const Text("Sign-IN").tr())
                       ],
                     )
                   ],
@@ -198,11 +205,12 @@ class RegisterScreen extends StatelessWidget {
             if (state is RegisterFailState) {
               StarlightUtils.dialog(DialogWidget(
                 message: state.error,
-                title: "Fail Action",
+                title: "Fail Action".tr(),
               ));
             }
             if (state is RegisterSuccessState) {
-              StarlightUtils.pushReplacementNamed(RouteNames.home);
+              // StarlightUtils.pushReplacementNamed(RouteNames.home);
+              StarlightUtils.pushReplacementNamed(RouteNames.loginScreen);
             }
           },
           builder: (_, state) {

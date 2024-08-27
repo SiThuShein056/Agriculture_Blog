@@ -3,6 +3,7 @@ import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart'
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
@@ -99,7 +100,7 @@ class ReadSubCategory extends StatelessWidget {
                                             StarlightUtils.pop();
                                           });
                                         },
-                                        title: const Text("Delete"),
+                                        title: const Text("Delete").tr(),
                                         trailing: const Icon(Icons.delete),
                                       ),
                                       ListTile(
@@ -109,7 +110,7 @@ class ReadSubCategory extends StatelessWidget {
                                                   .updateSubCategoryScreen,
                                               arguments: subCategories[i]);
                                         },
-                                        title: const Text("Update"),
+                                        title: const Text("Update").tr(),
                                         trailing: const Icon(Icons.update),
                                       )
                                     ],
@@ -209,7 +210,7 @@ class SearchScreen extends SearchDelegate {
                                           StarlightUtils.pop();
                                         });
                                       },
-                                      title: const Text("Delete"),
+                                      title: const Text("Delete").tr(),
                                       trailing: const Icon(Icons.delete),
                                     ),
                                     ListTile(
@@ -218,7 +219,7 @@ class SearchScreen extends SearchDelegate {
                                             RouteNames.updateSubCategoryScreen,
                                             arguments: subCategories[i]);
                                       },
-                                      title: const Text("Update"),
+                                      title: const Text("Update").tr(),
                                       trailing: const Icon(Icons.update),
                                     )
                                   ],

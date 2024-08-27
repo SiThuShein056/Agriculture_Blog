@@ -22,7 +22,7 @@ class ShowPost extends StatelessWidget {
                   builder: (context) => Center(
                         child: AlertDialog(
                           elevation: 0.01,
-                          title: const Text("Select Action"),
+                          title: const Text("Select-Action").tr(),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,7 +35,7 @@ class ShowPost extends StatelessWidget {
                                         context: context,
                                         delegate: SearchUser());
                                   },
-                                  label: const Text("Search User"),
+                                  label: const Text("Search-User").tr(),
                                   icon: const Icon(Icons.people)),
                               TextButton.icon(
                                   onPressed: () {
@@ -45,7 +45,7 @@ class ShowPost extends StatelessWidget {
                                         context: context,
                                         delegate: SearchPost());
                                   },
-                                  label: const Text("Search Post"),
+                                  label: const Text("Search-Post").tr(),
                                   icon: const Icon(Icons.post_add_outlined)),
                             ],
                           ),
@@ -54,7 +54,7 @@ class ShowPost extends StatelessWidget {
                                 onPressed: () {
                                   StarlightUtils.pop();
                                 },
-                                child: const Text("Close"))
+                                child: const Text("Close").tr())
                           ],
                         ),
                       ));
@@ -73,8 +73,8 @@ class ShowPost extends StatelessWidget {
                   return const SizedBox();
                 }
                 if (snap.data == null) {
-                  return const Center(
-                    child: Text("No Data"),
+                  return Center(
+                    child: const Text("No Data").tr(),
                   );
                 }
                 List<NotificationModel> notis = snap.data!.toList();
@@ -129,15 +129,15 @@ class ShowPost extends StatelessWidget {
               return const Center(child: CupertinoActivityIndicator());
             }
             if (snap.data == null) {
-              return const Center(
-                child: Text("No Data"),
+              return Center(
+                child: const Text("No Data").tr(),
               );
             }
             List<PostModel> posts = snap.data!.toList();
 
             if (posts.isEmpty) {
-              return const Center(
-                child: Text("No Data"),
+              return Center(
+                child: const Text("No Data").tr(),
               );
             }
 
@@ -212,7 +212,7 @@ class ShowPost extends StatelessWidget {
                                           "Phone Number: $phone",
                                           style: const TextStyle(
                                               color: Colors.blue),
-                                        ),
+                                        ).tr(),
                                       )),
                                 GestureDetector(
                                   child: Padding(
@@ -245,15 +245,17 @@ class ShowPost extends StatelessWidget {
                                         createCubit: createBloc,
                                       ),
                                       CommentPart(
-                                          postsId: posts[i].id,
-                                          createBloc: createBloc),
+                                        postsId: posts[i].id,
+                                        createBloc: createBloc,
+                                        postedUserID: posts[i].userId,
+                                      ),
                                       user.id !=
                                               Injection<AuthService>()
                                                   .currentUser!
                                                   .uid
                                           ? PostActionButton(
                                               icon: Icons.add_chart_outlined,
-                                              label: "Chat",
+                                              label: "Chat".tr(),
                                               onTap: () {
                                                 ChatCreateService()
                                                     .createChat(toId: user!.id);
@@ -263,7 +265,7 @@ class ShowPost extends StatelessWidget {
                                                     arguments: user);
                                               },
                                             )
-                                          : const Text("This's Me"),
+                                          : const Text("This's Me").tr(),
                                     ],
                                   ),
                                 )
@@ -373,22 +375,23 @@ class PostCardTopRow extends StatelessWidget {
                                   width: 5,
                                 ),
                                 Text(savedPosts.isEmpty
-                                    ? "Save Post"
-                                    : saved
-                                        ? "Saved"
-                                        : "Save Post"),
+                                        ? "Save-Post"
+                                        : saved
+                                            ? "Saved"
+                                            : "Save-Post")
+                                    .tr(),
                               ],
                             );
                           })),
-                  const PopupMenuItem(
+                  PopupMenuItem(
                       value: 1,
                       child: Row(
                         children: [
-                          Icon(Icons.copy_all_outlined),
-                          SizedBox(
+                          const Icon(Icons.copy_all_outlined),
+                          const SizedBox(
                             width: 5,
                           ),
-                          Text("Copy Post Link"),
+                          const Text("Copy-Post-Link").tr(),
                         ],
                       ))
                 ])
