@@ -1,7 +1,6 @@
 import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +25,8 @@ class LikePart extends StatelessWidget {
             return const Center(child: CupertinoActivityIndicator());
           }
           if (likeSnap.data == null) {
-            return Center(
-              child: const Text("No Data").tr(),
+            return const Center(
+              child: Text("No Data"),
             );
           }
           var likes = likeSnap.data!;
@@ -49,10 +48,10 @@ class LikePart extends StatelessWidget {
                     ? Icons.thumb_up_alt_rounded
                     : Icons.thumb_up_outlined,
             label: likes.isEmpty
-                ? "like".tr()
+                ? "like"
                 : liked!
-                    ? "liked ${likes.length}".tr()
-                    : "likes${likes.length}".tr(),
+                    ? "liked ${likes.length}"
+                    : "likes${likes.length}",
             onTap: () async {
               createCubit.likeAction(postId);
             },

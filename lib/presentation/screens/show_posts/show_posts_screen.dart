@@ -255,7 +255,7 @@ class ShowPost extends StatelessWidget {
                                                   .uid
                                           ? PostActionButton(
                                               icon: Icons.add_chart_outlined,
-                                              label: "Chat".tr(),
+                                              label: "Chat",
                                               onTap: () {
                                                 ChatCreateService()
                                                     .createChat(toId: user!.id);
@@ -265,7 +265,7 @@ class ShowPost extends StatelessWidget {
                                                     arguments: user);
                                               },
                                             )
-                                          : const Text("This's Me").tr(),
+                                          : const Text("This's Me"),
                                     ],
                                   ),
                                 )

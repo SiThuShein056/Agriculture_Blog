@@ -12,21 +12,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     MessagingService().getFirebaseMessagingToken();
-    DatabaseUpdateService().updateUserData(
-        id: Injection<AuthService>().currentUser!.uid,
-        isOnline: true,
-        lastActive: DateTime.now().millisecondsSinceEpoch.toString());
+    // DatabaseUpdateService().updateUserData(
+    //     id: Injection<AuthService>().currentUser!.uid,
+    //     isOnline: true,
+    //     lastActive: DateTime.now().millisecondsSinceEpoch.toString());
 
     SystemChannels.lifecycle.setMessageHandler((message) {
       log("Message : $message");
-      if (message.toString().contains("pause")) {
+      if (message.toString().contains("paused")) {
         DatabaseUpdateService().updateUserData(
             id: Injection<AuthService>().currentUser!.uid,
             isOnline: false,
             lastActive: DateTime.now().millisecondsSinceEpoch.toString());
       }
 
-      if (message.toString().contains("resume")) {
+      if (message.toString().contains("resumed")) {
         DatabaseUpdateService().updateUserData(
             id: Injection<AuthService>().currentUser!.uid,
             isOnline: true,

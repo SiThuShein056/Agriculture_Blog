@@ -371,10 +371,10 @@ class UpdatePostScreen extends StatelessWidget {
                                     alignment: Alignment.center,
                                     borderRadius: BorderRadius.circular(5),
                                     value: value,
-                                    items: ["select", "Public", "Private"]
+                                    items: ["select", "public", "private"]
                                         .map((e) => DropdownMenuItem(
                                               value: e,
-                                              child: Text(e).tr(),
+                                              child: Text(e),
                                             ))
                                         .toList(),
                                     onChanged: (v) {

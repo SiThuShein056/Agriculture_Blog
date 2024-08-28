@@ -319,15 +319,15 @@ class SettingScreen extends StatelessWidget {
                   return Card(
                     child: ListTile(
                       onTap: () {
-                        StarlightUtils.pushNamed(RouteNames.savedPostScreen,
-                            arguments: savedPosts);
+                        StarlightUtils.pushNamed(RouteNames.savedPostScreen);
                       },
                       leading: const Icon(
                         Icons.bookmark,
                       ),
-                      title:
-                          Text(savedPosts.isEmpty ? "Not-Save-Yet" : "My Posts")
-                              .tr(),
+                      title: Text(savedPosts.isEmpty
+                              ? "Not-Save-Yet"
+                              : "My Saved Posts")
+                          .tr(),
                       trailing: savedPosts.isEmpty
                           ? const SizedBox()
                           : Text(

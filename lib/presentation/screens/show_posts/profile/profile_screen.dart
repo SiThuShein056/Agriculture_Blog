@@ -318,13 +318,16 @@ class ProfileScreen extends StatelessWidget {
                                                                       await FirebaseStoreDb()
                                                                           .checkPostStatus();
                                                                   if (isEnabled) {
-                                                                    Injection<
-                                                                            FirebaseFirestore>()
-                                                                        .collection(
-                                                                            "posts")
-                                                                        .doc(myPosts[index]
+                                                                    // Injection<
+                                                                    //         FirebaseFirestore>()
+                                                                    //     .collection(
+                                                                    //         "posts")
+                                                                    //     .doc(myPosts[index]
+                                                                    //         .id)
+                                                                    //     .delete()
+                                                                    await createCubit
+                                                                        .deletePost(myPosts[index]
                                                                             .id)
-                                                                        .delete()
                                                                         .then(
                                                                             (_) {
                                                                       StarlightUtils

@@ -69,10 +69,10 @@
 
 
 
-    "Public": "အများ",
-    "Private": "မိမိ",
+    "public": "အများ",
+    "private": "မိမိ",
 
-    "You must need to select  privacy":"ကို‌ရေးလုံခြုံမှုကိုရွေးရန်",
+    "You must need to select  privacy":"ကို‌ယ်ရေးလုံခြုံမှုကိုရွေးရန်",
     "Select-Privacy": "ပို့စ်မြင်နိုင်သူ",
     "select":"ရွေးပါ",
 
@@ -118,7 +118,7 @@
     "Save Video":"ဗီဒီယိုသိမ်းသည်",
     "Edit Message":"မက်ဆေ့ပြင်ရန်",
     "Delete Message":"မက်ဆေ့ဖျက်ရန်",
-    "Update Message":"မက်ဆေ့ကိုအသစ်ပြင်ရန်",
+    "Update Message":"အသစ်ပြင်ရန်",
     "Cancel":"မလုပ်ပါ",
 
 
@@ -258,8 +258,10 @@
 
 
 
-    
+    "UnSave":"ဖယ်ရှားရန်",
+"Post Detail":"ပို့စ်၏အသေးစိတ်အချက်အလက်",
     "Save-Post": "သိမ်းယူ",
+    "Saved":"သိမ်းခဲ့သည်",
     "Copy-Post-Link": "မျှဝေရန်",
 
 
@@ -309,6 +311,19 @@
 
     "Post": "ပို့စ်တင်မည်",
     "Any Problem,contact me":"ပြဿနာတစ်ခုခုဖြစ်လျှင်၊ဆက်သွယ်ရန်",
+
+
+    "Mail verified successfully": "အောင်မြင်စွာအတည်ပြူပြီးပါပြီ",
+
+
+
+    "Fail":"မအောင်မြင်ပါ",
+    "Register OTP": "OTPဖြင့်စာရင်းသွင်းပါ",
+    "Pleae Enter Email Address to Verify firstly": "ပထမဦးစွာအတည်ပြုရန်အီးမေးလ်ရိုက်ထည့်ပါ",
+
+
+
+
 
 
 

@@ -618,9 +618,10 @@ class FirebaseStoreDb {
 
   final Map<String, StreamSubscription> _mySavePostsStreams = {};
   void _mySavePostsStreamsSetup(String userId) {
-    _likesStream[userId] = _db
+    _mySavePostsStreams[userId] = _db
         .collection("savePosts")
         .where("user_id", isEqualTo: userId)
+        .orderBy("created_at", descending: true)
         .snapshots(includeMetadataChanges: true)
         .listen((event) {
       return mySavePostParser(event);

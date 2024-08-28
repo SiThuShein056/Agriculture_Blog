@@ -197,8 +197,8 @@ class CreatePost extends StatelessWidget {
                         controller: postCreateBloc.privacyController,
                         validator: (value) {
                           if (value!.isEmpty) return "";
-                          if (value == "select".tr() &&
-                              postCreateBloc.privacy.value == "select".tr()) {
+                          if (value == "select" &&
+                              postCreateBloc.privacy.value == "select") {
                             return "You must need to select  privacy".tr();
                           }
                           return null;
@@ -211,7 +211,7 @@ class CreatePost extends StatelessWidget {
                                     alignment: Alignment.center,
                                     borderRadius: BorderRadius.circular(5),
                                     value: value,
-                                    items: ["select", "Public", "Private"]
+                                    items: ["select", "public", "private"]
                                         .map((e) => DropdownMenuItem(
                                               value: e,
                                               child: Text(e).tr(),

@@ -34,8 +34,8 @@ class CommentPart extends StatelessWidget {
             return const Center(child: CupertinoActivityIndicator());
           }
           if (cmtSnap.data == null) {
-            return Center(
-              child: const Text("No Data").tr(),
+            return const Center(
+              child: Text("No Data"),
             );
           }
           List<CommentModel> comments = cmtSnap.data!.toList();
@@ -66,8 +66,8 @@ class CommentPart extends StatelessWidget {
                                   child: CupertinoActivityIndicator());
                             }
                             if (cmtSnap.data == null) {
-                              return Center(
-                                child: const Text("No Data").tr(),
+                              return const Center(
+                                child: Text("No Data"),
                               );
                             }
                             List<CommentModel> comments =
@@ -87,8 +87,8 @@ class CommentPart extends StatelessWidget {
                                 ),
                                 Expanded(
                                     child: comments.isEmpty
-                                        ? Center(
-                                            child: const Text("No Data").tr(),
+                                        ? const Center(
+                                            child: Text("No Data"),
                                           )
                                         : CommentBody(
                                             comments: comments,
@@ -116,9 +116,7 @@ class CommentPart extends StatelessWidget {
               }
             },
             icon: Icons.mode_comment_outlined,
-            label: comments.isEmpty
-                ? "Comment".tr()
-                : "Comments ${comments.length}".tr(),
+            label: comments.isEmpty ? "Comment" : "Comments ${comments.length}",
           );
         });
   }

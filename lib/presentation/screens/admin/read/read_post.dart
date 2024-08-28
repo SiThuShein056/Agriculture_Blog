@@ -3,7 +3,6 @@ import 'package:blog_app/presentation/common_widgets/post_action_button.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/profile/profile_import.dart';
 import 'package:blog_app/presentation/screens/show_posts/search_post.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -148,12 +147,9 @@ class ReadPost extends StatelessWidget {
                                                     children: [
                                                       ListTile(
                                                         onTap: () {
-                                                          Injection<
-                                                                  FirebaseFirestore>()
-                                                              .collection(
-                                                                  "posts")
-                                                              .doc(posts[i].id)
-                                                              .delete()
+                                                          createBloc
+                                                              .deletePost(
+                                                                  posts[i].id)
                                                               .then((_) {
                                                             MyUtil.showToast(
                                                                 context);

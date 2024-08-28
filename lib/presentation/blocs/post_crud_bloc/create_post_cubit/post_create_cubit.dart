@@ -296,7 +296,24 @@ class CreateCubit extends Cubit<CreateState> {
       var postedId = element["post_id"].toString();
 
       if (postedId == postId) {
-        await _db.collection("notifications").doc(element['id']).delete();
+        await _db
+            .collection("notifications")
+            .doc(element["id"])
+            .delete()
+            .then((e) {
+          log("DELETE NOTI POST");
+        });
+      }
+    }
+    var saveData = await _db.collection("savePosts").get();
+    var savedDatas = saveData.docs;
+    for (var element in savedDatas) {
+      var postedId = element["post_id"].toString();
+
+      if (postedId == postId) {
+        await _db.collection("savePosts").doc(element["id"]).delete().then((e) {
+          log("DELETE SAVED POST");
+        });
       }
     }
     // var cmtData = await _db.collection("comments").get();

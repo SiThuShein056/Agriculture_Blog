@@ -81,13 +81,13 @@ class RegisterOtpVerifyScreen extends StatelessWidget {
           if (state is RegisterFailState) {
             StarlightUtils.dialog(DialogWidget(
               message: state.error,
-              title: "Fail",
+              title: "Fail".tr(),
             ));
             return;
           } else if (state is RegisterSuccessState) {
             StarlightUtils.dialog(AlertDialog(
               title: const Text("Success").tr(),
-              content: const Text("We add your new account"),
+              content: const Text("Mail verified successfully").tr(),
               actions: [
                 TextButton(
                     onPressed: () {

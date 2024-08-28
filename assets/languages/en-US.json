@@ -28,6 +28,7 @@
     "New-User?": "New User?",
     "Sign-Up":"Sign Up",
     "Fail to Login":"Fail to Login",
+    
    
     
     "Welcome-From-Farmer-Hub": "Welcome From Farmer Hub",
@@ -47,7 +48,7 @@
 
     "Register": "Register",
     "Already-Have-An-Account?-": "Already have an account?",
-    "Sign-IN":"SignIN",
+    "Sign-IN":"Sign In",
     "Fail Action":"Fail Action",
 
 
@@ -68,8 +69,8 @@
 "Privacy": "Privacy",
 
 
-"Public": "Public",
-"Private": "Private",
+"public": "Public",
+"private": "Private",
 "select":"select",
 
 
@@ -165,6 +166,10 @@
 "Type-Something": "Type Something",
 "Update Fail":"Update Fail",
 "Success":"Success",
+"Fail":"Fail",
+
+"Register OTP": "Register OTP",
+"Pleae Enter Email Address to Verify firstly": "Pleae Enter Email Address to Verify firstly",
 
 
 
@@ -185,6 +190,9 @@
  "You must need to verify your email and login again to update your mail":"You must need to verify your email and login again to update your mail",
 "Chat": "Chat",
 "Save-Post": "Save Post",
+"Saved":"Saved",
+"Post Detail":"Post Detail",
+"UnSave":"UnSave",
 "Copy-Post-Link": "Copy Post Link",
 
 
@@ -240,6 +248,9 @@
 "Sub Categories":"Sub Categories",
 
 "Don't have any data? Add new data": "Don't have any data? Add new data",
+
+"Mail verified successfully": "Mail verified successfully",
+
 
 
 

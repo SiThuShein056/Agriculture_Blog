@@ -19,7 +19,7 @@ class RegisterSentOTPScreen extends StatelessWidget {
       children: [
         Scaffold(
           appBar: AppBar(
-            title: const Text("Register OTP"),
+            title: const Text("Register OTP").tr(),
             automaticallyImplyLeading: false,
             leading: IconButton(
                 onPressed: () {
@@ -35,9 +35,11 @@ class RegisterSentOTPScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text("Pleae Enter Email Address to Verify firstly"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: const Text(
+                            "Pleae Enter Email Address to Verify firstly")
+                        .tr(),
                   ),
                   TextFormField(
                     controller: bloc.emailContrller,
