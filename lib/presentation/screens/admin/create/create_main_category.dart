@@ -24,8 +24,16 @@ class CreateMainCategory extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CustomOutlinedButton(
-                  function: () {
-                    postCreateBloc.createMainCategory();
+                  function: () async {
+                    var exitName = await postCreateBloc.checkMainCategories(
+                        postCreateBloc.mainCategoryController.text);
+                    if (!exitName) {
+                      postCreateBloc.createMainCategory();
+                    } else {
+                      StarlightUtils.snackbar(const SnackBar(
+                        content: Text("Data already exit"),
+                      ));
+                    }
                   },
                   lable: "Create",
                   icon: Icons.post_add_outlined,
@@ -47,6 +55,7 @@ class CreateMainCategory extends StatelessWidget {
                   child: TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) return "";
+
                       return null;
                     },
                     autovalidateMode: AutovalidateMode.onUserInteraction,

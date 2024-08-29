@@ -35,7 +35,8 @@ class ReadCategory extends StatelessWidget {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            StarlightUtils.pushNamed(RouteNames.createCategories);
+            StarlightUtils.pushNamed(RouteNames.createCategories,
+                arguments: id);
             // .then((e) => StarlightUtils.pop);
           },
           child: const Icon(Icons.add),

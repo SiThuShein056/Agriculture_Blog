@@ -28,8 +28,18 @@ class CreateSubCategory extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: CustomOutlinedButton(
                   function: () async {
-                    postCreateBloc.createSubCategory(id);
-                    log("message");
+                    var exitName = await postCreateBloc.checkSubCategories(
+                        postCreateBloc.subCategoryController.text);
+                    log(postCreateBloc.subCategoryController.text);
+
+                    if (!exitName) {
+                      postCreateBloc.createSubCategory(id);
+                      log(postCreateBloc.subCategoryController.text);
+                    } else {
+                      StarlightUtils.snackbar(const SnackBar(
+                        content: Text("Data already exit"),
+                      ));
+                    }
                   },
                   lable: "Create",
                   icon: Icons.post_add_outlined,
@@ -53,7 +63,7 @@ class CreateSubCategory extends StatelessWidget {
                       return null;
                     },
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    controller: postCreateBloc.categoryController,
+                    controller: postCreateBloc.subCategoryController,
                     decoration: InputDecoration(
                       hintText: "Enter SubCategory",
                       border: OutlineInputBorder(

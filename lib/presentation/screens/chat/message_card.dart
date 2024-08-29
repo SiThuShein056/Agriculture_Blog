@@ -117,7 +117,7 @@ class MessageCard extends StatelessWidget {
                                 fontSize: 15,
                                 color: Colors.blue,
                                 decoration: TextDecoration.underline),
-                          ).tr(),
+                          ),
                         )
                       : (message.type == Type.videoCallLink &&
                               message.expiredTime == false)
@@ -129,7 +129,7 @@ class MessageCard extends StatelessWidget {
                                     fontSize: 15,
                                     color: Colors.red,
                                     decoration: TextDecoration.underline),
-                              ).tr(),
+                              ),
                             )
                           : (message.type == Type.voiceCallLink &&
                                   message.expiredTime == true)
@@ -144,7 +144,7 @@ class MessageCard extends StatelessWidget {
                                         fontSize: 15,
                                         color: Colors.blue,
                                         decoration: TextDecoration.underline),
-                                  ).tr(),
+                                  ),
                                 )
                               : (message.type == Type.voiceCallLink &&
                                       message.expiredTime == false)
@@ -157,7 +157,7 @@ class MessageCard extends StatelessWidget {
                                             color: Colors.red,
                                             decoration:
                                                 TextDecoration.underline),
-                                      ).tr(),
+                                      ),
                                     )
                                   : message.isPostID
                                       ? IsPostID(postID: message.message)
@@ -519,7 +519,7 @@ class IsPostID extends StatelessWidget {
             post = PostModel.fromJson(element);
           }
           if (post == null) {
-            return const Text("No lkhjhjUser");
+            return const Text("No Post Found");
           }
           return GestureDetector(
             onTap: () {

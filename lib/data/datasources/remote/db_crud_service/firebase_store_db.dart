@@ -153,11 +153,11 @@ class FirebaseStoreDb {
     return isStatus;
   }
 
-  Future<bool> checkCommentPermission() async {
+  Future<bool> checkCommentPermission(String userID) async {
     var isStatus = true;
     var data = await FirebaseFirestore.instance
         .collection("users")
-        .where("id", isEqualTo: _auth.currentUser!.uid)
+        .where("id", isEqualTo: userID)
         .get();
     var userData = data.docs;
 

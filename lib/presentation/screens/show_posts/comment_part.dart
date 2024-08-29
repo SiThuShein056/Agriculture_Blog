@@ -42,11 +42,11 @@ class CommentPart extends StatelessWidget {
           return PostActionButton(
             onTap: () async {
               var grantPermission =
-                  await FirebaseStoreDb().checkCommentPermission();
+                  await FirebaseStoreDb().checkCommentPermission(postedUserID);
               var postCommentStatus =
                   await FirebaseStoreDb().checkPostCommentStatus(postsId);
 
-              if (!grantPermission && (postedUserID == userID)) {
+              if (!grantPermission) {
                 StarlightUtils.snackbar(SnackBar(
                     content: const Text(
                             "Owner does not allow to comment on her posts.")

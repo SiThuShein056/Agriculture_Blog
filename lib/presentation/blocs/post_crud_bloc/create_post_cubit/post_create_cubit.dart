@@ -29,6 +29,7 @@ class CreateCubit extends Cubit<CreateState> {
   final AuthService auth = Injection<AuthService>();
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
+      subCategoryController = TextEditingController(),
       mainCategoryController = TextEditingController(),
       commentController = TextEditingController(),
       phoneController = TextEditingController(),
@@ -231,7 +232,7 @@ class CreateCubit extends Cubit<CreateState> {
 
       final post = SubCategoryModel(
         id: doc.id,
-        name: categoryController.text,
+        name: subCategoryController.text,
         category_id: id,
       );
       await doc.set(
@@ -433,6 +434,51 @@ class CreateCubit extends Cubit<CreateState> {
     }
   }
 
+  Future<bool> checkMainCategories(String name) async {
+    var exitName = false;
+    var data = await _db.collection("mainCategories").get();
+    var mainCategories = data.docs;
+    for (var element in mainCategories) {
+      var elementName = element["name"].toString();
+
+      if (name == elementName) {
+        exitName = true;
+      }
+    }
+
+    return exitName;
+  }
+
+  Future<bool> checkCategories(String name) async {
+    var exitName = false;
+    var data = await _db.collection("categories").get();
+    var mainCategories = data.docs;
+    for (var element in mainCategories) {
+      var elementName = element["name"].toString();
+
+      if (name == elementName) {
+        exitName = true;
+      }
+    }
+
+    return exitName;
+  }
+
+  Future<bool> checkSubCategories(String name) async {
+    var exitName = false;
+    var data = await _db.collection("subCategories").get();
+    var mainCategories = data.docs;
+    for (var element in mainCategories) {
+      var elementName = element["name"].toString();
+
+      if (name == elementName) {
+        exitName = true;
+      }
+    }
+
+    return exitName;
+  }
+
   callNumber(String number) async {
     await FlutterPhoneDirectCaller.callNumber(number);
   }
@@ -444,6 +490,8 @@ class CreateCubit extends Cubit<CreateState> {
     commentController.dispose();
     descriptionController.dispose();
     categoryController.dispose();
+    subCategoryController.dispose();
+    mainCategoryController.dispose();
     titleFocusNode.dispose();
     descriptionFocusNode.dispose();
     return super.close();
