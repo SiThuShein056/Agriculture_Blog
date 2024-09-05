@@ -364,6 +364,18 @@ class UpdatePostScreen extends StatelessWidget {
                           return null;
                         },
                         decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
                           suffixIcon: ValueListenableBuilder(
                               valueListenable: bloc.privacy,
                               builder: (_, value, child) {
@@ -426,6 +438,18 @@ class UpdatePostScreen extends StatelessWidget {
                         controller: bloc.phoneController,
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
                           hintText: "Enter your phone".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -462,6 +486,18 @@ class UpdatePostScreen extends StatelessWidget {
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: bloc.mainCategoryController,
                           decoration: InputDecoration(
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1),
+                              ),
+                            ),
                             hintText: "Select-Category".tr(),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -486,6 +522,18 @@ class UpdatePostScreen extends StatelessWidget {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: bloc.descriptionController,
                         decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
                           hintText: "Enter-A-Description".tr(),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),

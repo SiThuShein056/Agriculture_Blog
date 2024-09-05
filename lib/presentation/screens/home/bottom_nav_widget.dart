@@ -20,28 +20,28 @@ class BottomNavWidget extends StatelessWidget {
           SalomonBottomBarItem(
             icon: const Icon(Icons.home_outlined),
             title: const Text("Home").tr(),
-            selectedColor: Colors.teal,
+            selectedColor: const Color.fromRGBO(59, 170, 92, 1),
           ),
 
           /// Create Post
           SalomonBottomBarItem(
             icon: const Icon(Icons.post_add_outlined),
             title: const Text("New-Post").tr(),
-            selectedColor: Colors.teal,
+            selectedColor: const Color.fromRGBO(59, 170, 92, 1),
           ),
 
           /// chat
           SalomonBottomBarItem(
             icon: const Icon(Icons.chat_bubble_outline),
             title: const Text("Chat").tr(),
-            selectedColor: Colors.teal,
+            selectedColor: const Color.fromRGBO(59, 170, 92, 1),
           ),
 
           /// Search
           SalomonBottomBarItem(
             icon: const Icon(Icons.person_outline),
             title: const Text("Profile").tr(),
-            selectedColor: Colors.teal,
+            selectedColor: const Color.fromRGBO(59, 170, 92, 1),
           ),
         ],
       );

@@ -29,7 +29,7 @@ class DrawerWidget extends StatelessWidget {
             ),
           ),
           const Divider(
-            color: Colors.grey,
+            color: Color.fromARGB(102, 94, 171, 103),
           ),
           Expanded(
             child: StreamBuilder(

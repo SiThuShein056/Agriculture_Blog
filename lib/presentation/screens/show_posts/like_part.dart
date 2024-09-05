@@ -40,7 +40,7 @@ class LikePart extends StatelessWidget {
             color: likes.isEmpty
                 ? null
                 : liked!
-                    ? Colors.blue
+                    ? const Color.fromRGBO(59, 170, 92, 1)
                     : null,
             icon: likes.isEmpty
                 ? Icons.thumb_up_outlined

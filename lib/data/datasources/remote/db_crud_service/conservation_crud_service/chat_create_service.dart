@@ -136,6 +136,32 @@ class ChatCreateService {
     }
   }
 
+  Future<void> sentMediaMessage({
+    required UserModel user,
+  }) async {
+    final List<XFile> images =
+        await Injection<ImagePicker>().pickMultipleMedia();
+
+    if (images.isNotEmpty) {
+      for (var i in images) {
+        final point = Injection<FirebaseStorage>().ref(
+            "chatMediaData/${_auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${i.name.split(".").last}");
+
+        final uploaded = await point.putFile(i.path.file).whenComplete(() {
+          log("Data has been uploaded to firestore");
+        });
+
+        final data = await Injection<FirebaseStorage>()
+            .ref(uploaded.ref.fullPath)
+            .getDownloadURL();
+        log("Data is $data");
+
+        await ChatCreateService()
+            .createMessage(message: data, user: user, type: Type.image);
+      }
+    }
+  }
+
   Future<void> sentVideoMessage({
     required UserModel user,
   }) async {

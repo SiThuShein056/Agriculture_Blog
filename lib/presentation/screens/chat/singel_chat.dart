@@ -400,8 +400,7 @@ class SingleChat extends StatelessWidget {
                                               "Your account has been blocked")));
                                     }
                                   },
-                                  color:
-                                      const Color.fromARGB(255, 120, 240, 164),
+                                  color: const Color.fromRGBO(59, 170, 92, 1),
                                   child: const Icon(
                                     Icons.send_outlined,
                                   ),
@@ -429,7 +428,7 @@ class SingleChat extends StatelessWidget {
                   width: 100,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(102, 184, 181, 211),
+                    color: const Color.fromARGB(102, 94, 171, 103),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   margin: const EdgeInsets.only(bottom: 20),
@@ -461,7 +460,10 @@ class SingleChat extends StatelessWidget {
                             width: MediaQuery.of(context).size.height * .15,
                             height: MediaQuery.of(context).size.height * .15,
                             child: const Card(
-                              child: Icon(Icons.camera_alt_outlined),
+                              child: Icon(
+                                Icons.camera_alt_outlined,
+                                size: 80,
+                              ),
                             ),
                           )),
                     ),
@@ -490,7 +492,10 @@ class SingleChat extends StatelessWidget {
                             width: MediaQuery.of(context).size.height * .15,
                             height: MediaQuery.of(context).size.height * .15,
                             child: const Card(
-                              child: Icon(Icons.image_outlined),
+                              child: Icon(
+                                Icons.image_outlined,
+                                size: 80,
+                              ),
                             ),
                           )),
                     ),
@@ -516,12 +521,43 @@ class SingleChat extends StatelessWidget {
                           },
                           child: SizedBox(
                             width: MediaQuery.of(context).size.height * .15,
-                            height: MediaQuery.of(context).size.width * .3,
+                            height: MediaQuery.of(context).size.height * .15,
                             child: const Card(
-                              child: Icon(Icons.video_collection),
+                              child: Icon(
+                                Icons.video_collection,
+                                size: 80,
+                              ),
                             ),
                           )),
-                    )
+                    ),
+                    // Expanded(
+                    //   child: InkWell(
+                    //       onTap: () async {
+                    //         bool enable =
+                    //             await FirebaseStoreDb().checkMessageStatus();
+
+                    //         if (enable) {
+                    //           bloc.add(SentVideoMessageEvent(user));
+                    //           ChatUpdateService().updateChatData(
+                    //               id: chatID,
+                    //               createdTime: DateTime.now()
+                    //                   .millisecondsSinceEpoch
+                    //                   .toString());
+                    //         } else {
+                    //           StarlightUtils.snackbar(const SnackBar(
+                    //               content:
+                    //                   Text("Your account has been blocked")));
+                    //         }
+                    //         StarlightUtils.pop();
+                    //       },
+                    //       child: SizedBox(
+                    //         width: MediaQuery.of(context).size.height * .15,
+                    //         height: MediaQuery.of(context).size.height * .15,
+                    //         child: const Card(
+                    //           child: Icon(Icons.link_outlined),
+                    //         ),
+                    //       )),
+                    // )
                   ],
                 )
               ],

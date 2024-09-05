@@ -618,7 +618,7 @@ class MultiPhotoShow extends StatelessWidget {
                     child: SizedBox(
                       height: 150,
                       width: postImages.length == 1
-                          ? context.width
+                          ? context.width * .93
                           : context.width * 0.5,
                       child: Card(
                         child: CachedNetworkImage(
@@ -682,19 +682,34 @@ class PostVideoShow extends StatelessWidget {
                       StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
                           arguments: postVideos[i].videoUrl);
                     },
-                    child: SizedBox(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              offset: Offset(2, 1),
+                              blurRadius: 2,
+                              color: Color.fromARGB(255, 47, 113, 37),
+                            )
+                          ],
+                          gradient: const LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                Color.fromARGB(255, 197, 246, 190),
+                                Color.fromARGB(255, 173, 239, 163),
+                                Color.fromARGB(255, 89, 196, 65),
+                              ])),
                       height: 150,
                       width: postVideos.length == 1
-                          ? context.width
+                          ? context.width * .93
                           : context.width * 0.5,
-                      child: Card(
-                        child: IconButton(
-                          onPressed: () {
-                            StarlightUtils.push(
-                                VideoPlayerWidget(uri: postVideos[i].videoUrl));
-                          },
-                          icon: const Icon(Icons.play_circle_outline),
-                        ),
+                      child: IconButton(
+                        onPressed: () {
+                          StarlightUtils.push(
+                              VideoPlayerWidget(uri: postVideos[i].videoUrl));
+                        },
+                        icon: const Icon(Icons.play_circle_outline, size: 50),
                       ),
                     ),
                   );

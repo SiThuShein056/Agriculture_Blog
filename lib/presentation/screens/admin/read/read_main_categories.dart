@@ -23,7 +23,7 @@ class ReadMainCategory extends StatelessWidget {
             },
             icon: const Icon(Icons.chevron_left),
           ),
-          title: const Text("အဓိကအမျိုးအစားများ"),
+          title: const Text("Main Categories").tr(),
           actions: [
             IconButton(
                 onPressed: () {

@@ -36,7 +36,10 @@ class ShowPost extends StatelessWidget {
                                         delegate: SearchUser());
                                   },
                                   label: const Text("Search-User").tr(),
-                                  icon: const Icon(Icons.people)),
+                                  icon: const Icon(
+                                    Icons.people,
+                                    color: Color.fromRGBO(59, 170, 92, 1),
+                                  )),
                               TextButton.icon(
                                   onPressed: () {
                                     StarlightUtils.pop();
@@ -46,7 +49,10 @@ class ShowPost extends StatelessWidget {
                                         delegate: SearchPost());
                                   },
                                   label: const Text("Search-Post").tr(),
-                                  icon: const Icon(Icons.post_add_outlined)),
+                                  icon: const Icon(
+                                    Icons.post_add_outlined,
+                                    color: Color.fromRGBO(59, 170, 92, 1),
+                                  )),
                             ],
                           ),
                           actions: [
@@ -78,25 +84,6 @@ class ShowPost extends StatelessWidget {
                   );
                 }
                 List<NotificationModel> notis = snap.data!.toList();
-                // log("local length${createBloc.readCounts.value}");
-                // log("Globle length${createBloc.notiCounts.value}");
-                // log("noti length${notis.length}");
-                // log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-                // if (createBloc.readCounts.value == 0 &&
-                //     createBloc.notiCounts.value == notis.length) {
-                //   createBloc.readCounts.value = 0;
-                // } else
-                // if (createBloc.notiCounts.value != notis.length) {
-                //   createBloc.notiCounts.value = notis.length;
-                //   createBloc.readCounts.value += 1;
-                // } else {
-                //   createBloc.notiCounts.value = createBloc.notiCounts.value;
-                //   createBloc.readCounts.value = createBloc.readCounts.value;
-                // }
-                // log("local length${createBloc.readCounts.value}");
-                // log("Globle length${createBloc.notiCounts.value}");
-                // log("noti length${notis.length}");
-                // log("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
 
                 return Padding(
                   padding: const EdgeInsets.only(right: 10.0),
@@ -369,17 +356,20 @@ class PostCardTopRow extends StatelessWidget {
                                   saved
                                       ? Icons.bookmark
                                       : Icons.bookmark_add_outlined,
-                                  color: saved ? Colors.blue : null,
+                                  color: saved ? Colors.green : null,
                                 ),
                                 const SizedBox(
                                   width: 5,
                                 ),
-                                Text(savedPosts.isEmpty
-                                        ? "Save-Post"
-                                        : saved
-                                            ? "Saved"
-                                            : "Save-Post")
-                                    .tr(),
+                                Text(
+                                  savedPosts.isEmpty
+                                      ? "Save-Post"
+                                      : saved
+                                          ? "Saved"
+                                          : "Save-Post",
+                                  style: TextStyle(
+                                      color: Theme.of(context).primaryColor),
+                                ).tr(),
                               ],
                             );
                           })),
@@ -391,7 +381,11 @@ class PostCardTopRow extends StatelessWidget {
                           const SizedBox(
                             width: 5,
                           ),
-                          const Text("Copy-Post-Link").tr(),
+                          Text(
+                            "Copy-Post-Link",
+                            style: TextStyle(
+                                color: Theme.of(context).primaryColor),
+                          ).tr(),
                         ],
                       ))
                 ])

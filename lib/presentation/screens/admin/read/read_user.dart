@@ -62,9 +62,11 @@ class ReadUser extends StatelessWidget {
               );
             }
             return GridView.builder(
+                padding: const EdgeInsets.all(10),
                 itemCount: users.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     childAspectRatio: 1,
+                    crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
                     crossAxisCount: 2),
                 itemBuilder: (_, i) {
@@ -73,7 +75,23 @@ class ReadUser extends StatelessWidget {
                       StarlightUtils.pushNamed(RouteNames.profileScreen,
                           arguments: users[i].id);
                     },
-                    child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: const [
+                            BoxShadow(
+                              offset: Offset(2, 1),
+                              blurRadius: 2,
+                              color: Color.fromARGB(255, 47, 113, 37),
+                            )
+                          ],
+                          gradient: const LinearGradient(
+                              begin: Alignment.topRight,
+                              end: Alignment.bottomLeft,
+                              colors: [
+                                Color.fromARGB(255, 173, 239, 163),
+                                Color.fromRGBO(59, 170, 92, 1)
+                              ])),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

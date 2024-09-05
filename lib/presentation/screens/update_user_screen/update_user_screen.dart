@@ -48,7 +48,19 @@ class UpdateUserScreen extends StatelessWidget {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: bloc.userDataController,
                         decoration: InputDecoration(
-                            label: Text(label),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1),
+                              ),
+                            ),
+                            hintText: label,
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
                       )),
@@ -65,8 +77,19 @@ class UpdateUserScreen extends StatelessWidget {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         controller: bloc.passwordController,
                         decoration: InputDecoration(
-                            label:
-                                const Text("Enter old password to update").tr(),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              borderSide: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1),
+                              ),
+                            ),
+                            hintText: "Enter old password to update".tr(),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10))),
                       ),
@@ -76,6 +99,10 @@ class UpdateUserScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1)),
+                          ),
                           onPressed: () async {
                             if (isMailChanged) {
                               bloc.add(const UpdateUserMailChangeEvent());
@@ -89,7 +116,8 @@ class UpdateUserScreen extends StatelessWidget {
                               return;
                             }
                           },
-                          icon: const Icon(Icons.update_outlined),
+                          icon: const Icon(Icons.update_outlined,
+                              color: Color.fromRGBO(59, 170, 92, 1)),
                           label: const Text("Update").tr()),
                     ),
                   )

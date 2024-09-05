@@ -61,7 +61,7 @@ class UpdateSubCategoryScreen extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(vertical: 10.0),
                               child: const Text(
-                                "SubCategory",
+                                "Sub Categories",
                                 style: TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.bold),
                               ).tr(),
@@ -78,6 +78,18 @@ class UpdateSubCategoryScreen extends StatelessWidget {
                                     AutovalidateMode.onUserInteraction,
                                 controller: bloc.categoryController,
                                 decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(59, 170, 92, 1),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(59, 170, 92, 1),
+                                    ),
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),

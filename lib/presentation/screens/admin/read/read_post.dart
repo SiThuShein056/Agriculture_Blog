@@ -268,7 +268,8 @@ class ReadPost extends StatelessWidget {
                                 //       )),
                                 MultiPhotoShow(postId: posts[i].id),
                                 PostVideoShow(postId: posts[i].id),
-                                const Divider(),
+                                const Divider(
+                                    color: Color.fromRGBO(59, 170, 92, 1)),
                                 SizedBox(
                                   height: 40,
                                   child: Row(

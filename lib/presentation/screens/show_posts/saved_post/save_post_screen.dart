@@ -154,7 +154,9 @@ class SavedPostScreen extends StatelessWidget {
                                       ),
                                       MultiPhotoShow(postId: singlePost[0].id),
                                       PostVideoShow(postId: singlePost[0].id),
-                                      const Divider(),
+                                      const Divider(
+                                        color: Color.fromRGBO(59, 170, 92, 1),
+                                      ),
                                       SizedBox(
                                         height: 40,
                                         child: Row(
@@ -326,6 +328,9 @@ class PostCardTopRow extends StatelessWidget {
         ),
         const Spacer(),
         OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: Color.fromRGBO(59, 170, 92, 1)),
+            ),
             onPressed: () async {
               await Injection<FirebaseFirestore>()
                   .collection("savePosts")

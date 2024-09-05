@@ -147,7 +147,9 @@ class PostDetail extends StatelessWidget {
             ),
             MultiPhotoShow(postId: posts.id),
             PostVideoShow(postId: posts.id),
-            const Divider(),
+            const Divider(
+              color: Color.fromRGBO(59, 170, 92, 1),
+            ),
             SizedBox(
               height: 40,
               child: Row(
@@ -165,7 +167,9 @@ class PostDetail extends StatelessWidget {
                 ],
               ),
             ),
-            const Divider(),
+            const Divider(
+              color: Color.fromRGBO(59, 170, 92, 1),
+            ),
           ],
         ),
       ),

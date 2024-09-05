@@ -36,9 +36,19 @@ abstract class StandardTheme {
 
   ThemeData get ref;
   ThemeData get theme => ref.copyWith(
+        dividerColor: iconColor,
+        primaryIconTheme: IconThemeData(color: iconColor),
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: iconColor,
+        ),
+        snackBarTheme: SnackBarThemeData(
+            backgroundColor: iconColor.withOpacity(.5),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15))),
         drawerTheme: DrawerThemeData(backgroundColor: scaffoldBackgroundColor),
         appBarTheme: AppBarTheme(
           titleTextStyle: titleTextStyle,
@@ -55,6 +65,7 @@ abstract class StandardTheme {
         inputDecorationTheme: InputDecorationTheme(
           border: OutlineInputBorder(
             borderRadius: borderRadius,
+            borderSide: BorderSide(color: iconColor, width: 1.5),
           ),
           isDense: true,
         ),

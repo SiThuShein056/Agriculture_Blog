@@ -1,5 +1,8 @@
+import 'package:blog_app/presentation/blocs/post_media_save_bloc/post_media_save_bloc.dart';
+import 'package:blog_app/presentation/blocs/post_media_save_bloc/post_media_save_event.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -8,6 +11,7 @@ class ImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = context.read<PostMediaSaveBloc>();
     var url = ModalRoute.of(context)!.settings.arguments as String;
 
     return Scaffold(
@@ -47,7 +51,23 @@ class ImageViewer extends StatelessWidget {
               },
               icon: const Icon(Icons.close_outlined),
             ),
-          )
+          ),
+          Positioned(
+              top: 50,
+              left: 20,
+              child: IconButton(
+                onPressed: () {
+                  bloc.add(PostSaveImageEvent(url));
+                },
+                icon: ValueListenableBuilder(
+                  valueListenable: bloc.saving,
+                  builder: (_, v, child) {
+                    return v
+                        ? const Text("Saving....")
+                        : const Icon(Icons.download_outlined);
+                  },
+                ),
+              ))
         ],
       ),
     );

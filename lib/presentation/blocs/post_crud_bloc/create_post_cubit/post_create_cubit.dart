@@ -464,18 +464,19 @@ class CreateCubit extends Cubit<CreateState> {
     return exitName;
   }
 
-  Future<bool> checkSubCategories(String name) async {
+  Future<bool> checkSubCategories(String name, String categoryID) async {
     var exitName = false;
     var data = await _db.collection("subCategories").get();
-    var mainCategories = data.docs;
-    for (var element in mainCategories) {
+    var subCategories = data.docs;
+    for (var element in subCategories) {
       var elementName = element["name"].toString();
+      var elementID = element["category_id"].toString();
 
-      if (name == elementName) {
+      if (name == elementName && categoryID == elementID) {
         exitName = true;
       }
     }
-
+    log("Exit? $exitName");
     return exitName;
   }
 

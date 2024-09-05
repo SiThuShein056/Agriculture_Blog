@@ -29,12 +29,12 @@ class CreateSubCategory extends StatelessWidget {
                 child: CustomOutlinedButton(
                   function: () async {
                     var exitName = await postCreateBloc.checkSubCategories(
-                        postCreateBloc.subCategoryController.text);
-                    log(postCreateBloc.subCategoryController.text);
+                        postCreateBloc.subCategoryController.text, id);
+                    log("Data ${postCreateBloc.subCategoryController.text}");
 
                     if (!exitName) {
                       postCreateBloc.createSubCategory(id);
-                      log(postCreateBloc.subCategoryController.text);
+                      log("created ${postCreateBloc.subCategoryController.text}");
                     } else {
                       StarlightUtils.snackbar(const SnackBar(
                         content: Text("Data already exit"),

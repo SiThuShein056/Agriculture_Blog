@@ -43,7 +43,8 @@ class RouteNames {
       readCategories = "/read-category",
       readSubCategories = "/read-sub-category",
       mainCategories = "/main-categories",
-      subCategories = "/sub-categories";
+      subCategories = "/sub-categories",
+      videoPlayerScreen = "video-player-screen";
 }
 
 Route? router(RouteSettings settings) {
@@ -112,6 +113,17 @@ Route? router(RouteSettings settings) {
             id: settings.arguments.toString(),
           ),
           settings);
+    case RouteNames.videoPlayerScreen:
+      return _protectedRoute(
+        incomingRoute,
+        BlocProvider<PostMediaSaveBloc>(
+          create: (_) => PostMediaSaveBloc(),
+          child: VideoPlayerWidget(
+            uri: settings.arguments.toString(),
+          ),
+        ),
+        settings,
+      );
 
     case RouteNames.registerScreen:
       return _protectedRoute(
@@ -370,7 +382,12 @@ Route? router(RouteSettings settings) {
     case RouteNames.imageViewerScreen:
       return _protectedRoute(
         incomingRoute,
-        const ImageViewer(),
+        MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => PostMediaSaveBloc()),
+          ],
+          child: const ImageViewer(),
+        ),
         settings,
       );
 

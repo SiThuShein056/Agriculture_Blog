@@ -77,6 +77,18 @@ class UpdateCategoryScreen extends StatelessWidget {
                                     AutovalidateMode.onUserInteraction,
                                 controller: bloc.categoryController,
                                 decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(59, 170, 92, 1),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                      color: Color.fromRGBO(59, 170, 92, 1),
+                                    ),
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),

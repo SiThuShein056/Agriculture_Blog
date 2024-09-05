@@ -79,8 +79,8 @@ class CommentPart extends StatelessWidget {
                                   width: 100,
                                   height: 8,
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        102, 184, 181, 211),
+                                    color:
+                                        const Color.fromARGB(102, 94, 171, 103),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   margin: const EdgeInsets.only(bottom: 20),
@@ -139,7 +139,7 @@ class CommentBody extends StatelessWidget {
       // physics: const ClampingScrollPhysics(),
       padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
       separatorBuilder: (_, __) => const Divider(
-        color: Colors.grey,
+        color: Color.fromRGBO(59, 170, 92, 1),
       ),
       itemCount: comments.length,
       itemBuilder: (_, i) {
@@ -255,11 +255,11 @@ class CommentTextField extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: Theme.of(context).cardColor,
-          boxShadow: [
+          boxShadow: const [
             BoxShadow(
-              color: const Color.fromARGB(255, 198, 188, 188).withOpacity(0.5),
-              spreadRadius: 2,
-              offset: const Offset(0, 1),
+              color: Color.fromRGBO(59, 170, 92, 1),
+              blurRadius: 2,
+              offset: Offset(1, 1),
             )
           ]),
       child: Padding(

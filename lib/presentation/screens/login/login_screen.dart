@@ -65,8 +65,23 @@ class LoginScreen extends StatelessWidget {
                     decoration: InputDecoration(
                       prefixIcon: const Icon(Icons.email_outlined),
                       contentPadding: const EdgeInsets.all(10),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
+                      ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
                       ),
                       hintText: "Email".tr(),
                     ),
@@ -100,9 +115,22 @@ class LoginScreen extends StatelessWidget {
                                         ? const Icon(Icons.visibility)
                                         : const Icon(Icons.visibility_off)),
                                 contentPadding: const EdgeInsets.all(10),
-                                border: OutlineInputBorder(
+                                focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Color.fromRGBO(59, 170, 92, 1),
+                                  ),
                                 ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Color.fromRGBO(59, 170, 92, 1),
+                                  ),
+                                ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: const BorderSide(
+                                        color: Color.fromRGBO(59, 170, 92, 1))),
                                 hintText: "Password".tr(),
                               ),
                             );
@@ -118,6 +146,10 @@ class LoginScreen extends StatelessWidget {
                           child: const Text("Forget-Password").tr()),
                       Expanded(
                         child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(
+                                color: Color.fromRGBO(59, 170, 92, 1)),
+                          ),
                           onPressed: login,
                           child: const Text("Login").tr(),
                         ),

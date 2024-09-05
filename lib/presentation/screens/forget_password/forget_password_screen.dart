@@ -43,6 +43,18 @@ class ForgetPasswordScreen extends StatelessWidget {
                           : "Email-Is-Need-To-Validate".tr();
                     },
                     decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color.fromRGBO(59, 170, 92, 1),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color.fromRGBO(59, 170, 92, 1),
+                          ),
+                        ),
                         hintText: "Enter-Email".tr(),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),

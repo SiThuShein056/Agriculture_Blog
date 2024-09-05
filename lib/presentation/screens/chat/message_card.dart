@@ -194,41 +194,47 @@ class MessageCard extends StatelessWidget {
               vertical: MediaQuery.of(context).size.height * .01,
             ),
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 120, 240, 164),
-                border: Border.all(color: Colors.lightGreen),
+                color: const Color.fromRGBO(59, 170, 92, 1),
+                border:
+                    Border.all(color: const Color.fromARGB(255, 115, 161, 61)),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(15),
                   topRight: Radius.circular(15),
                   bottomLeft: Radius.circular(15),
                 )),
             child: message.type == Type.image
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.width * 0.03),
-                    child: CachedNetworkImage(
-                      imageUrl: message.message,
-                      imageBuilder: (context, imageProvider) => Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
+                ? InkWell(
+                    onTap: () {
+                      StarlightUtils.pushNamed(RouteNames.imageViewerScreen,
+                          arguments: message.message);
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          MediaQuery.of(context).size.width * 0.03),
+                      child: CachedNetworkImage(
+                        imageUrl: message.message,
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator().centered(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error).centered(),
+                        height: MediaQuery.of(context).size.height * .35,
+                        width: MediaQuery.of(context).size.height * .35,
                       ),
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator().centered(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error).centered(),
-                      height: MediaQuery.of(context).size.height * .35,
-                      width: MediaQuery.of(context).size.height * .35,
                     ),
                   )
                 : message.type == Type.video
                     ? IconButton(
                         onPressed: () {
-                          StarlightUtils.push(VideoPlayerWidget(
-                            uri: message.message,
-                          ));
+                          StarlightUtils.pushNamed(RouteNames.videoPlayerScreen,
+                              arguments: message.message);
                         },
                         icon: const Icon(Icons.play_circle_outline))
                     : (message.type == Type.videoCallLink &&
@@ -324,7 +330,7 @@ class MessageCard extends StatelessWidget {
               Container(
                 height: 4,
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(102, 184, 181, 211),
+                  color: const Color.fromARGB(102, 94, 171, 103),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 margin: EdgeInsets.symmetric(
@@ -569,7 +575,7 @@ class OptionItem extends StatelessWidget {
               name,
               style: const TextStyle(
                 fontSize: 15,
-                color: Colors.black54,
+                // color: Colors.black54,
                 letterSpacing: 0.5,
               ),
             ))

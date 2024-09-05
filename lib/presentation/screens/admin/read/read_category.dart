@@ -24,7 +24,7 @@ class ReadCategory extends StatelessWidget {
             },
             icon: const Icon(Icons.chevron_left),
           ),
-          title: const Text("အမျိုးအစားများ"),
+          title: const Text("Categories").tr(),
           actions: [
             IconButton(
                 onPressed: () {

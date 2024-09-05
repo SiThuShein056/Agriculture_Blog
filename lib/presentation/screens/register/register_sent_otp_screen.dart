@@ -51,6 +51,18 @@ class RegisterSentOTPScreen extends StatelessWidget {
                     },
                     decoration: InputDecoration(
                         hintText: "Enter-Email".tr(),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color.fromRGBO(59, 170, 92, 1),
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(
+                            color: Color.fromRGBO(59, 170, 92, 1),
+                          ),
+                        ),
                         border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8))),
                   ),

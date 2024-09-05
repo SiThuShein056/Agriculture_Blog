@@ -1,6 +1,7 @@
 import 'package:blog_app/core/theme/dark_theme.dart';
 import 'package:blog_app/core/theme/light_theme.dart';
 import 'package:blog_app/injection.dart';
+import 'package:blog_app/presentation/blocs/post_media_save_bloc/post_media_save_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,11 +33,18 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => ThemeCubit(
-          Injection<SharedPreferences>().getBool("current_theme") == true
-              ? ThemeMode.dark
-              : ThemeMode.light),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => ThemeCubit(
+              Injection<SharedPreferences>().getBool("current_theme") == true
+                  ? ThemeMode.dark
+                  : ThemeMode.light),
+        ),
+        BlocProvider(
+          create: (_) => PostMediaSaveBloc(),
+        )
+      ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(builder: (context, state) {
         return ToastificationWrapper(
           child: MaterialApp(

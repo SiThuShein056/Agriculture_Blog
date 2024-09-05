@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 const Color lightScaffoldBackgroundColor = Color.fromRGBO(234, 236, 240, 1),
     lightCardColor = Color.fromRGBO(255, 255, 255, 1),
-    lightBorderColor = Color.fromRGBO(33, 36, 40, 1),
+    // lightBorderColor = Color.fromRGBO(33, 36, 40, 1),
+    lightBorderColor = Color.fromRGBO(59, 170, 92, 1),
     lightPrimaryColor = Color.fromRGBO(25, 26, 26, 1),
     lightOutlinedButtonTextColor = Color.fromRGBO(71, 84, 103, 1),
     lightUnselectedColor = Color.fromRGBO(154, 164, 178, 1),
     lightUnselectedWidgetColor = Color.fromRGBO(242, 244, 247, 1),
-    lightIconColor = Color.fromRGBO(30, 32, 36, 1);
+    lightIconColor = Color.fromRGBO(59, 170, 92, 1);
 const BorderRadius defaultBorderRadius = BorderRadius.all(Radius.circular(5));
 
 class LightTheme extends StandardTheme {

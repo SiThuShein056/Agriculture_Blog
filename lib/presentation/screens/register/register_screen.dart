@@ -67,6 +67,18 @@ class RegisterScreen extends StatelessWidget {
                           return value.isEmail ? null : "Invalid email".tr();
                         },
                         decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
                           hintText: "Enter-Your-Email".tr(),
                         ),
                       ),
@@ -84,6 +96,18 @@ class RegisterScreen extends StatelessWidget {
                           return null;
                         },
                         decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            borderSide: const BorderSide(
+                              color: Color.fromRGBO(59, 170, 92, 1),
+                            ),
+                          ),
                           hintText: "Enter-Your-Name".tr(),
                         ),
                       ),
@@ -110,6 +134,18 @@ class RegisterScreen extends StatelessWidget {
                               );
                             },
                             decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(59, 170, 92, 1),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(59, 170, 92, 1),
+                                ),
+                              ),
                               suffixIcon: IconButton(
                                   onPressed: registerBloc.passwordIsShowToggle,
                                   icon: Icon(
@@ -157,6 +193,18 @@ class RegisterScreen extends StatelessWidget {
                                 return null;
                               },
                               decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Color.fromRGBO(59, 170, 92, 1),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                  borderSide: const BorderSide(
+                                    color: Color.fromRGBO(59, 170, 92, 1),
+                                  ),
+                                ),
                                 suffixIcon: IconButton(
                                     onPressed: registerBloc
                                         .confirmPasswordIsShowToggle,

@@ -163,6 +163,9 @@ class ChatHome extends StatelessWidget {
                                                                 .circular(10)),
                                                   )
                                                 : Text(
+                                                    style: const TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            59, 170, 92, 1)),
                                                     MyUtil.getPostedTime(
                                                         context: context,
                                                         time: message.sentTime),
@@ -175,32 +178,6 @@ class ChatHome extends StatelessWidget {
                 }
             }
           }),
-    );
-  }
-}
-
-class UserAvatar extends StatelessWidget {
-  final String name;
-  const UserAvatar({super.key, required this.name});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 10.0),
-      child: Column(children: [
-        const CircleAvatar(
-          radius: 29,
-          child: Text("NA"),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Text(
-          name,
-          style: const TextStyle(
-              color: Color.fromARGB(255, 22, 22, 22), fontSize: 12),
-        ),
-      ]),
     );
   }
 }

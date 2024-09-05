@@ -173,8 +173,8 @@ class NotificationScreen extends StatelessWidget {
                               }),
                         );
                       },
-                      separatorBuilder: (context, index) => Divider(
-                        color: Colors.grey[400],
+                      separatorBuilder: (context, index) => const Divider(
+                        color: Color.fromRGBO(59, 170, 92, 1),
                         // indent: size.width * .08,
                         // endIndent: size.width * .08,
                       ),

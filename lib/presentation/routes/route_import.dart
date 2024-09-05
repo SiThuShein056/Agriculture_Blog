@@ -3,6 +3,7 @@ import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/chat_bloc/chat_bloc.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_cubit.dart';
+import 'package:blog_app/presentation/blocs/post_media_save_bloc/post_media_save_bloc.dart';
 import 'package:blog_app/presentation/blocs/user_image_bloc/user_image_bloc.dart';
 import 'package:blog_app/presentation/screens/about_screen/about_screen.dart';
 import 'package:blog_app/presentation/screens/admin/admin_dashboard.dart';
@@ -20,6 +21,7 @@ import 'package:blog_app/presentation/screens/admin/update/update_main_categorie
 import 'package:blog_app/presentation/screens/admin/update/update_post.dart';
 import 'package:blog_app/presentation/screens/admin/update/update_sub_category.dart';
 import 'package:blog_app/presentation/screens/chat/singel_chat.dart';
+import 'package:blog_app/presentation/screens/chat/video_player.dart';
 import 'package:blog_app/presentation/screens/create_post/create_post_import.dart';
 import 'package:blog_app/presentation/screens/noti/notification_screen.dart';
 import 'package:blog_app/presentation/screens/register/register_otp_verify_screen.dart';
