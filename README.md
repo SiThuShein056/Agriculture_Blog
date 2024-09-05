@@ -1,16 +1,6 @@
-# blog_app
+FARMER HUB APPLICATION
 
-A new Flutter project.
+   This project is Farmer Hub System. It is an android application that is intended for farmers.
+In this system, there are two types of users: Admin and Users. To use this system, users need to make registration. After the users have registered, they can reach agriculture blog. Users will be able to post pictures and messages related to agriculture and will able to study the posted agriculture knowledge. They can chat with each other and with the admin.In message chat include sending message,image,video,and video call , voice call,block user,save chat data.The purpose of the project is to gain knowledge of farming among farmers, to exchange their experiences and to provide rapid access of farming techniques.
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
