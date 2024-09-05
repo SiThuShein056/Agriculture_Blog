@@ -20,6 +20,12 @@ class CreateMainCategory extends StatelessWidget {
         Scaffold(
           appBar: AppBar(
             title: const Text("Create Main Cateory"),
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+                onPressed: () {
+                  StarlightUtils.pop();
+                },
+                icon: const Icon(Icons.chevron_left_outlined)),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -61,6 +67,18 @@ class CreateMainCategory extends StatelessWidget {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: postCreateBloc.mainCategoryController,
                     decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
+                      ),
                       hintText: "Enter Main Category",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),

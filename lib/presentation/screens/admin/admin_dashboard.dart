@@ -21,7 +21,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
           Positioned.fill(
             child: Container(
               child: Image.asset(
-                "assets/images/bg4.jpg",
+                "assets/images/bg10.jpg",
                 fit: BoxFit.fill,
               ),
             ),
@@ -57,7 +57,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 child: Column(
                   children: [
                     Container(
-                      height: MediaQuery.of(context).size.height * .30,
+                      height: MediaQuery.of(context).size.height * .25,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -100,9 +100,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                               const Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
-                                  Icon(
-                                    Icons.people_alt_outlined,
-                                    size: 200,
+                                  CircleAvatar(
+                                    radius: 80,
+                                    backgroundImage:
+                                        AssetImage("assets/app_logo/logo1.png"),
                                   ),
                                   Expanded(
                                     child: Text(
@@ -151,36 +152,31 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.topRight,
-                                        child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.read_more_outlined,
-                                            color: Color.fromARGB(
-                                                255, 36, 158, 61),
-                                          ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.read_more_outlined,
+                                          color:
+                                              Color.fromARGB(255, 36, 158, 61),
                                         ),
                                       ),
                                     ),
-                                    const Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Icon(
-                                          Icons.storage_outlined,
-                                          size: 50,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            "Posts",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                      ],
+                                    const Expanded(
+                                      child: CircleAvatar(
+                                        radius: 50,
+                                        backgroundImage: AssetImage(
+                                            "assets/app_logo/logo1.png"),
+                                      ),
+                                    ),
+                                    const Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        "Posts",
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.black),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -188,7 +184,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Container(
                             height: MediaQuery.of(context).size.width * .5,
@@ -220,36 +216,31 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
-                                      child: Align(
-                                        alignment: Alignment.topRight,
-                                        child: IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(
-                                            Icons.read_more_outlined,
-                                            color: Color.fromARGB(
-                                                255, 36, 158, 61),
-                                          ),
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(
+                                          Icons.read_more_outlined,
+                                          color:
+                                              Color.fromARGB(255, 36, 158, 61),
                                         ),
                                       ),
                                     ),
-                                    const Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Icon(
-                                          Icons.category_outlined,
-                                          size: 50,
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            "Categories",
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black),
-                                          ),
-                                        ),
-                                      ],
+                                    const Expanded(
+                                      child: CircleAvatar(
+                                        radius: 50,
+                                        backgroundImage: AssetImage(
+                                            "assets/app_logo/logo1.png"),
+                                      ),
+                                    ),
+                                    const Align(
+                                      alignment: Alignment.bottomRight,
+                                      child: Text(
+                                        "Categories",
+                                        style: TextStyle(
+                                            fontSize: 15, color: Colors.black),
+                                      ),
                                     ),
                                   ],
                                 ),

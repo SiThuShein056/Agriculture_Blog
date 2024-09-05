@@ -386,7 +386,7 @@ class MessageCard extends StatelessWidget {
                   message.type == Type.image ||
                   message.type == Type.video)
                 Divider(
-                  color: Colors.black54,
+                  color: const Color.fromRGBO(59, 170, 92, 1),
                   endIndent: MediaQuery.of(context).size.width * 0.04,
                   indent: MediaQuery.of(context).size.width * 0.04,
                 ),
@@ -420,7 +420,7 @@ class MessageCard extends StatelessWidget {
                       message.type == Type.image ||
                       message.type == Type.video))
                 Divider(
-                  color: Colors.black54,
+                  color: const Color.fromRGBO(59, 170, 92, 1),
                   endIndent: MediaQuery.of(context).size.width * 0.04,
                   indent: MediaQuery.of(context).size.width * 0.04,
                 ),

@@ -1,7 +1,6 @@
 import 'package:blog_app/presentation/blocs/register_bloc/register_import.dart';
 import 'package:blog_app/presentation/common_widgets/custom_outlined_button.dart';
 import 'package:blog_app/presentation/common_widgets/dialog_widget.dart';
-import 'package:blog_app/presentation/common_widgets/form_widget.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -18,65 +17,91 @@ class RegisterSentOTPScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar(
-            title: const Text("Register OTP").tr(),
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.chevron_left)),
-          ),
-          body: Form(
-            key: bloc.formKey,
-            child: FormBox(
-              height: context.height,
-              width: context.width,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: const Text(
-                            "Pleae Enter Email Address to Verify firstly")
-                        .tr(),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  child: Image.asset(
+                    "assets/images/bg10.jpg",
+                    fit: BoxFit.fill,
                   ),
-                  TextFormField(
-                    controller: bloc.emailContrller,
-                    validator: (value) {
-                      if (value == null) return "need to fill".tr();
-                      return value.isEmail
-                          ? null
-                          : "Email-Is-Need-To-Validate".tr();
-                    },
-                    decoration: InputDecoration(
-                        hintText: "Enter-Email".tr(),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color.fromRGBO(59, 170, 92, 1),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color.fromRGBO(59, 170, 92, 1),
-                          ),
-                        ),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: CustomOutlinedButton(
-                        function: () {
-                          bloc.add(const SentOTPEvent());
-                        },
-                        lable: "Sent-OTP".tr()),
-                  ),
-                ],
+                ),
               ),
-            ),
+              Positioned(
+                  top: 50,
+                  left: 10,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          StarlightUtils.pop();
+                        },
+                        icon: const Icon(Icons.chevron_left_outlined),
+                      ),
+                      const Text(
+                        "Register OTP",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ).tr(),
+                    ],
+                  )),
+              Positioned(
+                top: 100,
+                left: 20,
+                right: 20,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: bloc.formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: const Text(
+                            "Pleae Enter Email Address to Verify firstly for Registration",
+                            style: TextStyle(fontSize: 15),
+                          ).tr(),
+                        ),
+                        TextFormField(
+                          controller: bloc.emailContrller,
+                          validator: (value) {
+                            if (value == null) return "need to fill".tr();
+                            return value.isEmail
+                                ? null
+                                : "Email-Is-Need-To-Validate".tr();
+                          },
+                          decoration: InputDecoration(
+                              hintText: "Enter-Email".tr(),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(59, 170, 92, 1),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(59, 170, 92, 1),
+                                ),
+                              ),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: CustomOutlinedButton(
+                              function: () {
+                                bloc.add(const SentOTPEvent());
+                              },
+                              lable: "Sent-OTP".tr()),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         BlocConsumer<RegisterBloc, RegisterBaseState>(

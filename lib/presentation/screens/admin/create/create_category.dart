@@ -24,6 +24,12 @@ class CreateCategory extends StatelessWidget {
         Scaffold(
           appBar: AppBar(
             title: const Text("Create Cateory"),
+            automaticallyImplyLeading: false,
+            leading: IconButton(
+                onPressed: () {
+                  StarlightUtils.pop();
+                },
+                icon: const Icon(Icons.chevron_left_outlined)),
             actions: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -65,6 +71,18 @@ class CreateCategory extends StatelessWidget {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     controller: postCreateBloc.categoryController,
                     decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: const BorderSide(
+                          color: Color.fromRGBO(59, 170, 92, 1),
+                        ),
+                      ),
                       hintText: "Enter Category",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10),

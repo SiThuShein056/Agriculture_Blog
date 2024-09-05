@@ -9,67 +9,92 @@ class ForgetPasswordScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar(
-            title: const Text("Forget-Password").tr(),
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.chevron_left)),
-          ),
-          body: Form(
-            key: bloc.formKey,
-            child: FormBox(
-              height: context.height,
-              width: context.width,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Forget-Password?",
-                    style: TextStyle(fontSize: 17),
-                  ).tr(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: const Text("Forget-Recommend").tr(),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  child: Image.asset(
+                    "assets/images/bg10.jpg",
+                    fit: BoxFit.fill,
                   ),
-                  TextFormField(
-                    controller: bloc.userDataController,
-                    validator: (value) {
-                      if (value == null) return "need to fill".tr();
-                      return value.isEmail
-                          ? null
-                          : "Email-Is-Need-To-Validate".tr();
-                    },
-                    decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color.fromRGBO(59, 170, 92, 1),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color.fromRGBO(59, 170, 92, 1),
-                          ),
-                        ),
-                        hintText: "Enter-Email".tr(),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: CustomOutlinedButton(
-                        function: () {
-                          bloc.add(const SentOTPEvent());
-                        },
-                        lable: "Sent-OTP".tr()),
-                  ),
-                ],
+                ),
               ),
-            ),
+              Positioned(
+                  top: 50,
+                  left: 10,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          StarlightUtils.pop();
+                        },
+                        icon: const Icon(Icons.chevron_left_outlined),
+                      ),
+                      const Text(
+                        "Forget-Password",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ).tr(),
+                    ],
+                  )),
+              Positioned(
+                top: 100,
+                left: 20,
+                right: 20,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: bloc.formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Forget-Password?",
+                          style: TextStyle(fontSize: 17),
+                        ).tr(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: const Text("Forget-Recommend").tr(),
+                        ),
+                        TextFormField(
+                          controller: bloc.userDataController,
+                          validator: (value) {
+                            if (value == null) return "need to fill".tr();
+                            return value.isEmail
+                                ? null
+                                : "Email-Is-Need-To-Validate".tr();
+                          },
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(59, 170, 92, 1),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                borderSide: const BorderSide(
+                                  color: Color.fromRGBO(59, 170, 92, 1),
+                                ),
+                              ),
+                              hintText: "Enter-Email".tr(),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: CustomOutlinedButton(
+                              function: () {
+                                bloc.add(const SentOTPEvent());
+                              },
+                              lable: "Sent-OTP".tr()),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         BlocConsumer<UpdateUserInfoBloc, UpdateUserInfoBaseState>(

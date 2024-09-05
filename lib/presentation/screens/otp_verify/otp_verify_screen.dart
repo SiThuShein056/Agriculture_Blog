@@ -18,46 +18,71 @@ class OtpVerifyScreen extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          appBar: AppBar(
-            title: const Text('Otp Verify Screen').tr(),
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.chevron_left)),
-          ),
-          body: FormBox(
-            height: context.height,
-            width: context.width,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Enter verification code we just sent in your email address',
-                  style: TextStyle(fontSize: 18),
-                ).tr(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Pinput(
-                    length: 6,
-                    showCursor: true,
-                    onChanged: (v) {
-                      bloc.value = v;
-                    },
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: Container(
+                  child: Image.asset(
+                    "assets/images/bg10.jpg",
+                    fit: BoxFit.fill,
                   ),
                 ),
-                CustomOutlinedButton(
-                    function: () {
-                      bloc.userDataController.text = email;
+              ),
+              Positioned(
+                  top: 50,
+                  left: 10,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          StarlightUtils.pop();
+                        },
+                        icon: const Icon(Icons.chevron_left_outlined),
+                      ),
+                      const Text(
+                        "Otp Verify Screen",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ).tr(),
+                    ],
+                  )),
+              Positioned(
+                top: 100,
+                left: 20,
+                right: 20,
+                bottom: 0,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Enter verification code we just sent in your email address',
+                        style: TextStyle(fontSize: 18),
+                      ).tr(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Pinput(
+                          length: 6,
+                          showCursor: true,
+                          onChanged: (v) {
+                            bloc.value = v;
+                          },
+                        ),
+                      ),
+                      CustomOutlinedButton(
+                          function: () {
+                            bloc.userDataController.text = email;
 
-                      log("Tapped button${bloc.userDataController.text}");
+                            log("Tapped button${bloc.userDataController.text}");
 
-                      bloc.add(const VerifyOTPEvent());
-                    },
-                    lable: "Verify OTP".tr())
-              ],
-            ),
+                            bloc.add(const VerifyOTPEvent());
+                          },
+                          lable: "Verify OTP".tr())
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         BlocConsumer<UpdateUserInfoBloc, UpdateUserInfoBaseState>(
