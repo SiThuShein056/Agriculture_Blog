@@ -1,4 +1,4 @@
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +14,7 @@ class UserControl extends StatelessWidget {
   Widget build(BuildContext context) {
     var id = ModalRoute.of(context)!.settings.arguments as String;
     return StreamBuilder(
-        stream: FirebaseStoreDb().getUser(id),
+        stream: DatabaseReadService().getUser(id),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CupertinoActivityIndicator());

@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/update_post_cubit/update_data_cubit.dart';
@@ -74,7 +74,7 @@ class UpdatePostScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       StreamBuilder(
-                          stream: FirebaseStoreDb().postImages(post.id),
+                          stream: DatabaseReadService().postImages(post.id),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -241,7 +241,7 @@ class UpdatePostScreen extends StatelessWidget {
                             });
                           }),
                       StreamBuilder(
-                          stream: FirebaseStoreDb().postVideos(post.id),
+                          stream: DatabaseReadService().postVideos(post.id),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

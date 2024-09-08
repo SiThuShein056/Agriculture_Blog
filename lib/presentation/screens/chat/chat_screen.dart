@@ -49,6 +49,7 @@ class ChatHome extends StatelessWidget {
                   }
 
                   return ListView.builder(
+                      padding: const EdgeInsets.all(8),
                       itemCount: chats.length,
                       itemBuilder: (_, index) {
                         var myID = Injection<AuthService>().currentUser!.uid;
@@ -62,7 +63,7 @@ class ChatHome extends StatelessWidget {
                           recerverID = user1;
                         }
                         return StreamBuilder(
-                            stream: FirebaseStoreDb().getUser(recerverID),
+                            stream: DatabaseReadService().getUser(recerverID),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
                                   ConnectionState.waiting) {
@@ -102,74 +103,95 @@ class ChatHome extends StatelessWidget {
                                       message = last[0];
                                     }
                                     return Card(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(15)),
-                                      child: ListTile(
-                                        onTap: () {
-                                          ChatCreateService()
-                                              .createChat(toId: user!.id);
-                                          StarlightUtils.pushNamed(
-                                            RouteNames.singleChat,
-                                            arguments: user,
-                                          );
-                                        },
-                                        leading: CircleAvatar(
-                                          radius: 17,
-                                          backgroundImage: (user!
-                                                      .profielUrl.isEmpty ||
-                                                  user.profielUrl == '')
+                                      child: Slidable(
+                                        endActionPane: ActionPane(
+                                            extentRatio: .2,
+                                            motion: const ScrollMotion(),
+                                            children: [
+                                              SlidableAction(
+                                                onPressed: (context) {
+                                                  ChatDeleteService()
+                                                      .deleteChat(
+                                                          chats[index].id);
+                                                },
+                                                icon: Icons.delete,
+                                                foregroundColor: Colors.white,
+                                                backgroundColor:
+                                                    Colors.red[700]!,
+                                              ),
+                                            ]),
+                                        child: ListTile(
+                                          onTap: () {
+                                            ChatCreateService()
+                                                .createChat(toId: user!.id);
+                                            StarlightUtils.pushNamed(
+                                              RouteNames.singleChat,
+                                              arguments: user,
+                                            );
+                                          },
+                                          leading: CircleAvatar(
+                                            radius: 17,
+                                            backgroundImage: (user!
+                                                        .profielUrl.isEmpty ||
+                                                    user.profielUrl == '')
+                                                ? null
+                                                : NetworkImage(user.profielUrl),
+                                            child: (user.profielUrl.isEmpty ||
+                                                    user.profielUrl == '')
+                                                ? Text(user.name[0])
+                                                : null,
+                                          ),
+                                          title: Text(user.name),
+                                          subtitle: Text(
+                                            message != null
+                                                ? message.type == Type.image
+                                                    ? "Image"
+                                                    : message.type == Type.video
+                                                        ? "Video"
+                                                        : message.type ==
+                                                                Type
+                                                                    .videoCallLink
+                                                            ? "Video Call"
+                                                            : message.type ==
+                                                                    Type
+                                                                        .voiceCallLink
+                                                                ? "Voice Call"
+                                                                : message
+                                                                    .message
+                                                : "No message",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ).tr(),
+                                          trailing: message == null
                                               ? null
-                                              : NetworkImage(user.profielUrl),
-                                          child: (user.profielUrl.isEmpty ||
-                                                  user.profielUrl == '')
-                                              ? Text(user.name[0])
-                                              : null,
+                                              : message.readTime.isEmpty &&
+                                                      message.fromId !=
+                                                          Injection<
+                                                                  AuthService>()
+                                                              .currentUser!
+                                                              .uid
+                                                  ? Container(
+                                                      width: 15,
+                                                      height: 15,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors
+                                                              .greenAccent
+                                                              .shade100,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10)),
+                                                    )
+                                                  : Text(
+                                                      style: const TextStyle(
+                                                          color: Color.fromRGBO(
+                                                              59, 170, 92, 1)),
+                                                      MyUtil.getPostedTime(
+                                                          context: context,
+                                                          time:
+                                                              message.sentTime),
+                                                    ),
                                         ),
-                                        title: Text(user.name),
-                                        subtitle: Text(
-                                          message != null
-                                              ? message.type == Type.image
-                                                  ? "Image"
-                                                  : message.type == Type.video
-                                                      ? "Video"
-                                                      : message.type ==
-                                                              Type.videoCallLink
-                                                          ? "Video Call"
-                                                          : message.type ==
-                                                                  Type.voiceCallLink
-                                                              ? "Voice Call"
-                                                              : message.message
-                                              : "No message",
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ).tr(),
-                                        trailing: message == null
-                                            ? null
-                                            : message.readTime.isEmpty &&
-                                                    message.fromId !=
-                                                        Injection<AuthService>()
-                                                            .currentUser!
-                                                            .uid
-                                                ? Container(
-                                                    width: 15,
-                                                    height: 15,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors
-                                                            .greenAccent
-                                                            .shade100,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10)),
-                                                  )
-                                                : Text(
-                                                    style: const TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            59, 170, 92, 1)),
-                                                    MyUtil.getPostedTime(
-                                                        context: context,
-                                                        time: message.sentTime),
-                                                  ),
                                       ),
                                     );
                                   });

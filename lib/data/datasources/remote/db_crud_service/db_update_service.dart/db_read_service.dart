@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/data/models/category_model/category_model.dart';
@@ -16,7 +15,7 @@ import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class FirebaseStoreDb {
+class DatabaseReadService {
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
   final AuthService _auth = Injection<AuthService>();
   final StreamController<List<PostModel>> _postStream =
@@ -66,52 +65,6 @@ class FirebaseStoreDb {
         .where("id", isEqualTo: _auth.currentUser!.uid)
         .snapshots();
     return docusSnapshot;
-  }
-
-  Future<void> createUser({
-    required String id,
-    required String name,
-    required String email,
-    required String profileUrl,
-    required String coverUrl,
-  }) async {
-    var exitUser = false;
-    final doc = FirebaseFirestore.instance
-        .collection("users")
-        .doc(_auth.currentUser!.uid);
-    String time = DateTime.now().millisecondsSinceEpoch.toString();
-
-    final user = UserModel(
-      id: id,
-      name: name,
-      email: email,
-      profielUrl: profileUrl,
-      coverUrl: coverUrl,
-      isOnline: true,
-      lastActive: time,
-      postStatus: true,
-      commentStatus: true,
-      messageStatus: true,
-      commentPermission: true,
-      chatMessageToken: "",
-    );
-
-    var data = await FirebaseFirestore.instance.collection("users").get();
-    var userData = data.docs;
-    for (var element in userData) {
-      var id = element["id"].toString();
-      if (id == _auth.currentUser!.uid) {
-        exitUser = true;
-      }
-    }
-
-    if (!exitUser) {
-      await doc.set(
-        user.toJson(),
-      );
-    }
-
-    log(exitUser.toString());
   }
 
   Future<void> checkUpdateMail(String email) async {

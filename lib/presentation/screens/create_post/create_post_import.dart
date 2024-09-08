@@ -11,6 +11,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
-import '../../../data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import '../../../data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 
 part 'create_post_screen.dart';

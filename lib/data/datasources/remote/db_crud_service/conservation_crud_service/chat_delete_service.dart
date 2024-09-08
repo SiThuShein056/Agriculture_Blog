@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/injection.dart';
@@ -13,6 +15,21 @@ class ChatDeleteService {
     await _db.collection("messages").doc(message.id).delete();
     if (message.type == Type.image || message.type == Type.video) {
       _storage.refFromURL(message.message);
+    }
+  }
+
+  Future<void> deleteChat(id) async {
+    await _db.collection("chats").doc(id).delete();
+    var message = await _db.collection("messages").get();
+    var msg = message.docs;
+    for (var element in msg) {
+      var chatID = element["chatId"].toString();
+
+      if (chatID == id) {
+        await _db.collection("messages").doc(element["id"]).delete().then((e) {
+          log("DELETE MESSAGES ");
+        });
+      }
     }
   }
 }

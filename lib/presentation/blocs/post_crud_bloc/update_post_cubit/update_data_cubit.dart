@@ -17,6 +17,7 @@ import '../../../../data/datasources/remote/db_crud_service/db_update_service.da
 class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
   UpdateDataCubit() : super(const UpdateDataInitialState());
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
+  final FirebaseStorage _storage = Injection<FirebaseStorage>();
   final AuthService auth = Injection<AuthService>();
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
@@ -101,7 +102,7 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
         for (var element in videoList) {
           final postVideoDoc = _db.collection("postVideos").doc();
 
-          final postImg = PostVideoModel(
+          final postVideo = PostVideoModel(
             id: postVideoDoc.id,
             postId: id,
             userId: auth.currentUser!.uid,
@@ -109,7 +110,7 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
             videoUrl: element,
           );
           await postVideoDoc.set(
-            postImg.toJson(),
+            postVideo.toJson(),
           );
         }
       }
@@ -176,57 +177,6 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
     }
   }
 
-  // Future<void> pickPostPhoto() async {
-  //   if (state is UpdateDataLoadingState) return;
-  //   emit(const UpdateDataLoadingState());
-
-  //   final userChoice = await StarlightUtils.dialog(AlertDialog(
-  //     title: const Text("Choose Method"),
-  //     content: SizedBox(
-  //       height: 120,
-  //       child: Column(children: [
-  //         ListTile(
-  //           onTap: () {
-  //             StarlightUtils.pop(result: ImageSource.camera);
-  //           },
-  //           leading: const Icon(Icons.camera),
-  //           title: const Text("Camera"),
-  //         ),
-  //         ListTile(
-  //           onTap: () {
-  //             StarlightUtils.pop(result: ImageSource.gallery);
-  //           },
-  //           leading: const Icon(Icons.image),
-  //           title: const Text("Gallery"),
-  //         )
-  //       ]),
-  //     ),
-  //   ));
-  //   if (userChoice == null) {
-  //     emit(UpdateDataErrorState("User choose is nill"));
-
-  //     return;
-  //   }
-  //   final XFile? image =
-  //       await Injection<ImagePicker>().pickImage(source: userChoice);
-  //   if (image == null) {
-  //     emit(UpdateDataErrorState("Xfile is nill"));
-
-  //     return;
-  //   }
-  //   final point = Injection<FirebaseStorage>().ref(
-  //       "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${image.name.split(".").last}");
-  //   final uploaded = await point.putFile(image.path.file);
-  //   //TODO
-
-  //   imageUrl = await Injection<FirebaseStorage>()
-  //       .ref(uploaded.ref.fullPath)
-  //       .getDownloadURL();
-
-  //   emit(UpdatePickSuccessState(imageUrl));
-  //   return;
-  // }
-
   Future<void> pickPostPhotos() async {
     if (state is UpdateDataLoadingState) return;
     emit(const UpdateDataLoadingState());
@@ -234,14 +184,12 @@ class UpdateDataCubit extends Cubit<UpdateDataBaseState> {
     final List<XFile> image = await Injection<ImagePicker>().pickMultiImage();
 
     for (var element in image) {
-      final point = Injection<FirebaseStorage>().ref(
+      final point = _storage.ref(
           "postImages/${auth.currentUser?.uid}/${DateTime.now().toString().replaceAll(" ", "")}/${element.name.split(".").last}");
       final uploaded = await point.putFile(element.path.file);
       //TODO
 
-      var imageUrl = await Injection<FirebaseStorage>()
-          .ref(uploaded.ref.fullPath)
-          .getDownloadURL();
+      var imageUrl = await _storage.ref(uploaded.ref.fullPath).getDownloadURL();
       imageList.add(imageUrl);
     }
 

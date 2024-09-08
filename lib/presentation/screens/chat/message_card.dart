@@ -195,6 +195,25 @@ class MessageCard extends StatelessWidget {
             ),
             decoration: BoxDecoration(
                 color: const Color.fromRGBO(59, 170, 92, 1),
+                boxShadow: message.type != Type.video
+                    ? null
+                    : const [
+                        BoxShadow(
+                          offset: Offset(2, 1),
+                          blurRadius: 2,
+                          color: Color.fromARGB(255, 47, 113, 37),
+                        )
+                      ],
+                gradient: message.type != Type.video
+                    ? null
+                    : const LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [
+                            Color.fromARGB(255, 197, 246, 190),
+                            Color.fromARGB(255, 173, 239, 163),
+                            Color.fromARGB(255, 89, 196, 65),
+                          ]),
                 border:
                     Border.all(color: const Color.fromARGB(255, 115, 161, 61)),
                 borderRadius: const BorderRadius.only(
@@ -236,7 +255,9 @@ class MessageCard extends StatelessWidget {
                           StarlightUtils.pushNamed(RouteNames.videoPlayerScreen,
                               arguments: message.message);
                         },
-                        icon: const Icon(Icons.play_circle_outline))
+                        icon: const Icon(
+                          Icons.play_circle_outline,
+                        ))
                     : (message.type == Type.videoCallLink &&
                             message.expiredTime == true)
                         ? Text(

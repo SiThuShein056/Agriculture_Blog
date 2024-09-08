@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
@@ -18,7 +18,7 @@ class ShowCategories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().checkUser(),
+        stream: DatabaseReadService().checkUser(),
         builder: (_, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CupertinoActivityIndicator();
@@ -53,7 +53,7 @@ class ShowCategories extends StatelessWidget {
                 ],
               ),
               floatingActionButton: StreamBuilder(
-                  stream: FirebaseStoreDb().checkUser(),
+                  stream: DatabaseReadService().checkUser(),
                   builder: (_, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const CupertinoActivityIndicator();
@@ -78,7 +78,7 @@ class ShowCategories extends StatelessWidget {
                     );
                   }),
               body: StreamBuilder(
-                stream: FirebaseStoreDb().categories(id),
+                stream: DatabaseReadService().categories(id),
                 builder: (_, snap) {
                   if (snap.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -158,7 +158,7 @@ class SearchScreen extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().categories(id),
+        stream: DatabaseReadService().categories(id),
         builder: (_, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(

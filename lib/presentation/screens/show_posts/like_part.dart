@@ -1,4 +1,4 @@
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,7 +19,7 @@ class LikePart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<LikeModel>>(
-        stream: FirebaseStoreDb().likes(postId),
+        stream: DatabaseReadService().likes(postId),
         builder: (context, likeSnap) {
           if (likeSnap.connectionState == ConnectionState.waiting) {
             return const Center(child: CupertinoActivityIndicator());

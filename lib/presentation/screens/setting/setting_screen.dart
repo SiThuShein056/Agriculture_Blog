@@ -277,7 +277,8 @@ class SettingScreen extends StatelessWidget {
             ),
 
             StreamBuilder(
-                stream: FirebaseStoreDb().getUser(bloc.auth.currentUser!.uid),
+                stream:
+                    DatabaseReadService().getUser(bloc.auth.currentUser!.uid),
                 builder: (_, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(child: CupertinoActivityIndicator());
@@ -304,7 +305,7 @@ class SettingScreen extends StatelessWidget {
                   );
                 }),
             StreamBuilder(
-                stream: FirebaseStoreDb()
+                stream: DatabaseReadService()
                     .mySavedPosts(Injection<AuthService>().currentUser!.uid),
                 builder: (context, savePostSnap) {
                   if (savePostSnap.connectionState == ConnectionState.waiting) {

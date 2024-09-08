@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
@@ -85,7 +85,7 @@ class PostDetail extends StatelessWidget {
         child: ListView(
           children: [
             StreamBuilder(
-                stream: FirebaseStoreDb().getUser(posts.userId),
+                stream: DatabaseReadService().getUser(posts.userId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     //TODO LIKE POSTS

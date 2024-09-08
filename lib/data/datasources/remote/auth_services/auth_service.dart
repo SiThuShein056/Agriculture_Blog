@@ -66,7 +66,7 @@ class AuthService {
           .createUserWithEmailAndPassword(email: email, password: password);
 
       await displayNameUpdate(userName);
-      await FirebaseStoreDb().createUser(
+      await DatabaseCreateService().createUser(
           id: _auth.currentUser!.uid,
           name: _auth.currentUser!.displayName!,
           email: _auth.currentUser!.email.toString(),
@@ -85,7 +85,7 @@ class AuthService {
       }
       final UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      await FirebaseStoreDb().createUser(
+      await DatabaseCreateService().createUser(
         id: _auth.currentUser!.uid,
         name: _auth.currentUser?.displayName.toString() ??
             _auth.currentUser!.email![0],
@@ -93,7 +93,7 @@ class AuthService {
         profileUrl: _auth.currentUser?.photoURL ?? "",
         coverUrl: "",
       );
-      await FirebaseStoreDb().checkUpdateMail(email);
+      await DatabaseReadService().checkUpdateMail(email);
 
       return Result(data: credential.user);
     });
@@ -124,7 +124,7 @@ class AuthService {
       GoogleAuthProvider.credential(accessToken: auth.accessToken),
     );
 
-    await FirebaseStoreDb().createUser(
+    await DatabaseCreateService().createUser(
       id: _auth.currentUser!.uid,
       name: _auth.currentUser?.displayName.toString() ??
           _auth.currentUser!.email![1],

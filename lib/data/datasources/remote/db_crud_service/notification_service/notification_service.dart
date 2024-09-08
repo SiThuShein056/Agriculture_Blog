@@ -1,15 +1,12 @@
-import 'dart:developer';
-
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
 import 'package:blog_app/data/datasources/remote/messaging_service/messaging_service.dart';
-import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
 
-class PostCreateService {
+class NotificationService {
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
   final AuthService _auth = Injection<AuthService>();
 
@@ -52,37 +49,11 @@ class PostCreateService {
         Logger logger = Logger();
         MessagingService msg = MessagingService();
         msg.sendNotificationToSelectedDevice(
-            "${Injection<AuthService>().currentUser!.displayName} Commented on ${ownerName.name}'s Post}",
+            "${_auth.currentUser!.displayName} Commented on ${ownerName.name}'s Post}",
             body,
             userToken);
         logger.i(
-            "${Injection<AuthService>().currentUser!.displayName} Commented on $ownerName 's Post");
-      }
-    }
-  }
-
-  Future<void> createNotifications(String postID) async {
-    var data = await FirebaseFirestore.instance.collection("users").get();
-
-    final time = DateTime.now().microsecondsSinceEpoch.toString();
-    final ownerID = _auth.currentUser!.uid;
-    var userData = data.docs;
-
-    for (var element in userData) {
-      var userID = element["id"].toString();
-      if (userID != _auth.currentUser!.uid) {
-        var notiDoc =
-            FirebaseFirestore.instance.collection("notifications").doc();
-        log(notiDoc.id.toString());
-        final noti = NotificationModel(
-            id: notiDoc.id,
-            postId: postID,
-            userId: userID,
-            createdAt: time,
-            ownerId: ownerID,
-            read: false);
-
-        await notiDoc.set(noti.toJson());
+            "${_auth.currentUser!.displayName} Commented on $ownerName 's Post");
       }
     }
   }

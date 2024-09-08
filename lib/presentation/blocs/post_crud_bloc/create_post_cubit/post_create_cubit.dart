@@ -1,14 +1,13 @@
 import 'dart:developer';
 
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/post_crud_service/post_create_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_create_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_delete_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/notification_service/notification_service.dart';
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/data/models/comment_model/comment_model.dart';
 import 'package:blog_app/data/models/like_model/like_model.dart';
 import 'package:blog_app/data/models/main_category_model/main_cateory_model.dart';
-import 'package:blog_app/data/models/post_Images_model/post_image_model.dart';
-import 'package:blog_app/data/models/post_model/post_model.dart';
-import 'package:blog_app/data/models/post_video_model/post_video_model.dart';
 import 'package:blog_app/data/models/savedPost_model/save_post_model.dart';
 import 'package:blog_app/data/models/sub_category_modle/sub_category_model.dart';
 import 'package:blog_app/injection.dart';
@@ -27,6 +26,8 @@ class CreateCubit extends Cubit<CreateState> {
 
   final FirebaseFirestore _db = Injection<FirebaseFirestore>();
   final AuthService auth = Injection<AuthService>();
+  final DatabaseDeleteService deleteService =
+      Injection<DatabaseDeleteService>();
   final TextEditingController titleController = TextEditingController(),
       categoryController = TextEditingController(),
       subCategoryController = TextEditingController(),
@@ -58,66 +59,76 @@ class CreateCubit extends Cubit<CreateState> {
 
     emit(const CreateLoadingState());
     try {
-      final doc = _db.collection("posts").doc();
-      final notiDoc = _db.collection("notification").doc();
+      // final doc = _db.collection("posts").doc();
+      // final notiDoc = _db.collection("notification").doc();
 
-      final post = PostModel(
-        id: doc.id,
-        userId: auth.currentUser!.uid,
-        createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
-        category: categoryController.text,
-        phone: phoneController.text,
-        privacy: privacy.value,
-        description: descriptionController.text,
-        commentStatus: commentStatus.value,
-      );
-      await doc
-          .set(
-        post.toJson(),
-      )
-          .then((v) {
-        if (privacy.value == "public") {
-          PostCreateService().sentNewPostNotification(categoryController.text);
-        }
-      });
+      // final post = PostModel(
+      //   id: doc.id,
+      //   userId: auth.currentUser!.uid,
+      //   createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+      //   category: categoryController.text,
+      //   phone: phoneController.text,
+      //   privacy: privacy.value,
+      //   description: descriptionController.text,
+      //   commentStatus: commentStatus.value,
+      // );
+      // await doc
+      //     .set(
+      //   post.toJson(),
+      // )
+      //     .then((v) {
+      //   if (privacy.value == "public") {
+      //     NotificationService()
+      //         .sentNewPostNotification(categoryController.text);
+      //   }
+      // });
 
-      if (imageUrl != []) {
-        log("For In  ${imageUrl.length.toString()}");
-        for (var element in imageUrl) {
-          final postImageDoc = _db.collection("postImages").doc();
+      // if (imageUrl != []) {
+      //   log("For In  ${imageUrl.length.toString()}");
+      //   for (var element in imageUrl) {
+      //     final postImageDoc = _db.collection("postImages").doc();
 
-          final postImg = PostImageModel(
-            id: postImageDoc.id,
-            postId: doc.id,
-            userId: auth.currentUser!.uid,
-            createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
-            imageUrl: element,
-          );
-          await postImageDoc.set(
-            postImg.toJson(),
-          );
-        }
-      }
-      if (videoUrl != []) {
-        log("For VideoUrl In  ${videoUrl.length.toString()}");
-        for (var element in videoUrl) {
-          final postVideoDoc = _db.collection("postVideos").doc();
+      //     final postImg = PostImageModel(
+      //       id: postImageDoc.id,
+      //       postId: doc.id,
+      //       userId: auth.currentUser!.uid,
+      //       createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+      //       imageUrl: element,
+      //     );
+      //     await postImageDoc.set(
+      //       postImg.toJson(),
+      //     );
+      //   }
+      // }
+      // if (videoUrl != []) {
+      //   log("For VideoUrl In  ${videoUrl.length.toString()}");
+      //   for (var element in videoUrl) {
+      //     final postVideoDoc = _db.collection("postVideos").doc();
 
-          final postVideo = PostVideoModel(
-            id: postVideoDoc.id,
-            postId: doc.id,
-            userId: auth.currentUser!.uid,
-            createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
-            videoUrl: element,
-          );
-          await postVideoDoc.set(
-            postVideo.toJson(),
-          );
-        }
-      }
-      if (privacy.value == "public") {
-        PostCreateService().createNotifications(doc.id);
-      }
+      //     final postVideo = PostVideoModel(
+      //       id: postVideoDoc.id,
+      //       postId: doc.id,
+      //       userId: auth.currentUser!.uid,
+      //       createdAt: DateTime.now().microsecondsSinceEpoch.toString(),
+      //       videoUrl: element,
+      //     );
+      //     await postVideoDoc.set(
+      //       postVideo.toJson(),
+      //     );
+      //   }
+      // }
+      // if (privacy.value == "public") {
+      //   DatabaseCreateService().createNotifications(doc.id);
+      // }
+
+      await DatabaseCreateService().createPost(
+          imageUrl,
+          videoUrl,
+          categoryController.text,
+          phoneController.text,
+          privacy.value,
+          descriptionController.text,
+          commentStatus.value);
       categoryController.text = "";
       descriptionController.text = "";
       phoneController.text = "";
@@ -265,7 +276,7 @@ class CreateCubit extends Cubit<CreateState> {
         comment.toJson(),
       )
           .then((v) async {
-        PostCreateService().sentNewCommentNotification(postId, body);
+        NotificationService().sentNewCommentNotification(postId, body);
       });
       commentController.text = "";
       emit(const CreateSuccessState());
@@ -274,10 +285,6 @@ class CreateCubit extends Cubit<CreateState> {
     } catch (e) {
       emit(CreateErrorState(e.toString()));
     }
-  }
-
-  Future<void> deleteComment(String commentId) async {
-    await _db.collection("comments").doc(commentId).delete();
   }
 
   String updateBody = "";
@@ -291,6 +298,18 @@ class CreateCubit extends Cubit<CreateState> {
 
   Future<void> deletePost(String postId) async {
     await _db.collection("posts").doc(postId).delete();
+
+    var saveData = await _db.collection("savePosts").get();
+    var savedDatas = saveData.docs;
+    for (var element in savedDatas) {
+      var postedId = element["post_id"].toString();
+
+      if (postedId == postId) {
+        await _db.collection("savePosts").doc(element["id"]).delete().then((e) {
+          log("DELETE SAVED POST");
+        });
+      }
+    }
     var notiData = await _db.collection("notifications").get();
     var notis = notiData.docs;
     for (var element in notis) {
@@ -306,17 +325,7 @@ class CreateCubit extends Cubit<CreateState> {
         });
       }
     }
-    var saveData = await _db.collection("savePosts").get();
-    var savedDatas = saveData.docs;
-    for (var element in savedDatas) {
-      var postedId = element["post_id"].toString();
 
-      if (postedId == postId) {
-        await _db.collection("savePosts").doc(element["id"]).delete().then((e) {
-          log("DELETE SAVED POST");
-        });
-      }
-    }
     // var cmtData = await _db.collection("comments").get();
     // var cmt = cmtData.docs;
     // for (var element in cmt) {

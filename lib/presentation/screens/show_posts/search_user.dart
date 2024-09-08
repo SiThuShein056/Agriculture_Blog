@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,7 +37,7 @@ class SearchUser extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     log("Build Suggestion Part");
     return StreamBuilder(
-        stream: FirebaseStoreDb().users,
+        stream: DatabaseReadService().users,
         builder: (_, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(

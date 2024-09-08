@@ -21,7 +21,7 @@ class ProfileScreen extends StatelessWidget {
         ).tr(),
       ),
       body: StreamBuilder(
-          stream: FirebaseStoreDb()
+          stream: DatabaseReadService()
               .getUser(userId ?? Injection<AuthService>().currentUser!.uid),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -208,8 +208,8 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 StreamBuilder<List<PostModel>>(
                     stream: user.id != createCubit.auth.currentUser!.uid
-                        ? FirebaseStoreDb().profilePosts(user.id)
-                        : FirebaseStoreDb().myProfilePosts(user.id),
+                        ? DatabaseReadService().profilePosts(user.id)
+                        : DatabaseReadService().myProfilePosts(user.id),
                     builder: (context, snap) {
                       if (snap.connectionState == ConnectionState.waiting) {
                         return const Padding(
@@ -315,7 +315,7 @@ class ProfileScreen extends StatelessWidget {
                                                                 onTap:
                                                                     () async {
                                                                   var isEnabled =
-                                                                      await FirebaseStoreDb()
+                                                                      await DatabaseReadService()
                                                                           .checkPostStatus();
                                                                   if (isEnabled) {
                                                                     // Injection<
@@ -333,8 +333,6 @@ class ProfileScreen extends StatelessWidget {
                                                                       StarlightUtils
                                                                           .pop();
                                                                     });
-                                                                    MyUtil.showToast(
-                                                                        context);
                                                                   } else {
                                                                     StarlightUtils.snackbar(SnackBar(
                                                                         content:
@@ -354,7 +352,7 @@ class ProfileScreen extends StatelessWidget {
                                                                 onTap:
                                                                     () async {
                                                                   var isEnabled =
-                                                                      await FirebaseStoreDb()
+                                                                      await DatabaseReadService()
                                                                           .checkPostStatus();
                                                                   if (isEnabled) {
                                                                     StarlightUtils.pushNamed(
@@ -589,7 +587,7 @@ class MultiPhotoShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().postImages(postId),
+        stream: DatabaseReadService().postImages(postId),
         builder: (_, postImageSnap) {
           if (postImageSnap.connectionState == ConnectionState.waiting) {
             return const Center(child: CupertinoActivityIndicator());
@@ -656,7 +654,7 @@ class PostVideoShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().postVideos(postId),
+        stream: DatabaseReadService().postVideos(postId),
         builder: (_, postVideoSnap) {
           if (postVideoSnap.connectionState == ConnectionState.waiting) {
             return const Center(child: CupertinoActivityIndicator());

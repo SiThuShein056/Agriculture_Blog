@@ -6,7 +6,7 @@ import 'package:blog_app/data/datasources/remote/auth_services/authu_service_imp
 import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_create_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_read_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/conservation_crud_service/chat_update_service.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/chat_model/chat_model.dart';
 import 'package:blog_app/data/models/message_model/message_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
@@ -24,6 +24,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starlight_utils/starlight_utils.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class SingleChat extends StatelessWidget {
   const SingleChat({super.key});
@@ -34,10 +35,13 @@ class SingleChat extends StatelessWidget {
     bool blocker = false;
 
     final user = ModalRoute.of(context)!.settings.arguments as UserModel;
+
+    var callID = DateTime.now().microsecondsSinceEpoch.toString();
+    if (user.id == "Dp7jPbZJ6eeFrVfJf9LkYBcJOun1") {
+      ChatCreateService().createChat(toId: "Dp7jPbZJ6eeFrVfJf9LkYBcJOun1");
+    }
     var chatID = ChatCreateService().generateChatID(
         uid1: Injection<AuthService>().currentUser!.uid, uid2: user.id);
-    var callID = DateTime.now().microsecondsSinceEpoch.toString();
-
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
@@ -60,6 +64,9 @@ class SingleChat extends StatelessWidget {
                         );
                       } else {
                         final data = snap.data!.docs;
+                        if (data.isEmpty) {
+                          return const CupertinoActivityIndicator().centered();
+                        }
                         ChatModel chats = ChatModel.fromJson(data[0].data());
                         if (chats.isBlocked) {
                           blocker = chats.blockerId ==
@@ -163,7 +170,7 @@ class SingleChat extends StatelessWidget {
           ],
           automaticallyImplyLeading: false,
           title: StreamBuilder(
-              stream: FirebaseStoreDb().getUser(user.id),
+              stream: DatabaseReadService().getUser(user.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CupertinoActivityIndicator());
@@ -310,6 +317,9 @@ class SingleChat extends StatelessWidget {
                   );
                 } else {
                   final data = snap.data!.docs;
+                  if (data.isEmpty) {
+                    return const CupertinoActivityIndicator().centered();
+                  }
                   ChatModel chats = ChatModel.fromJson(data[0].data());
 
                   return chats.isBlocked
@@ -383,7 +393,7 @@ class SingleChat extends StatelessWidget {
                                       top: 10, bottom: 10, left: 10, right: 5),
                                   shape: const CircleBorder(),
                                   onPressed: () async {
-                                    bool enable = await FirebaseStoreDb()
+                                    bool enable = await DatabaseReadService()
                                         .checkMessageStatus();
 
                                     if (enable) {
@@ -438,8 +448,8 @@ class SingleChat extends StatelessWidget {
                     Expanded(
                       child: InkWell(
                           onTap: () async {
-                            bool enable =
-                                await FirebaseStoreDb().checkMessageStatus();
+                            bool enable = await DatabaseReadService()
+                                .checkMessageStatus();
 
                             if (enable) {
                               bloc.add(SentCameraImageMessageEvent(user));
@@ -470,8 +480,8 @@ class SingleChat extends StatelessWidget {
                     Expanded(
                       child: InkWell(
                           onTap: () async {
-                            bool enable =
-                                await FirebaseStoreDb().checkMessageStatus();
+                            bool enable = await DatabaseReadService()
+                                .checkMessageStatus();
 
                             if (enable) {
                               bloc.add(SentFileImageMessageEvent(user));
@@ -502,8 +512,8 @@ class SingleChat extends StatelessWidget {
                     Expanded(
                       child: InkWell(
                           onTap: () async {
-                            bool enable =
-                                await FirebaseStoreDb().checkMessageStatus();
+                            bool enable = await DatabaseReadService()
+                                .checkMessageStatus();
 
                             if (enable) {
                               bloc.add(SentVideoMessageEvent(user));

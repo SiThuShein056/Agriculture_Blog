@@ -1,9 +1,11 @@
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_delete_service.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_update_service.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
 import 'package:blog_app/data/models/notification_model/notification_model.dart';
 import 'package:blog_app/data/models/post_model/post_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
+import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +31,7 @@ class NotificationScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(10.0),
         child: StreamBuilder(
-            stream: FirebaseStoreDb().notis,
+            stream: DatabaseReadService().notis,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
@@ -50,134 +52,137 @@ class NotificationScreen extends StatelessWidget {
               return Column(
                 children: [
                   Expanded(
-                    child: ListView.separated(
+                    child: ListView.builder(
                       itemCount: notis.length,
                       itemBuilder: (context, i) {
-                        return Slidable(
-                          endActionPane: ActionPane(
-                              extentRatio: .3,
-                              motion: const ScrollMotion(),
-                              children: [
-                                SlidableAction(
-                                  onPressed: (context) {
-                                    DatabaseUpdateService()
-                                        .deleteNoti(notis[i].id);
-                                  },
-                                  icon: Icons.delete,
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.red[700]!,
-                                ),
-                              ]),
-                          child: StreamBuilder(
-                              stream:
-                                  FirebaseStoreDb().getUser(notis[i].ownerId),
-                              builder: (_, snap) {
-                                if (snap.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CupertinoActivityIndicator());
-                                }
-                                if (snap.hasError) {
-                                  return const Center(
-                                      child: Text("Error Occurred"));
-                                }
-                                UserModel? user;
-                                for (var element in snap.data!.docs) {
-                                  user = UserModel.fromJson(element);
-                                }
-                                if (user == null) {
-                                  return const Text("No User");
-                                }
+                        return Card(
+                          child: Slidable(
+                            endActionPane: ActionPane(
+                                extentRatio: .2,
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      Injection<DatabaseDeleteService>()
+                                          .deleteNoti(notis[i].id);
+                                    },
+                                    icon: Icons.delete,
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: Colors.red[700]!,
+                                  ),
+                                ]),
+                            child: StreamBuilder(
+                                stream: DatabaseReadService()
+                                    .getUser(notis[i].ownerId),
+                                builder: (_, snap) {
+                                  if (snap.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Center(
+                                        child: CupertinoActivityIndicator());
+                                  }
+                                  if (snap.hasError) {
+                                    return const Center(
+                                        child: Text("Error Occurred"));
+                                  }
+                                  UserModel? user;
+                                  for (var element in snap.data!.docs) {
+                                    user = UserModel.fromJson(element);
+                                  }
+                                  if (user == null) {
+                                    return const Text("No User");
+                                  }
 
-                                return StreamBuilder(
-                                    stream: FirebaseStoreDb()
-                                        .singlePosts(notis[i].postId),
-                                    builder: (context, postSnap) {
-                                      if (postSnap.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return const Center(
+                                  return StreamBuilder(
+                                      stream: DatabaseReadService()
+                                          .singlePosts(notis[i].postId),
+                                      builder: (context, postSnap) {
+                                        if (postSnap.connectionState ==
+                                            ConnectionState.waiting) {
+                                          return const Center(
+                                              child:
+                                                  CupertinoActivityIndicator());
+                                        }
+                                        if (postSnap.data == null) {
+                                          return const Center(
+                                            child: Text("Post No Dkkkata"),
+                                          );
+                                        }
+                                        List<PostModel> notiPost =
+                                            postSnap.data!.toList();
+
+                                        if (notiPost.isEmpty) {
+                                          return Center(
                                             child:
-                                                CupertinoActivityIndicator());
-                                      }
-                                      if (postSnap.data == null) {
-                                        return const Center(
-                                          child: Text("Post No Dkkkata"),
-                                        );
-                                      }
-                                      List<PostModel> notiPost =
-                                          postSnap.data!.toList();
+                                                const Text("No Post Data").tr(),
+                                          );
+                                        }
 
-                                      if (notiPost.isEmpty) {
-                                        return Center(
-                                          child:
-                                              const Text("No Post Data").tr(),
-                                        );
-                                      }
+                                        return ListTile(
+                                          // isThreeLine: true,
+                                          onTap: () {
+                                            StarlightUtils.pushNamed(
+                                                RouteNames.postDetail,
+                                                arguments: notiPost[0]);
 
-                                      return ListTile(
-                                        // isThreeLine: true,
-                                        onTap: () {
-                                          StarlightUtils.pushNamed(
-                                              RouteNames.postDetail,
-                                              arguments: notiPost[0]);
-
-                                          DatabaseUpdateService()
-                                              .updateNotiData(id: notis[i].id);
-                                        },
-                                        leading: (user?.profielUrl == null ||
-                                                user?.profielUrl == "")
-                                            ? CircleAvatar(
-                                                radius: 25,
-                                                child: Text(user!.email[0]),
-                                              )
-                                            : CircleAvatar(
-                                                radius: 25,
-                                                backgroundImage: NetworkImage(
-                                                    user!.profielUrl),
-                                              ),
-                                        title: Row(
+                                            DatabaseUpdateService()
+                                                .updateNotiData(
+                                                    id: notis[i].id);
+                                          },
+                                          leading: (user?.profielUrl == null ||
+                                                  user?.profielUrl == "")
+                                              ? CircleAvatar(
+                                                  radius: 25,
+                                                  child: Text(user!.email[0]),
+                                                )
+                                              : CircleAvatar(
+                                                  radius: 25,
+                                                  backgroundImage: NetworkImage(
+                                                      user!.profielUrl),
+                                                ),
+                                          title: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  user.name,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ]),
+                                          subtitle: Text(
+                                            notiPost[0].category,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          trailing: Column(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                user.name,
                                                 style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                    color: Color.fromRGBO(
+                                                        59, 170, 92, 1)),
+                                                MyUtil.getPostedTime(
+                                                    context: context,
+                                                    time:
+                                                        notiPost[0].createdAt),
                                               ),
-                                            ]),
-                                        subtitle: Text(
-                                          notiPost[0].category,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        trailing: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              MyUtil.getPostedTime(
-                                                  context: context,
-                                                  time: notiPost[0].createdAt),
-                                            ),
-                                            Text(
-                                              notis[i].read ? "" : "New",
-                                              style: const TextStyle(
-                                                  color: Colors.red),
-                                            ).tr()
-                                          ],
-                                        ),
-                                      );
-                                    });
-                              }),
+                                              Text(
+                                                notis[i].read ? "" : "New",
+                                                style: const TextStyle(
+                                                    color: Colors.red),
+                                              ).tr()
+                                            ],
+                                          ),
+                                        );
+                                      });
+                                }),
+                          ),
                         );
                       },
-                      separatorBuilder: (context, index) => const Divider(
-                        color: Color.fromRGBO(59, 170, 92, 1),
-                        // indent: size.width * .08,
-                        // endIndent: size.width * .08,
-                      ),
                     ),
                   )
                 ],

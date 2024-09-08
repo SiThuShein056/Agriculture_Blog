@@ -19,7 +19,7 @@ class SavedPostScreen extends StatelessWidget {
         ).tr(),
       ),
       body: StreamBuilder(
-          stream: FirebaseStoreDb()
+          stream: DatabaseReadService()
               .mySavedPosts(Injection<AuthService>().currentUser!.uid),
           builder: (context, savePostSnap) {
             if (savePostSnap.connectionState == ConnectionState.waiting) {
@@ -38,8 +38,8 @@ class SavedPostScreen extends StatelessWidget {
                 itemCount: savedPosts.length,
                 itemBuilder: (_, i) {
                   return StreamBuilder(
-                      stream:
-                          FirebaseStoreDb().singlePosts(savedPosts[i].postId),
+                      stream: DatabaseReadService()
+                          .singlePosts(savedPosts[i].postId),
                       builder: (context, singlePostSnap) {
                         if (singlePostSnap.connectionState ==
                             ConnectionState.waiting) {
@@ -68,7 +68,7 @@ class SavedPostScreen extends StatelessWidget {
                               vertical: 10,
                             ),
                             child: StreamBuilder(
-                                stream: FirebaseStoreDb()
+                                stream: DatabaseReadService()
                                     .getUser(singlePost[0].userId),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState ==
@@ -218,7 +218,7 @@ class MultiPhotoShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().postImages(postId),
+        stream: DatabaseReadService().postImages(postId),
         builder: (_, postImageSnap) {
           if (postImageSnap.connectionState == ConnectionState.waiting) {
             return const Center(child: CupertinoActivityIndicator());

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/main_category_model/main_cateory_model.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
@@ -36,7 +36,7 @@ class ShowMainCategories extends StatelessWidget {
           ],
         ),
         floatingActionButton: StreamBuilder(
-            stream: FirebaseStoreDb().checkUser(),
+            stream: DatabaseReadService().checkUser(),
             builder: (_, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CupertinoActivityIndicator();
@@ -60,7 +60,7 @@ class ShowMainCategories extends StatelessWidget {
               );
             }),
         body: StreamBuilder(
-          stream: FirebaseStoreDb().mainCategories,
+          stream: DatabaseReadService().mainCategories,
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -137,7 +137,7 @@ class SearchScreen extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().mainCategories,
+        stream: DatabaseReadService().mainCategories,
         builder: (_, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(

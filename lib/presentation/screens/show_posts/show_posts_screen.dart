@@ -68,7 +68,7 @@ class ShowPost extends StatelessWidget {
             icon: const Icon(Icons.search),
           ),
           StreamBuilder(
-              stream: FirebaseStoreDb().readNotis,
+              stream: DatabaseReadService().readNotis,
               builder: (_, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -110,7 +110,7 @@ class ShowPost extends StatelessWidget {
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseStoreDb().posts,
+          stream: DatabaseReadService().posts,
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(child: CupertinoActivityIndicator());
@@ -142,7 +142,8 @@ class ShowPost extends StatelessWidget {
                         vertical: 10,
                       ),
                       child: StreamBuilder(
-                          stream: FirebaseStoreDb().getUser(posts[i].userId),
+                          stream:
+                              DatabaseReadService().getUser(posts[i].userId),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
@@ -332,7 +333,7 @@ class PostCardTopRow extends StatelessWidget {
                   PopupMenuItem(
                       value: 0,
                       child: StreamBuilder<List<SavePostModel>>(
-                          stream: FirebaseStoreDb().savedPosts(post.id),
+                          stream: DatabaseReadService().savedPosts(post.id),
                           builder: (context, savePostSnap) {
                             if (savePostSnap.connectionState ==
                                 ConnectionState.waiting) {
@@ -396,7 +397,7 @@ class PostCardTopRow extends StatelessWidget {
   }
 
   onSelected(c, v, postID, CreateCubit createBloc) async {
-    var isEnable = await FirebaseStoreDb().checkCommentStatus();
+    var isEnable = await DatabaseReadService().checkCommentStatus();
     if (isEnable) {
       switch (v) {
         case 0:

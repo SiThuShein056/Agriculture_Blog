@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:starlight_utils/starlight_utils.dart';
 
-import '../../../../data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import '../../../../data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import '../../../../data/models/user_model/user_model.dart';
 import '../../../routes/route_import.dart';
 
@@ -31,7 +31,7 @@ class ReadUser extends StatelessWidget {
         ],
       ),
       body: StreamBuilder(
-          stream: FirebaseStoreDb().users,
+          stream: DatabaseReadService().users,
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(

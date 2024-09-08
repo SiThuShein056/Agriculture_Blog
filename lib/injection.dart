@@ -1,3 +1,4 @@
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_delete_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:email_otp/email_otp.dart';
@@ -21,9 +22,6 @@ Future<void> setup() async {
   Injection.registerSingleton(AuthService(), dispose: (instance) {
     instance.dispose();
   });
-  // Injection.registerLazySingleton(()=>FirebaseStoreDb(), dispose: (instance) {
-  //   instance.dispose();
-  // });
 
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   Injection.registerLazySingleton(() => prefs);
@@ -33,4 +31,9 @@ Future<void> setup() async {
       () => FirebaseFirestore.instance);
   Injection.registerLazySingleton<ImagePicker>(() => ImagePicker());
   Injection.registerLazySingleton<EmailOTP>(() => EmailOTP());
+  // Injection.registerLazySingleton(() => DatabaseReadService(),
+  //     dispose: (instance) {
+  //   instance.dispose();
+  // });
+  Injection.registerLazySingleton(() => DatabaseDeleteService());
 }

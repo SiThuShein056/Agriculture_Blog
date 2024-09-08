@@ -1,5 +1,5 @@
 import 'package:blog_app/data/datasources/remote/auth_services/authu_service_import.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/user_model/user_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
@@ -28,7 +28,7 @@ class CommentPart extends StatelessWidget {
     final String userID = Injection<AuthService>().currentUser!.uid;
 
     return StreamBuilder(
-        stream: FirebaseStoreDb().comments(postsId),
+        stream: DatabaseReadService().comments(postsId),
         builder: (context, cmtSnap) {
           if (cmtSnap.connectionState == ConnectionState.waiting) {
             return const Center(child: CupertinoActivityIndicator());
@@ -41,10 +41,10 @@ class CommentPart extends StatelessWidget {
           List<CommentModel> comments = cmtSnap.data!.toList();
           return PostActionButton(
             onTap: () async {
-              var grantPermission =
-                  await FirebaseStoreDb().checkCommentPermission(postedUserID);
+              var grantPermission = await DatabaseReadService()
+                  .checkCommentPermission(postedUserID);
               var postCommentStatus =
-                  await FirebaseStoreDb().checkPostCommentStatus(postsId);
+                  await DatabaseReadService().checkPostCommentStatus(postsId);
 
               if (!grantPermission) {
                 StarlightUtils.snackbar(SnackBar(
@@ -58,7 +58,7 @@ class CommentPart extends StatelessWidget {
                     builder: (_) => Container(
                       padding: const EdgeInsets.only(top: 10),
                       child: StreamBuilder(
-                          stream: FirebaseStoreDb().comments(postsId),
+                          stream: DatabaseReadService().comments(postsId),
                           builder: (context, cmtSnap) {
                             if (cmtSnap.connectionState ==
                                 ConnectionState.waiting) {
@@ -147,7 +147,7 @@ class CommentBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             StreamBuilder(
-                stream: FirebaseStoreDb().getUser(comments[i].userId),
+                stream: DatabaseReadService().getUser(comments[i].userId),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     //TODO LIKE POSTS
@@ -211,11 +211,11 @@ class CommentBody extends StatelessWidget {
   }
 
   onSelected(c, v, commentId, body) async {
-    var isEnable = await FirebaseStoreDb().checkCommentStatus();
+    var isEnable = await DatabaseReadService().checkCommentStatus();
     if (isEnable) {
       switch (v) {
         case 0:
-          createBloc.deleteComment(commentId);
+          createBloc.deleteService.deleteComment(commentId);
 
           break;
         case 1:
@@ -291,8 +291,8 @@ class CommentTextField extends StatelessWidget {
                   return v
                       ? IconButton(
                           onPressed: () async {
-                            var isEnabled =
-                                await FirebaseStoreDb().checkCommentStatus();
+                            var isEnabled = await DatabaseReadService()
+                                .checkCommentStatus();
                             if (isEnabled) {
                               createBloc.updateComment();
                               createBloc.ediable.value = false;
@@ -307,8 +307,8 @@ class CommentTextField extends StatelessWidget {
                           icon: const Icon(Icons.check))
                       : IconButton(
                           onPressed: () async {
-                            var isEnabled =
-                                await FirebaseStoreDb().checkCommentStatus();
+                            var isEnabled = await DatabaseReadService()
+                                .checkCommentStatus();
 
                             if (isEnabled) {
                               createBloc.createComment(

@@ -1,5 +1,5 @@
 import 'package:blog_app/data/datasources/local/utils/my_util.dart';
-import 'package:blog_app/data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import 'package:blog_app/data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import 'package:blog_app/data/models/category_model/category_model.dart';
 import 'package:blog_app/injection.dart';
 import 'package:blog_app/presentation/routes/route_import.dart';
@@ -42,7 +42,7 @@ class ReadCategory extends StatelessWidget {
           child: const Icon(Icons.add),
         ),
         body: StreamBuilder(
-          stream: FirebaseStoreDb().categories(id),
+          stream: DatabaseReadService().categories(id),
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(
@@ -150,7 +150,7 @@ class SearchScreen extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder(
-        stream: FirebaseStoreDb().categories(id),
+        stream: DatabaseReadService().categories(id),
         builder: (_, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(

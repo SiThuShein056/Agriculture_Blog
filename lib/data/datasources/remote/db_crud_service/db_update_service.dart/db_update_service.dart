@@ -91,8 +91,4 @@ class DatabaseUpdateService {
   }) async {
     await _db.collection("notifications").doc(id).update({"read": true});
   }
-
-  Future<void> deleteNoti(String id) async {
-    await _db.collection("notifications").doc(id).delete();
-  }
 }

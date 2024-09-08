@@ -27,12 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
       }
 
       if (message.toString().contains("resumed")) {
+        log("Resumed is Done");
         DatabaseUpdateService().updateUserData(
             id: Injection<AuthService>().currentUser!.uid,
             isOnline: true,
             lastActive: DateTime.now().millisecondsSinceEpoch.toString());
       }
       if (message.toString().contains("detached")) {
+        log("Detached is Done");
+
         DatabaseUpdateService().updateUserData(
             id: Injection<AuthService>().currentUser!.uid,
             isOnline: false,

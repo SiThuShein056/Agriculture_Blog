@@ -11,7 +11,7 @@ import 'package:starlight_utils/starlight_utils.dart';
 
 import '../../../../data/datasources/local/utils/my_util.dart';
 import '../../../../data/datasources/remote/auth_services/authu_service_import.dart';
-import '../../../../data/datasources/remote/db_crud_service/firebase_store_db.dart';
+import '../../../../data/datasources/remote/db_crud_service/db_update_service.dart/db_read_service.dart';
 import '../../../../data/models/post_model/post_model.dart';
 import '../../../../injection.dart';
 import '../../../blocs/post_crud_bloc/create_post_cubit/post_create_cubit.dart';
@@ -43,7 +43,7 @@ class ReadPost extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<List<PostModel>>(
-          stream: FirebaseStoreDb().posts,
+          stream: DatabaseReadService().posts,
           builder: (_, snap) {
             if (snap.connectionState == ConnectionState.waiting) {
               return const Center(child: CupertinoActivityIndicator());
@@ -75,7 +75,8 @@ class ReadPost extends StatelessWidget {
                         vertical: 10,
                       ),
                       child: StreamBuilder(
-                          stream: FirebaseStoreDb().getUser(posts[i].userId),
+                          stream:
+                              DatabaseReadService().getUser(posts[i].userId),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {

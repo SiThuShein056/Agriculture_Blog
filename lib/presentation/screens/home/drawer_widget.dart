@@ -33,7 +33,7 @@ class DrawerWidget extends StatelessWidget {
           ),
           Expanded(
             child: StreamBuilder(
-                stream: FirebaseStoreDb().checkUser(),
+                stream: DatabaseReadService().checkUser(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const CupertinoActivityIndicator();
@@ -73,7 +73,7 @@ class DrawerWidget extends StatelessWidget {
                       ),
                       if (user!.role != "admin")
                         StreamBuilder(
-                            stream: FirebaseStoreDb()
+                            stream: DatabaseReadService()
                                 .getUser("Dp7jPbZJ6eeFrVfJf9LkYBcJOun1"),
                             builder: (context, snapshot) {
                               if (snapshot.connectionState ==
@@ -95,6 +95,7 @@ class DrawerWidget extends StatelessWidget {
                                 icon: const Icon(Icons.help_center_outlined),
                                 title: "Help-Center".tr(),
                                 onpress: () {
+                                  log("User mail is ${user!.email}");
                                   StarlightUtils.pushNamed(
                                       RouteNames.singleChat,
                                       arguments: user);

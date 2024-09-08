@@ -38,7 +38,8 @@ class CreatePost extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: CustomOutlinedButton(
                     function: () async {
-                      var isEnabled = await FirebaseStoreDb().checkPostStatus();
+                      var isEnabled =
+                          await DatabaseReadService().checkPostStatus();
                       if (isEnabled) {
                         postCreateBloc.createPost();
                       } else {

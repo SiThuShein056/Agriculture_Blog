@@ -103,7 +103,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                   CircleAvatar(
                                     radius: 80,
                                     backgroundImage:
-                                        AssetImage("assets/app_logo/logo1.png"),
+                                        AssetImage("assets/images/users.png"),
                                   ),
                                   Expanded(
                                     child: Text(
@@ -167,7 +167,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       child: CircleAvatar(
                                         radius: 50,
                                         backgroundImage: AssetImage(
-                                            "assets/app_logo/logo1.png"),
+                                            "assets/images/post1.jpg"),
                                       ),
                                     ),
                                     const Align(
@@ -231,7 +231,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                       child: CircleAvatar(
                                         radius: 50,
                                         backgroundImage: AssetImage(
-                                            "assets/app_logo/logo1.png"),
+                                            "assets/images/category.jfif"),
                                       ),
                                     ),
                                     const Align(
